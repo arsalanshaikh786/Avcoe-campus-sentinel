@@ -3,315 +3,325 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<title>AVCOE Campus Sentinel — Safer Campus</title>
+<title>AVCOE Campus Sentinel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 <style>
-body{-webkit-tap-highlight-color:transparent;background:#060911}
-.screen{display:none}.screen.active{display:flex}
-.glow-text{text-shadow:0 0 16px rgba(34,211,238,.4)}
-.campus-bg{background:radial-gradient(circle at 50% 15%,rgba(14,116,144,.25) 0%,transparent 60%),linear-gradient(180deg,#070d19,#03060c)}
-.sel{border-color:#06b6d4!important;background:rgba(6,182,212,.1)!important;color:#67e8f9!important}
+body{font-family:Inter,system-ui,sans-serif;background:#050A14;-webkit-tap-highlight-color:transparent}
+.sc::-webkit-scrollbar{display:none}.sc{scrollbar-width:none}
+select,input,textarea{font-size:16px}@media(min-width:640px){select,input,textarea{font-size:13px}}
+.hero{background:radial-gradient(120% 60% at 50% 0%,rgba(37,99,235,.28),transparent 65%),#0A1220}
 </style>
 </head>
-<body class="flex justify-center items-center min-h-screen p-0 sm:p-4 font-sans select-none text-slate-100">
-<div class="relative w-full max-w-[420px] h-screen sm:h-[844px] bg-[#070c18] sm:rounded-[40px] border border-slate-800/80 shadow-2xl flex flex-col overflow-hidden">
-
-<header class="px-5 pt-4 pb-3 flex justify-between items-center z-20 border-b border-slate-900 bg-slate-950/80">
-  <div class="flex items-center gap-2">
-    <div class="w-7 h-7 rounded-lg bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400 text-xs"><i class="fa-solid fa-shield-halved"></i></div>
-    <div><span class="text-xs font-black tracking-wider text-white">AVCOE SENTINEL</span><span class="text-[9px] text-cyan-400 block -mt-0.5 font-mono">Smart Campus System</span></div>
-  </div>
-  <div class="flex items-center gap-2">
-    <div id="role-pill" class="text-[10px] px-2 py-0.5 rounded-full border border-slate-700 bg-slate-800 text-slate-300">Guest</div>
-    <button onclick="openLogin()" class="w-7 h-7 rounded-full bg-slate-800 border border-slate-700 text-xs text-slate-300"><span id="avatar">AV</span></button>
-  </div>
-</header>
-
-<main class="flex-1 overflow-y-auto pb-20 relative">
-
-<section id="screen-welcome" class="screen active flex-col items-center justify-between p-6 h-full campus-bg text-center">
-  <div class="pt-2">
-    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-900/90 border border-slate-700/80 text-[10px] font-bold text-cyan-300 uppercase tracking-widest mb-3"><i class="fa-solid fa-graduation-cap"></i> AVCOE SANGAMNER</div>
-    <h1 class="text-3xl font-black text-white leading-tight">AVCOE <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 glow-text">Campus Sentinel</span></h1>
-    <p class="text-xs text-slate-400 max-w-[270px] mx-auto mt-2">Report issues across departments, labs, hostels and workshops. Live tracking, smart triage.</p>
-  </div>
-  <div class="grid grid-cols-2 gap-2.5 w-full max-w-[320px] text-left my-auto">
-    <div class="flex items-center gap-2 p-2.5 rounded-xl bg-slate-900/80 border border-slate-800 text-[11px]"><i class="fa-solid fa-bolt text-cyan-400"></i>Instant Reports</div>
-    <div class="flex items-center gap-2 p-2.5 rounded-xl bg-slate-900/80 border border-slate-800 text-[11px]"><i class="fa-solid fa-brain text-cyan-400"></i>Smart Triage</div>
-    <div class="flex items-center gap-2 p-2.5 rounded-xl bg-slate-900/80 border border-slate-800 text-[11px]"><i class="fa-solid fa-location-dot text-cyan-400"></i>Live Heatmap</div>
-    <div class="flex items-center gap-2 p-2.5 rounded-xl bg-slate-900/80 border border-slate-800 text-[11px]"><i class="fa-solid fa-wrench text-cyan-400"></i>Staff Dispatch</div>
-  </div>
-  <div class="w-full max-w-[320px] space-y-3 pb-2">
-    <button onclick="openLogin()" class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-bold py-3.5 rounded-2xl shadow-lg shadow-cyan-500/25 flex items-center justify-center gap-2">Enter Campus Portal <i class="fa-solid fa-arrow-right text-xs"></i></button>
-    <div class="text-[10px] text-slate-500">Official Student & Faculty Feedback Platform</div>
-  </div>
-</section>
-
-<section id="screen-dashboard" class="screen flex-col p-5 space-y-4">
-  <div class="flex justify-between items-center">
-    <div><div class="text-[11px] text-slate-400" id="greet">Hello,</div>
-    <h2 class="text-xl font-bold text-white flex items-center gap-1.5">Campus Dashboard <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span></h2></div>
-    <span id="dept-badge" class="text-[10px] bg-slate-800 border border-slate-700 text-cyan-400 font-semibold px-2.5 py-1 rounded-lg">—</span>
-  </div>
-  <div class="grid grid-cols-3 gap-2 text-center">
-    <div class="bg-slate-900/90 border border-slate-800 p-3 rounded-2xl"><span class="text-[10px] text-slate-400 uppercase block">Total</span><span class="text-xl font-extrabold" id="stat-total">0</span></div>
-    <div class="bg-slate-900/90 border border-slate-800 p-3 rounded-2xl"><span class="text-[10px] text-slate-400 uppercase block">Resolved</span><span class="text-xl font-extrabold text-emerald-400" id="stat-resolved">0</span></div>
-    <div class="bg-slate-900/90 border border-slate-800 p-3 rounded-2xl"><span class="text-[10px] text-slate-400 uppercase block">Open</span><span class="text-xl font-extrabold text-amber-400" id="stat-open">0</span></div>
-  </div>
-  <div id="rc-banner" onclick="nav('insights')" class="hidden cursor-pointer bg-red-500/10 border border-red-500/30 p-3.5 rounded-2xl flex items-center justify-between">
-    <div class="flex items-center gap-3"><div class="w-8 h-8 rounded-xl bg-red-500/20 text-red-400 flex items-center justify-center"><i class="fa-solid fa-circle-exclamation"></i></div>
-    <div><div class="text-[10px] font-bold uppercase text-red-400">Root Cause Alert</div><div class="text-xs font-semibold" id="rc-title"></div><div class="text-[10px] text-slate-400" id="rc-sub"></div></div></div>
-    <i class="fa-solid fa-chevron-right text-xs text-red-400"></i>
-  </div>
-  <div id="report-cta"><button onclick="nav('report')" class="w-full bg-cyan-600 text-white font-bold py-3.5 rounded-2xl shadow-lg shadow-cyan-600/30 flex items-center justify-center gap-2"><i class="fa-solid fa-plus-circle"></i> Report New Campus Problem</button></div>
-  <div class="flex justify-between items-center pt-2"><span class="text-xs font-bold uppercase tracking-wider text-slate-300" id="feed-title">Recent Reports</span><span class="text-[10px] text-cyan-400 font-mono">● Realtime</span></div>
-  <div class="space-y-3 pb-6" id="feed"></div>
-</section>
-
-<section id="screen-report" class="screen flex-col p-5 space-y-4">
-  <div><h2 class="text-lg font-bold">Submit Incident Report</h2><p class="text-xs text-slate-400">Auto-prioritised and routed to staff</p></div>
-  <div><label class="text-[11px] font-semibold text-slate-400 uppercase block mb-2">Category</label><div class="grid grid-cols-3 gap-2" id="cat-grid"></div></div>
-  <div><label class="text-[11px] font-semibold text-slate-400 uppercase block mb-1.5">Department / Facility</label><select id="r-dept" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2.5 text-xs"></select></div>
-  <div><label class="text-[11px] font-semibold text-slate-400 uppercase block mb-1.5">Floor</label><div class="grid grid-cols-5 gap-1.5" id="floor-grid"></div></div>
-  <div><label class="text-[11px] font-semibold text-slate-400 uppercase block mb-1.5">Room / Landmark</label><input id="r-room" placeholder="e.g., Computer Lab 3, PC 14" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2.5 text-xs placeholder-slate-500"></div>
-  <div><label class="text-[11px] font-semibold text-slate-400 uppercase block mb-1.5">Description</label><textarea id="r-desc" rows="2" placeholder="Explain the problem..." class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs placeholder-slate-500"></textarea></div>
-  <div><label class="text-[11px] font-semibold text-slate-400 uppercase block mb-1.5">Photo Proof (optional)</label>
-    <input type="file" id="r-photo" accept="image/*" capture="environment" class="hidden" onchange="prevPhoto(event)">
-    <div id="photo-box" onclick="document.getElementById('r-photo').click()" class="cursor-pointer border-2 border-dashed border-slate-800 bg-slate-900/50 rounded-xl p-4 text-center"><i class="fa-solid fa-camera text-xl text-cyan-400 mb-1"></i><span class="text-xs font-semibold block">Take photo or upload</span></div>
-    <div id="photo-prev" class="hidden mt-2 rounded-xl border border-slate-700 bg-slate-900 p-2 flex items-center justify-between"><img id="prev-img" class="w-12 h-12 rounded-lg object-cover"><button onclick="rmPhoto()" class="text-slate-400 px-2">✕</button></div>
-  </div>
-  <button id="submit-btn" onclick="submitReport()" class="w-full bg-cyan-600 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-cyan-600/30 flex items-center justify-center gap-2"><i class="fa-solid fa-paper-plane text-xs"></i><span>Submit Report</span></button>
-</section>
-
-<section id="screen-heatmap" class="screen flex-col p-5 space-y-4">
-  <div><h2 class="text-lg font-bold">AVCOE Campus Heatmap</h2><p class="text-xs text-slate-400">Live open-issue density by block</p></div>
-  <div class="flex justify-between bg-slate-900 border border-slate-800 p-2.5 rounded-xl text-[10px]">
-    <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-red-500"></span>3+ Critical</span>
-    <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-amber-500"></span>1-2 Moderate</span>
-    <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>Clear</span>
-  </div>
-  <div class="grid grid-cols-2 gap-3" id="heat-grid"></div>
-  <div id="heat-detail" class="hidden bg-slate-900 border border-slate-800 rounded-2xl p-3 space-y-2"></div>
-</section>
-
-<section id="screen-insights" class="screen flex-col p-5 space-y-4">
-  <div><h2 class="text-lg font-bold">Sentinel Insights</h2><p class="text-xs text-slate-400">Repeated open issues grouped by block + category</p></div>
-  <div id="insights-list" class="space-y-3 pb-6"></div>
-</section>
-</main>
-
-<nav class="absolute bottom-0 inset-x-0 bg-slate-950/95 border-t border-slate-900 flex justify-around py-2.5 z-30">
-  <button onclick="nav('dashboard')" data-nav="dashboard" class="nb flex flex-col items-center text-[10px] text-slate-400 gap-0.5"><i class="fa-solid fa-house text-sm"></i>Home</button>
-  <button onclick="nav('report')" data-nav="report" id="nav-report" class="nb flex flex-col items-center text-[10px] text-slate-400 gap-0.5"><i class="fa-solid fa-circle-plus text-sm"></i>Report</button>
-  <button onclick="nav('heatmap')" data-nav="heatmap" class="nb flex flex-col items-center text-[10px] text-slate-400 gap-0.5"><i class="fa-solid fa-map text-sm"></i>Heatmap</button>
-  <button onclick="nav('insights')" data-nav="insights" id="nav-insights" class="nb flex flex-col items-center text-[10px] text-slate-400 gap-0.5"><i class="fa-solid fa-brain text-sm"></i>Insights</button>
-</nav>
-
-<div id="login" class="hidden absolute inset-0 z-50 bg-black/70 flex items-end sm:items-center justify-center">
-  <div class="w-full bg-slate-900 border border-slate-800 rounded-t-3xl sm:rounded-3xl p-5 space-y-3">
-    <h3 class="text-base font-bold">Sign in to Campus Portal</h3>
-    <input id="l-name" placeholder="Your full name" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs">
-    <select id="l-role" onchange="roleChg()" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs">
-      <option value="student">Student</option><option value="staff">Staff / Technician</option><option value="admin">Admin</option></select>
-    <select id="l-dept" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs"></select>
-    <input id="l-code" type="password" placeholder="Staff access code" class="hidden w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2.5 text-xs">
-    <div id="l-err" class="text-[11px] text-red-400 hidden"></div>
-    <div class="flex gap-2">
-      <button onclick="closeLogin()" class="flex-1 bg-slate-800 py-3 rounded-xl text-xs font-semibold">Cancel</button>
-      <button onclick="doLogin()" class="flex-1 bg-cyan-600 py-3 rounded-xl text-xs font-bold">Continue</button>
+<body class="min-h-screen flex justify-center items-center sm:p-4 text-slate-100">
+<div class="relative w-full max-w-[480px] h-[100dvh] sm:h-[860px] bg-[#0A1220] sm:rounded-[28px] sm:border border-[#1E2B45] shadow-2xl flex flex-col overflow-hidden">
+  <header class="px-5 py-3.5 flex items-center justify-between border-b border-[#1E2B45] bg-[#0A1220] z-20">
+    <div class="flex items-center gap-2.5">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white"><i class="fa-solid fa-shield-halved"></i></div>
+      <div><div class="text-[13px] font-extrabold tracking-wide leading-none">AVCOE SENTINEL</div><div class="text-[10px] text-slate-400 mt-1">Campus Issue Management</div></div>
     </div>
-    <button id="logout-btn" onclick="logout()" class="hidden w-full text-[11px] text-slate-400">Sign out</button>
-  </div>
-</div>
-
-<div id="toast" class="hidden absolute top-16 inset-x-4 z-50 bg-slate-800 border border-slate-700 rounded-xl px-3 py-2 text-xs text-center"></div>
+    <div id="hdr" class="flex items-center gap-2"></div>
+  </header>
+  <main id="view" class="flex-1 overflow-y-auto sc"></main>
+  <nav id="nav" class="border-t border-[#1E2B45] bg-[#0A1220] flex justify-around py-2 z-20"></nav>
+  <div id="modal"></div>
+  <div id="toast" class="hidden absolute top-16 inset-x-4 z-[60] bg-slate-800 border border-slate-600 rounded-xl px-4 py-2.5 text-xs text-center shadow-xl"></div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <script>
-/* ================= CONFIG ================= */
-const firebaseConfig = { apiKey:"AIzaSyBcXm5QQaYCCddVXNgGqTBAszdKEK-0PJQ", authDomain:"multi-service-app-77dd8.firebaseapp.com", projectId:"multi-service-app-77dd8", storageBucket:"multi-service-app-77dd8.appspot.com", messagingSenderId:"123732555482", appId:"1:123732555482:web:ea47c825e0dbb504f597e3" };
-const CLOUD_NAME = "dbirgrdbp";
-const CLOUD_PRESET = "YOUR_UNSIGNED_PRESET"; // <-- Cloudinary unsigned upload preset name
-const STAFF_CODE = "avcoe@staff";            // <-- change this
-const COLLECTION = "avcoe_reports";
-const CLUSTER_MIN = 3;
-
+/* ============ CONFIG ============ */
+const firebaseConfig={apiKey:"AIzaSyBcXm5QQaYCCddVXNgGqTBAszdKEK-0PJQ",authDomain:"multi-service-app-77dd8.firebaseapp.com",projectId:"multi-service-app-77dd8",storageBucket:"multi-service-app-77dd8.appspot.com",messagingSenderId:"123732555482",appId:"1:123732555482:web:ea47c825e0dbb504f597e3"};
+const CLOUD="dbirgrdbp";
+const DEFAULT_PRESET="ml_default";      // admin can change this in Settings (no code edit needed)
+const BOOT_PASS="Admin@123";            // first login: mobile "admin" / this password. Change it in Settings!
 firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
+const db=firebase.firestore(),U=db.collection('sentinel_users'),K=db.collection('sentinel_tickets'),C=db.doc('sentinel_config/app');
+const now=()=>firebase.firestore.FieldValue.serverTimestamp();
 
-const CATS = {wifi:['WiFi / Net','fa-wifi',2],power:['Power / Fan','fa-bolt',1],hardware:['Lab PC','fa-desktop',3],water:['Water','fa-droplet',1],clean:['Hygiene','fa-broom',3],canteen:['Mess','fa-utensils',3]};
-const DEPTS = [['CS','Computer Engg (CS)'],['AI&DS','AI & Data Science'],['IT','Information Tech (IT)'],['AR','Automation & Robotics'],['ENTC','Electronics & Telecomm'],['ECE','Electronics & Computer'],['MECH','Mechanical'],['CIVIL','Civil'],['Boys Hostel','Boys Hostel'],['Girls Hostel','Girls Hostel'],['Canteen','Central Mess & Canteen'],['Workshop','Central Workshop'],['Parking','Parking'],['Library','Central Library']];
-const FLOORS = ['Ground','1st','2nd','3rd','4th'];
-const PCOL = {1:'text-red-400 border-red-500/40',2:'text-amber-400 border-amber-500/40',3:'text-slate-300 border-slate-600'};
+const CAT={'Power / Fan':['','fa-bolt'],'Water / Plumbing':['','fa-droplet'],'Hygiene & Sanitation':['','fa-broom'],'Furniture & Benches':['','fa-chair'],'Mess & Canteen':['','fa-utensils'],'Safety & Hazard':['','fa-triangle-exclamation'],'IT / Network':['','fa-wifi'],'Other':['','fa-ellipsis']};
+const DEPTS=['CS','AI&DS','IT','E&TC','E&CE','AR','CIVIL','MECH','ELECTRICAL','Amrut Kalamanch','Amphitheater','Vasantdada Ground','Medha Ground','Central Library','Mess & Canteen','Parking Area','Boys Hostel','Girls Hostel'];
+const FLOORS=['Ground','1st','2nd','3rd','4th'];
+const TRADES=['Electrician','Plumber','IT Staff','Estate / Carpentry','Housekeeping','Other'];
 
-let user = JSON.parse(localStorage.getItem('sentinelUser')||'null');
-let reports = [], cat='wifi', floor='Ground', photoFile=null, screen='welcome', unsub=null;
-const $ = id => document.getElementById(id);
-const isStaff = () => user && user.role !== 'student';
-const esc = s => String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const ts = r => r.createdAt?.toMillis ? r.createdAt.toMillis() : Date.now();
-function ago(ms){const m=Math.max(0,Math.round((Date.now()-ms)/60000));return m<1?'just now':m<60?m+'m ago':m<1440?Math.round(m/60)+'h ago':Math.round(m/1440)+'d ago'}
-function toast(t){const e=$('toast');e.textContent=t;e.classList.remove('hidden');setTimeout(()=>e.classList.add('hidden'),2600)}
+/* ============ HELPERS ============ */
+const S={me:null,tab:'guest',tickets:[],users:[],cfg:{},cat:'Power / Fan',floor:'Ground',photo:null,filter:'all',gtab:'login',unsubs:[]};
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const tm=r=>r.createdAt?.toMillis?.()||Date.now();
+const code=t=>'T-'+t.id.slice(-4).toUpperCase();
+const ago=ms=>{const m=Math.max(0,Math.round((Date.now()-ms)/6e4));return m<1?'just now':m<60?m+'m ago':m<1440?Math.round(m/60)+'h ago':Math.round(m/1440)+'d ago'};
+const toast=t=>{const e=$('toast');e.textContent=t;e.classList.remove('hidden');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.add('hidden'),3200)};
+const CARD='bg-[#0F1A2E] border border-[#1E2B45] rounded-2xl p-3.5';
+const INP='w-full bg-[#0A1424] border border-[#1E2B45] rounded-xl px-3.5 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500';
+const B='font-semibold rounded-xl py-2.5 text-sm transition active:scale-[.98]';
+const P='bg-blue-600 hover:bg-blue-500 text-white';
+const COL={amber:'bg-amber-500/10 text-amber-400 border-amber-500/30',blue:'bg-blue-500/10 text-blue-400 border-blue-500/30',green:'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',red:'bg-red-500/10 text-red-400 border-red-500/30',slate:'bg-slate-500/10 text-slate-300 border-slate-500/30'};
+const bd=(t,c)=>`<span class="text-[10px] font-semibold px-2 py-0.5 rounded-full border ${COL[c]}">${t}</span>`;
+const opts=(a,sel)=>a.map(x=>`<option ${x===sel?'selected':''}>${esc(x)}</option>`).join('');
+const lbl=t=>`<label class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block mb-1.5">${t}</label>`;
+const head=(t,s='')=>`<div><h2 class="text-lg font-bold text-white">${t}</h2>${s?`<p class="text-xs text-slate-400 mt-0.5">${s}</p>`:''}</div>`;
+async function hash(m,p){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(m+':'+p+':avcoe-sentinel'));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+const isAdmin=()=>S.me?.role==='admin',isStaff=()=>S.me?.role==='staff';
+const open=t=>t.approval==='approved'&&t.status!=='Resolved';
 
-/* ============ INIT UI ============ */
-$('cat-grid').innerHTML = Object.entries(CATS).map(([k,v],i)=>`<button type="button" onclick="setCat('${k}')" data-cat="${k}" class="cat-btn p-2.5 rounded-xl border border-slate-800 bg-slate-900 text-slate-300 text-xs font-medium flex flex-col items-center gap-1 ${i?'':'sel'}"><i class="fa-solid ${v[1]}"></i>${v[0]}</button>`).join('');
-$('floor-grid').innerHTML = FLOORS.map((f,i)=>`<button type="button" onclick="setFloor('${f}')" data-floor="${f}" class="floor-btn p-2 rounded-lg text-xs font-medium border border-slate-800 bg-slate-900 text-slate-400 ${i?'':'sel'}">${f}</button>`).join('');
-const deptOpts = DEPTS.map(d=>`<option value="${esc(d[0])}">${esc(d[1])}</option>`).join('');
-$('r-dept').innerHTML = deptOpts; $('l-dept').innerHTML = deptOpts;
-function setCat(k){cat=k;document.querySelectorAll('.cat-btn').forEach(b=>b.classList.toggle('sel',b.dataset.cat===k))}
-function setFloor(f){floor=f;document.querySelectorAll('.floor-btn').forEach(b=>b.classList.toggle('sel',b.dataset.floor===f))}
+function modal(h){$('modal').innerHTML=`<div class="absolute inset-0 z-50 bg-black/70 flex items-end sm:items-center justify-center" onclick="if(event.target===this)closeM()"><div class="w-full bg-[#0F1A2E] border border-[#1E2B45] rounded-t-3xl sm:rounded-3xl p-5 space-y-3 max-h-[90%] overflow-y-auto sc">${h}</div></div>`}
+function closeM(){$('modal').innerHTML=''}
 
-/* ============ NAV ============ */
-function nav(s){
-  if(!user && s!=='welcome'){openLogin();return}
-  if(s==='report' && isStaff()){toast('Only students can submit reports');return}
-  if(s==='insights' && !isStaff()){toast('Insights are for staff/admin');return}
-  screen=s;
-  document.querySelectorAll('.screen').forEach(e=>e.classList.remove('active'));
-  $('screen-'+s).classList.add('active');
-  document.querySelectorAll('.nb').forEach(b=>b.classList.toggle('text-cyan-400',b.dataset.nav===s));
-  render();
+/* ============ CLOUDINARY ============ */
+function shrink(file,max=1280){return new Promise(res=>{const img=new Image();img.onload=()=>{const k=Math.min(1,max/Math.max(img.width,img.height)),c=document.createElement('canvas');c.width=img.width*k;c.height=img.height*k;c.getContext('2d').drawImage(img,0,0,c.width,c.height);c.toBlob(b=>res(b||file),'image/jpeg',.82)};img.onerror=()=>res(file);img.src=URL.createObjectURL(file)})}
+async function upload(file){
+  const formData=new FormData();
+  formData.append('file',await shrink(file),'photo.jpg');
+  formData.append('upload_preset',S.cfg.cloudPreset||DEFAULT_PRESET);
+  const response=await fetch(`https://api.cloudinary.com/v1_1/${CLOUD}/image/upload`,{method:'POST',body:formData});
+  const data=await response.json();
+  if(data.secure_url)return data.secure_url;
+  throw new Error(data.error?.message||'Cloudinary upload failed');
 }
-
-/* ============ AUTH (lightweight) ============ */
-function openLogin(){
-  $('login').classList.remove('hidden');
-  if(user){$('l-name').value=user.name;$('l-role').value=user.role;$('l-dept').value=user.dept;$('logout-btn').classList.remove('hidden')}
-  roleChg();
-}
-function closeLogin(){$('login').classList.add('hidden')}
-function roleChg(){$('l-code').classList.toggle('hidden',$('l-role').value==='student')}
-function doLogin(){
-  const name=$('l-name').value.trim(), role=$('l-role').value, dept=$('l-dept').value;
-  const err=$('l-err');err.classList.add('hidden');
-  if(name.length<2){err.textContent='Enter your name';err.classList.remove('hidden');return}
-  if(role!=='student' && $('l-code').value!==STAFF_CODE){err.textContent='Wrong access code';err.classList.remove('hidden');return}
-  const id = (user&&user.name===name&&user.id) || ('u_'+Math.random().toString(36).slice(2,10));
-  user={id,name,role,dept};
-  localStorage.setItem('sentinelUser',JSON.stringify(user));
-  closeLogin();applyUser();nav('dashboard');
-}
-function logout(){localStorage.removeItem('sentinelUser');user=null;closeLogin();applyUser();nav('welcome')}
-function applyUser(){
-  $('role-pill').textContent = user?user.role[0].toUpperCase()+user.role.slice(1):'Guest';
-  $('avatar').textContent = user?user.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase():'AV';
-  $('greet').textContent = user?`Hello, ${user.name}`:'Hello,';
-  $('dept-badge').textContent = user?user.dept:'—';
-  $('nav-report').classList.toggle('hidden',isStaff());
-  $('nav-insights').classList.toggle('hidden',!isStaff());
-  $('report-cta').classList.toggle('hidden',isStaff());
+async function tryUpload(file){
+  if(!file)return '';
+  try{return await upload(file)}catch(e){if(!confirm('Photo upload failed: '+e.message+'\n\nContinue without photo?'))throw new Error('cancelled');return ''}
 }
 
-/* ============ REALTIME LISTENER ============ */
-function listen(){
-  unsub && unsub();
-  unsub = db.collection(COLLECTION).orderBy('createdAt','desc').limit(300).onSnapshot(snap=>{
-    reports = snap.docs.map(d=>({id:d.id,...d.data()}));
-    render();
-  },e=>{console.error(e);toast('Firestore error: '+e.code+' (check rules)')});
-}
-
-/* ============ RENDER ============ */
-const open = r => r.status!=='resolved';
-function clusters(){
-  const m={};
-  reports.filter(open).forEach(r=>{const k=r.dept+'|'+r.category;(m[k]=m[k]||[]).push(r)});
-  return Object.values(m).filter(a=>a.length>=CLUSTER_MIN).sort((a,b)=>b.length-a.length);
-}
-function card(r){
-  const c=CATS[r.category]||['Issue','fa-triangle-exclamation',3];
-  const st={open:['Open','text-amber-400 bg-amber-500/10'],progress:['In Progress','text-cyan-400 bg-cyan-500/10'],resolved:['Resolved','text-emerald-400 bg-emerald-500/10']}[r.status||'open'];
-  const acts = isStaff() && r.status!=='resolved' ? `<div class="flex gap-2 pt-2">
-    ${r.status!=='progress'?`<button onclick="setStatus('${r.id}','progress')" class="flex-1 text-[11px] font-semibold bg-cyan-600/20 border border-cyan-500/40 text-cyan-300 py-1.5 rounded-lg">Start</button>`:''}
-    <button onclick="setStatus('${r.id}','resolved')" class="flex-1 text-[11px] font-semibold bg-emerald-600/20 border border-emerald-500/40 text-emerald-300 py-1.5 rounded-lg">Mark Resolved</button></div>`:'';
-  return `<div class="bg-slate-900/90 border ${(PCOL[r.priority]||PCOL[3]).split(' ')[1]} p-3.5 rounded-2xl">
-    <div class="flex justify-between items-start gap-2">
-      <div class="flex items-center gap-2"><div class="w-8 h-8 rounded-xl bg-slate-800 flex items-center justify-center text-cyan-400 text-xs"><i class="fa-solid ${c[1]}"></i></div>
-      <div><div class="text-xs font-bold">${esc(r.room||c[0])}</div><div class="text-[10px] text-slate-400">${esc(r.dept)} · ${esc(r.floor)} · ${ago(ts(r))}</div></div></div>
-      <div class="text-right"><span class="text-[9px] font-bold px-2 py-0.5 rounded-full ${st[1]}">${st[0]}</span><div class="text-[9px] mt-1 ${(PCOL[r.priority]||PCOL[3]).split(' ')[0]}">P${r.priority||3}</div></div>
-    </div>
-    ${r.desc?`<p class="text-[11px] text-slate-300 mt-2">${esc(r.desc)}</p>`:''}
-    ${r.photoUrl?`<img src="${esc(r.photoUrl)}" loading="lazy" class="mt-2 w-full h-32 object-cover rounded-xl border border-slate-800">`:''}
-    <div class="text-[10px] text-slate-500 mt-1.5">By ${esc(r.reporterName)}${r.updatedBy?` · updated by ${esc(r.updatedBy)}`:''}</div>${acts}</div>`;
-}
-function render(){
-  if(!user) return;
-  // stats
-  $('stat-total').textContent=reports.length;
-  $('stat-resolved').textContent=reports.filter(r=>r.status==='resolved').length;
-  $('stat-open').textContent=reports.filter(open).length;
-  // banner
-  const cl=clusters();
-  $('rc-banner').classList.toggle('hidden',!(isStaff()&&cl.length));
-  if(isStaff()&&cl.length){const t=cl[0];$('rc-title').textContent=`${CATS[t[0].category][0]} issue — ${t[0].dept}`;$('rc-sub').textContent=`Correlated from ${t.length} open reports`}
-  // feed
-  let list;
-  if(isStaff()){$('feed-title').textContent='Active Tickets';list=[...reports].sort((a,b)=>(a.status==='resolved')-(b.status==='resolved')||(a.priority||3)-(b.priority||3)||ts(b)-ts(a))}
-  else{$('feed-title').textContent='My Reports & Recently Solved';list=reports.filter(r=>r.reporterId===user.id||r.status==='resolved')}
-  $('feed').innerHTML = list.length?list.slice(0,40).map(card).join(''):'<div class="text-center text-xs text-slate-500 py-8">No reports yet</div>';
-  if(screen==='heatmap') renderHeat();
-  if(screen==='insights') renderInsights();
-}
-function renderHeat(){
-  $('heat-grid').innerHTML = DEPTS.map((d,i)=>{
-    const n=reports.filter(r=>open(r)&&r.dept===d[0]).length;
-    const [b,t,l]=n>=3?['border-red-500/50','text-red-400','🔴']:n>=1?['border-amber-500/40','text-amber-400','🟡']:['border-emerald-500/30','text-emerald-400','🟢'];
-    return `<div onclick="inspect(${i})" class="cursor-pointer bg-slate-900 border ${b} p-3.5 rounded-2xl space-y-1"><span class="text-[10px] font-bold ${t} uppercase">${l} ${n?n+' Open':'Clear'}</span><h4 class="text-xs font-bold">${esc(d[1])}</h4></div>`}).join('');
-}
-function inspect(i){
-  const d=DEPTS[i],a=reports.filter(r=>open(r)&&r.dept===d[0]),box=$('heat-detail');
-  box.classList.remove('hidden');
-  box.innerHTML=`<div class="text-xs font-bold">${esc(d[1])}</div>`+(a.length?a.slice(0,8).map(r=>`<div class="text-[11px] text-slate-300">• ${CATS[r.category]?.[0]||''} — ${esc(r.room||'')} (${esc(r.floor)}) · P${r.priority||3}</div>`).join(''):'<div class="text-[11px] text-emerald-400">All systems operational</div>');
-}
-function renderInsights(){
-  const cl=clusters();
-  $('insights-list').innerHTML = cl.length?cl.map(g=>{
-    const rooms=[...new Set(g.map(r=>r.room).filter(Boolean))].slice(0,4).join(', ');
-    return `<div class="bg-red-500/10 border border-red-500/30 rounded-2xl p-3.5 space-y-1.5">
-      <div class="text-[10px] font-bold uppercase text-red-400">Likely shared root cause</div>
-      <div class="text-sm font-bold">${CATS[g[0].category][0]} — ${esc(g[0].dept)}</div>
-      <div class="text-[11px] text-slate-300">${g.length} open reports${rooms?` from: ${esc(rooms)}`:''}</div>
-      <div class="text-[11px] text-slate-400">Suggested: dispatch one technician to inspect the block's main ${CATS[g[0].category][0].toLowerCase()} source instead of fixing tickets one by one.</div></div>`}).join('')
-    :`<div class="text-center text-xs text-slate-500 py-10">No clusters right now. Alerts appear when ${CLUSTER_MIN}+ open reports share a block and category.</div>`;
-}
-
-/* ============ ACTIONS ============ */
-async function setStatus(id,status){
-  try{await db.collection(COLLECTION).doc(id).update({status,updatedBy:user.name,updatedAt:firebase.firestore.FieldValue.serverTimestamp()});toast(status==='resolved'?'Marked resolved':'Work started')}
-  catch(e){toast('Update failed: '+e.code)}
-}
-function prevPhoto(e){const f=e.target.files[0];if(!f)return;photoFile=f;$('prev-img').src=URL.createObjectURL(f);$('photo-prev').classList.remove('hidden');$('photo-box').classList.add('hidden')}
-function rmPhoto(){photoFile=null;$('r-photo').value='';$('photo-prev').classList.add('hidden');$('photo-box').classList.remove('hidden')}
-async function uploadPhoto(file){
-  const fd=new FormData();fd.append('file',file);fd.append('upload_preset',CLOUD_PRESET);fd.append('folder','avcoe_sentinel');
-  const res=await fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,{method:'POST',body:fd});
-  const data=await res.json();
-  if(!data.secure_url) throw new Error(data.error?.message||'Upload failed');
-  return data.secure_url;
-}
-async function submitReport(){
-  const dept=$('r-dept').value, room=$('r-room').value.trim(), desc=$('r-desc').value.trim();
-  if(!room && !desc){toast('Add room or description');return}
-  const btn=$('submit-btn');btn.disabled=true;btn.querySelector('span').textContent='Submitting...';
+/* ============ AUTH ============ */
+function err(m){const e=$('gerr');if(e){e.textContent=m;e.classList.remove('hidden')}else toast(m)}
+async function login(){
+  const m=$('lm').value.trim().toLowerCase(),p=$('lp').value;
+  if(!m||!p)return err('Enter mobile number and password');
   try{
-    let photoUrl='';
-    if(photoFile){btn.querySelector('span').textContent='Uploading photo...';photoUrl=await uploadPhoto(photoFile)}
-    let priority=CATS[cat][2];
-    if(reports.filter(r=>open(r)&&r.dept===dept&&r.category===cat).length>=CLUSTER_MIN-1) priority=1;
-    await db.collection(COLLECTION).add({category:cat,dept,floor,room,desc,photoUrl,priority,status:'open',reporterId:user.id,reporterName:user.name,createdAt:firebase.firestore.FieldValue.serverTimestamp()});
-    $('r-room').value='';$('r-desc').value='';rmPhoto();
-    toast('Report submitted');nav('dashboard');
-  }catch(e){console.error(e);toast('Failed: '+e.message)}
-  btn.disabled=false;btn.querySelector('span').textContent='Submit Report';
+    let d=await U.doc(m).get();
+    if(!d.exists&&m==='admin'&&p===BOOT_PASS){await U.doc('admin').set({name:'Administrator',mobile:'admin',role:'admin',status:'active',pass:await hash('admin',p),createdAt:now()});d=await U.doc('admin').get()}
+    if(!d.exists||d.data().pass!==await hash(m,p))return err('Invalid mobile number or password');
+    const u=d.data();
+    if(u.status==='pending')return err('Your registration is awaiting admin approval');
+    if(u.status!=='active')return err('This account is '+u.status+'. Contact admin.');
+    start(m);
+  }catch(e){err('Login failed: '+e.message)}
 }
+async function register(){
+  const name=$('rn').value.trim(),m=$('rm').value.trim(),dept=$('rd').value,p=$('rp').value;
+  if(name.length<2)return err('Enter your full name');
+  if(!/^\d{10}$/.test(m))return err('Enter a valid 10-digit mobile number');
+  if(p.length<6)return err('Password must be at least 6 characters');
+  try{
+    if((await U.doc(m).get()).exists)return err('This mobile number is already registered');
+    await U.doc(m).set({name,mobile:m,dept,role:'student',status:'pending',pass:await hash(m,p),createdAt:now()});
+    S.gtab='login';go('guest');toast('Registered! Wait for admin approval, then log in.');
+  }catch(e){err('Registration failed: '+e.message)}
+}
+function start(m){
+  localStorage.setItem('sentinelMobile',m);stop();
+  S.unsubs.push(U.doc(m).onSnapshot(d=>{
+    if(!d.exists||d.data().status!=='active'){toast('Your account is no longer active');logout();return}
+    const first=!S.me;S.me={...d.data(),id:d.id};
+    if(first){S.tab='home';listenData()}
+    render();
+  }));
+}
+function listenData(){
+  S.unsubs.push(K.orderBy('createdAt','desc').limit(500).onSnapshot(s=>{S.tickets=s.docs.map(d=>({id:d.id,...d.data()}));render()},e=>toast('Database error: '+e.code)));
+  if(isAdmin())S.unsubs.push(U.onSnapshot(s=>{S.users=s.docs.map(d=>({id:d.id,...d.data()}));render()}));
+}
+function stop(){S.unsubs.forEach(u=>u());S.unsubs=[]}
+function logout(){stop();localStorage.removeItem('sentinelMobile');S.me=null;S.tickets=[];S.users=[];closeM();go('guest')}
+C.onSnapshot(d=>{S.cfg=d.exists?d.data():{}});
+
+/* ============ NAV / RENDER ============ */
+function go(t){S.tab=t;$('view').dataset.t='';render()}
+function navItems(){
+  if(isAdmin())return[['home','fa-chart-pie','Dashboard'],['approvals','fa-circle-check','Approvals'],['tickets','fa-list-check','Tickets'],['users','fa-users','Users'],['settings','fa-gear','Settings']];
+  if(isStaff())return[['home','fa-briefcase','My Jobs'],['campus','fa-map-location-dot','Campus']];
+  return[['home','fa-house','Home'],['report','fa-circle-plus','Report'],['campus','fa-map-location-dot','Campus']];
+}
+function pendingCount(){return S.tickets.filter(t=>t.approval==='pending').length+S.users.filter(u=>u.status==='pending').length}
+function render(){
+  if(!S.me){$('nav').innerHTML='';$('hdr').innerHTML='';if($('view').dataset.t!=='guest'){$('view').innerHTML=vGuest();$('view').dataset.t='guest'}return}
+  $('hdr').innerHTML=`<div class="text-right leading-tight"><div class="text-[12px] font-semibold text-white">${esc(S.me.name)}</div><div class="text-[10px] text-slate-400 capitalize">${S.me.role}${S.me.trade?' • '+esc(S.me.trade):''}</div></div><button onclick="logout()" title="Sign out" class="w-8 h-8 rounded-full bg-slate-800 border border-[#1E2B45] text-slate-300 text-xs"><i class="fa-solid fa-right-from-bracket"></i></button>`;
+  const pc=isAdmin()?pendingCount():0;
+  $('nav').innerHTML=navItems().map(([k,i,l])=>`<button onclick="go('${k}')" class="relative flex flex-col items-center gap-0.5 px-3 py-1 text-[10px] font-medium ${S.tab===k?'text-blue-400':'text-slate-500'}"><i class="fa-solid ${i} text-[15px]"></i>${l}${k==='approvals'&&pc?`<span class="absolute -top-0.5 right-0 min-w-[16px] h-4 px-1 rounded-full bg-red-500 text-white text-[9px] flex items-center justify-center">${pc}</span>`:''}</button>`).join('');
+  if(['report','settings'].includes(S.tab)&&$('view').dataset.t===S.tab)return; // don't wipe forms
+  const V=isAdmin()?{home:aHome,approvals:aApprovals,tickets:aTickets,users:aUsers,settings:aSettings}:isStaff()?{home:sHome,campus:vCampus}:{home:stHome,report:stReport,campus:vCampus};
+  $('view').innerHTML=`<div class="p-5 space-y-4 pb-8">${(V[S.tab]||V.home)()}</div>`;$('view').dataset.t=S.tab;
+}
+
+/* ============ TICKET CARD ============ */
+function badge(t){return t.approval==='pending'?bd('Awaiting Approval','amber'):t.approval==='rejected'?bd('Rejected','red'):t.status==='Resolved'?bd('Resolved','green'):t.status==='In Progress'?bd('In Progress','blue'):bd('Open','slate')}
+function tk(t,act=''){
+  const c=CAT[t.category]||['','fa-circle'];
+  return `<div class="${CARD} ${t.hazard&&open(t)?'!border-red-500/40':''} space-y-2.5">
+  <div class="flex justify-between items-center"><div class="flex items-center gap-2"><span class="text-[10px] font-mono font-bold text-blue-400">${code(t)}</span>${t.hazard?bd('P1 Hazard','red'):''}</div><span class="text-[10px] text-slate-500">${ago(tm(t))}</span></div>
+  <div class="flex gap-3"><div class="w-9 h-9 rounded-xl bg-slate-800/70 flex items-center justify-center text-blue-400 shrink-0"><i class="fa-solid ${c[1]}"></i></div><div class="min-w-0"><h4 class="text-[13px] font-semibold text-white leading-snug">${esc(t.title)}</h4><p class="text-[11px] text-slate-400">${esc(t.dept)} • ${esc(t.floor)} • ${esc(t.landmark)}</p></div></div>
+  ${t.photoUrl?`<img src="${esc(t.photoUrl)}" loading="lazy" onclick="window.open(this.src)" class="w-full h-36 object-cover rounded-xl border border-[#1E2B45]">`:''}
+  <div class="flex items-center justify-between">${badge(t)}<span class="text-[10px] text-slate-500">${t.assignedName?'<i class="fa-solid fa-user-gear"></i> '+esc(t.assignedName):esc(t.reporterName)}</span></div>
+  ${t.approval==='rejected'&&t.rejectReason?`<div class="text-[11px] text-red-300 bg-red-500/10 border border-red-500/20 rounded-lg p-2">Reason: ${esc(t.rejectReason)}</div>`:''}
+  ${t.status==='Resolved'&&t.approval==='approved'?`<div class="text-[11px] bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-2 text-slate-300"><b class="text-emerald-400">Fix note:</b> ${esc(t.resolvedNote||'Issue fixed and verified.')}${t.resolvedBy?` — ${esc(t.resolvedBy)}`:''}${t.proofUrl?`<img src="${esc(t.proofUrl)}" loading="lazy" onclick="window.open(this.src)" class="mt-2 w-full h-28 object-cover rounded-lg">`:''}</div>`:''}
+  ${act}</div>`;
+}
+const empty=t=>`<div class="text-center text-xs text-slate-500 py-8">${t}</div>`;
+const stat=(l,v,c='text-white')=>`<div class="${CARD} text-center !p-3"><div class="text-[10px] text-slate-400 uppercase tracking-wider">${l}</div><div class="text-2xl font-extrabold ${c}">${v}</div></div>`;
+
+/* ============ GUEST ============ */
+function gtab(t){S.gtab=t;go('guest')}
+function vGuest(){
+  const L=S.gtab==='login';
+  return `<div class="hero min-h-full px-6 py-8 flex flex-col">
+  <div class="text-center pt-2"><div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-[10px] font-semibold text-blue-300 uppercase tracking-widest"><i class="fa-solid fa-graduation-cap"></i> AVCOE Sangamner</div>
+  <h1 class="text-[28px] font-extrabold mt-3 leading-tight">Campus <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">Sentinel</span></h1>
+  <p class="text-xs text-slate-400 mt-2 max-w-[280px] mx-auto">Report, approve and resolve campus issues with live tracking and photo proof.</p></div>
+  <div class="${CARD} !p-5 mt-6 space-y-3">
+    <div class="grid grid-cols-2 gap-1 p-1 bg-[#0A1424] rounded-xl text-xs font-semibold"><button onclick="gtab('login')" class="py-2 rounded-lg ${L?'bg-blue-600 text-white':'text-slate-400'}">Login</button><button onclick="gtab('reg')" class="py-2 rounded-lg ${L?'text-slate-400':'bg-blue-600 text-white'}">Student Sign Up</button></div>
+    ${L?`<input id="lm" inputmode="numeric" placeholder="Mobile number (or admin ID)" class="${INP}"><input id="lp" type="password" placeholder="Password" class="${INP}" onkeydown="if(event.key==='Enter')login()">
+    <button onclick="login()" class="${B} ${P} w-full">Sign in</button><p class="text-[10px] text-slate-500 text-center">Staff & admin IDs are created by the administrator.</p>`
+    :`<input id="rn" placeholder="Full name" class="${INP}"><input id="rm" inputmode="numeric" maxlength="10" placeholder="10-digit mobile number" class="${INP}"><select id="rd" class="${INP}">${opts(DEPTS)}</select><input id="rp" type="password" placeholder="Create password (min 6)" class="${INP}">
+    <button onclick="register()" class="${B} ${P} w-full">Request Access</button><p class="text-[10px] text-slate-500 text-center">Admin must approve your account before you can log in.</p>`}
+    <div id="gerr" class="hidden text-[11px] text-red-300 bg-red-500/10 border border-red-500/20 rounded-lg p-2 text-center"></div>
+  </div></div>`;
+}
+
+/* ============ STUDENT ============ */
+function stHome(){
+  const mine=S.tickets.filter(t=>t.reporterMobile===S.me.mobile),fixed=S.tickets.filter(t=>t.approval==='approved'&&t.status==='Resolved');
+  return `${head('Hello, '+esc(S.me.name.split(' ')[0]),esc(S.me.dept)+' • live updates')}
+  <div class="grid grid-cols-3 gap-2">${stat('My reports',mine.length)}${stat('In progress',mine.filter(t=>t.approval==='approved'&&t.status==='In Progress').length,'text-blue-400')}${stat('Campus fixed',fixed.length,'text-emerald-400')}</div>
+  <button onclick="go('report')" class="${B} ${P} w-full py-3.5"><i class="fa-solid fa-plus mr-1"></i> Report a Problem</button>
+  <div class="text-xs font-bold uppercase tracking-wider text-slate-300 pt-1">My Reports</div>${mine.map(t=>tk(t)).join('')||empty('You have not reported anything yet')}
+  <div class="text-xs font-bold uppercase tracking-wider text-slate-300 pt-2">Recently Fixed on Campus</div>${fixed.slice(0,10).map(t=>tk(t)).join('')||empty('No verified fixes yet')}`;
+}
+function stReport(){
+  return `${head('Report a Problem','Sent to admin for approval, then assigned to staff')}
+  <div>${lbl('Category')}<div class="grid grid-cols-4 gap-2">${Object.entries(CAT).map(([k,v])=>`<button type="button" data-c="${esc(k)}" onclick="setCat(this.dataset.c)" class="cb p-2 rounded-xl border text-[10px] font-medium flex flex-col items-center gap-1 text-center ${k===S.cat?'border-blue-500 bg-blue-500/10 text-blue-300':'border-[#1E2B45] bg-[#0A1424] text-slate-400'}"><i class="fa-solid ${v[1]} text-sm"></i>${k.split(' ')[0]}</button>`).join('')}</div></div>
+  <div>${lbl('Department / Facility')}<select id="rdept" class="${INP}">${opts(DEPTS,S.me.dept)}</select></div>
+  <div>${lbl('Floor')}<div class="grid grid-cols-5 gap-1.5">${FLOORS.map(f=>`<button type="button" onclick="setFloor('${f}')" data-f="${f}" class="fb py-2 rounded-lg border text-xs font-medium ${f===S.floor?'border-blue-500 bg-blue-500/10 text-blue-300':'border-[#1E2B45] bg-[#0A1424] text-slate-400'}">${f}</button>`).join('')}</div></div>
+  <div>${lbl('Room / Landmark')}<input id="rland" placeholder="e.g. Computer Lab 3, PC 14" class="${INP}"></div>
+  <div>${lbl('Description')}<textarea id="rdesc" rows="3" placeholder="Describe the problem..." class="${INP} resize-none"></textarea></div>
+  <div>${lbl('Photo (optional)')}<input type="file" id="rphoto" accept="image/*" capture="environment" class="hidden" onchange="pickPhoto(event)">
+  <div id="pbox" onclick="$('rphoto').click()" class="cursor-pointer border-2 border-dashed border-[#1E2B45] rounded-xl p-4 text-center text-xs text-slate-400"><i class="fa-solid fa-camera text-lg text-blue-400 block mb-1"></i><span id="ptxt">Take photo or upload</span></div></div>
+  <button id="sbtn" onclick="submitReport()" class="${B} ${P} w-full py-3.5"><i class="fa-solid fa-paper-plane mr-1"></i> Submit Report</button>`;
+}
+function setCat(c){S.cat=c;document.querySelectorAll('.cb').forEach(b=>b.className=`cb p-2 rounded-xl border text-[10px] font-medium flex flex-col items-center gap-1 text-center ${b.dataset.c===c?'border-blue-500 bg-blue-500/10 text-blue-300':'border-[#1E2B45] bg-[#0A1424] text-slate-400'}`)}
+function setFloor(f){S.floor=f;document.querySelectorAll('.fb').forEach(b=>b.className=`fb py-2 rounded-lg border text-xs font-medium ${b.dataset.f===f?'border-blue-500 bg-blue-500/10 text-blue-300':'border-[#1E2B45] bg-[#0A1424] text-slate-400'}`)}
+function pickPhoto(e){const f=e.target.files[0];if(!f)return;S.photo=f;$('ptxt').textContent='✓ '+f.name.slice(0,26)+' attached'}
+async function submitReport(){
+  const landmark=$('rland').value.trim(),desc=$('rdesc').value.trim();
+  if(!landmark||!desc)return toast('Fill room/landmark and description');
+  const btn=$('sbtn');btn.disabled=true;btn.textContent='Submitting…';
+  try{
+    if(S.photo)btn.textContent='Uploading photo…';
+    const photoUrl=await tryUpload(S.photo);btn.textContent='Saving…';
+    await K.add({title:desc.length>44?desc.slice(0,44)+'…':desc,desc,category:S.cat,dept:$('rdept').value,floor:S.floor,landmark,photoUrl,hazard:S.cat==='Safety & Hazard',approval:'pending',status:'Open',assignedTo:'',assignedName:'',reporterMobile:S.me.mobile,reporterName:S.me.name,createdAt:now()});
+    S.photo=null;toast('Report sent for admin approval');go('home');
+  }catch(e){if(e.message!=='cancelled')toast('Failed: '+e.message);const b=$('sbtn');if(b){b.disabled=false;b.textContent='Submit Report'}}
+}
+
+/* ============ CAMPUS HEATMAP + INSIGHTS (shared) ============ */
+function heat(){
+  return `<div class="grid grid-cols-2 gap-2.5">${DEPTS.map(d=>{const n=S.tickets.filter(t=>open(t)&&t.dept===d).length,z=n>=3?['border-red-500/40','text-red-400','fa-fire']:n?['border-amber-500/30','text-amber-400','fa-triangle-exclamation']:['border-emerald-500/20','text-emerald-400','fa-circle-check'];return `<div class="${CARD} !p-3 ${z[0]}"><div class="text-[10px] font-bold uppercase ${z[1]}"><i class="fa-solid ${z[2]}"></i> ${n?n+' open':'Clear'}</div><div class="text-xs font-semibold mt-0.5">${esc(d)}</div></div>`}).join('')}</div>`;
+}
+function vCampus(){return `${head('Campus Heatmap','Live open issues by block')}${heat()}`}
+function clusters(){const m={};S.tickets.filter(open).forEach(t=>{const k=t.dept+'|'+t.category;(m[k]=m[k]||[]).push(t)});return Object.values(m).filter(a=>a.length>=3).sort((a,b)=>b.length-a.length)}
+
+/* ============ STAFF ============ */
+function sHome(){
+  const mine=S.tickets.filter(t=>t.assignedTo===S.me.mobile&&t.approval==='approved'),act=mine.filter(t=>t.status!=='Resolved'),done=mine.filter(t=>t.status==='Resolved');
+  return `${head('My Jobs',esc(S.me.trade||'Staff')+' • assigned by admin')}
+  <div class="grid grid-cols-2 gap-2">${stat('Active',act.length,'text-blue-400')}${stat('Completed',done.length,'text-emerald-400')}</div>
+  ${act.map(t=>tk(t,`<div class="flex gap-2 pt-2 border-t border-[#1E2B45]">${t.status==='Open'?`<button onclick="setStatus('${t.id}','In Progress')" class="${B} bg-slate-700 hover:bg-slate-600 flex-1 text-xs">Start work</button>`:''}<button onclick="resolveM('${t.id}')" class="${B} bg-emerald-600 hover:bg-emerald-500 flex-1 text-xs">Done & Upload Proof</button></div>`)).join('')||empty('No active jobs assigned to you')}
+  ${done.length?`<div class="text-xs font-bold uppercase tracking-wider text-slate-300 pt-2">Completed</div>${done.slice(0,8).map(t=>tk(t)).join('')}`:''}`;
+}
+async function setStatus(id,s){try{await K.doc(id).update({status:s,updatedAt:now()});toast('Status: '+s)}catch(e){toast(e.message)}}
+function resolveM(id){
+  modal(`<h3 class="font-bold">Close ticket ${'T-'+id.slice(-4).toUpperCase()}</h3>${lbl('Fix note')}<textarea id="rnote" rows="3" placeholder="What was fixed?" class="${INP} resize-none"></textarea>
+  ${lbl('Proof photo')}<input type="file" id="rproof" accept="image/*" capture="environment" class="${INP} !text-xs">
+  <div class="flex gap-2"><button onclick="closeM()" class="${B} bg-slate-700 flex-1">Cancel</button><button id="rbtn" onclick="doResolve('${id}')" class="${B} bg-emerald-600 flex-1">Mark Resolved</button></div>`);
+}
+async function doResolve(id){
+  const note=$('rnote').value.trim();if(!note)return toast('Add a fix note');
+  const b=$('rbtn');b.disabled=true;b.textContent='Saving…';
+  try{const proofUrl=await tryUpload($('rproof').files[0]);await K.doc(id).update({status:'Resolved',resolvedNote:note,proofUrl,resolvedBy:S.me.name,resolvedAt:now(),updatedAt:now()});closeM();toast('Ticket resolved')}
+  catch(e){if(e.message!=='cancelled')toast(e.message);b.disabled=false;b.textContent='Mark Resolved'}
+}
+
+/* ============ ADMIN ============ */
+function aHome(){
+  const T=S.tickets,ap=T.filter(t=>t.approval==='approved'),cl=clusters();
+  return `${head('Admin Dashboard','Live overview of the whole campus')}
+  <div class="grid grid-cols-2 gap-2">${stat('Pending approval',pendingCount(),'text-amber-400')}${stat('Open',ap.filter(t=>t.status==='Open').length,'text-white')}${stat('In progress',ap.filter(t=>t.status==='In Progress').length,'text-blue-400')}${stat('Resolved',ap.filter(t=>t.status==='Resolved').length,'text-emerald-400')}</div>
+  ${cl.length?`<div class="text-xs font-bold uppercase tracking-wider text-red-400">Root-cause alerts</div>${cl.map(g=>`<div class="${CARD} !border-red-500/40 bg-red-500/5"><div class="text-sm font-semibold">${esc(g[0].category)} — ${esc(g[0].dept)}</div><div class="text-[11px] text-slate-400 mt-0.5">${g.length} open reports share this block and category. Send one technician to check the common source.</div></div>`).join('')}`:''}
+  ${ap.filter(t=>t.hazard&&t.status!=='Resolved').length?`<div class="text-xs font-bold uppercase tracking-wider text-red-400">Open hazards</div>${ap.filter(t=>t.hazard&&t.status!=='Resolved').map(t=>tk(t,adminAct(t))).join('')}`:''}
+  <div class="text-xs font-bold uppercase tracking-wider text-slate-300 pt-1">Campus heatmap</div>${heat()}`;
+}
+function aApprovals(){
+  const pt=S.tickets.filter(t=>t.approval==='pending'),pu=S.users.filter(u=>u.status==='pending');
+  return `${head('Approvals','Review reports and new student accounts')}
+  <div class="text-xs font-bold uppercase tracking-wider text-slate-300">Reports (${pt.length})</div>
+  ${pt.map(t=>tk(t,`<div class="flex gap-2 pt-2 border-t border-[#1E2B45]"><button onclick="approve('${t.id}')" class="${B} bg-emerald-600 hover:bg-emerald-500 flex-1 text-xs"><i class="fa-solid fa-check"></i> Approve</button><button onclick="rejectM('${t.id}')" class="${B} bg-red-600/80 hover:bg-red-500 flex-1 text-xs"><i class="fa-solid fa-xmark"></i> Reject</button></div>`)).join('')||empty('No reports waiting')}
+  <div class="text-xs font-bold uppercase tracking-wider text-slate-300 pt-2">Student sign-ups (${pu.length})</div>
+  ${pu.map(u=>`<div class="${CARD} flex items-center justify-between gap-2"><div><div class="text-[13px] font-semibold">${esc(u.name)}</div><div class="text-[11px] text-slate-400">${esc(u.mobile)} • ${esc(u.dept)}</div></div><div class="flex gap-1.5"><button onclick="userSet('${u.id}','active')" class="${B} bg-emerald-600 px-3 text-xs">Approve</button><button onclick="userSet('${u.id}','rejected')" class="${B} bg-red-600/80 px-3 text-xs">Reject</button></div></div>`).join('')||empty('No sign-ups waiting')}`;
+}
+async function approve(id){try{await K.doc(id).update({approval:'approved',approvedBy:S.me.name,updatedAt:now()});toast('Approved')}catch(e){toast(e.message)}}
+function rejectM(id){modal(`<h3 class="font-bold">Reject report</h3><textarea id="rrsn" rows="3" placeholder="Reason (student will see this)" class="${INP} resize-none"></textarea><div class="flex gap-2"><button onclick="closeM()" class="${B} bg-slate-700 flex-1">Cancel</button><button onclick="doReject('${id}')" class="${B} bg-red-600 flex-1">Reject</button></div>`)}
+async function doReject(id){try{await K.doc(id).update({approval:'rejected',rejectReason:$('rrsn').value.trim()||'Not valid',updatedAt:now()});closeM();toast('Rejected')}catch(e){toast(e.message)}}
+function adminAct(t){
+  if(t.approval!=='approved')return `<div class="flex gap-2 pt-2 border-t border-[#1E2B45]">${t.approval==='rejected'?`<button onclick="approve('${t.id}')" class="${B} bg-emerald-600 flex-1 text-xs">Approve anyway</button>`:''}<button onclick="delT('${t.id}')" class="${B} bg-slate-700 px-4 text-xs text-red-400"><i class="fa-solid fa-trash"></i></button></div>`;
+  const staff=S.users.filter(u=>u.role==='staff'&&u.status==='active');
+  return `<div class="flex gap-2 pt-2 border-t border-[#1E2B45]"><select onchange="assign('${t.id}',this.value)" class="${INP} !py-2 !text-xs flex-1"><option value="">Assign staff…</option>${staff.map(u=>`<option value="${u.mobile}" ${t.assignedTo===u.mobile?'selected':''}>${esc(u.name)} (${esc(u.trade||'')})</option>`).join('')}</select>
+  ${t.status!=='Resolved'?`<button onclick="resolveM('${t.id}')" class="${B} bg-emerald-600 px-3 text-xs">Close</button>`:`<button onclick="setStatus('${t.id}','Open')" class="${B} bg-slate-700 px-3 text-xs">Reopen</button>`}<button onclick="delT('${t.id}')" class="${B} bg-slate-700 px-3 text-xs text-red-400"><i class="fa-solid fa-trash"></i></button></div>`;
+}
+async function assign(id,m){const u=S.users.find(x=>x.mobile===m),t=S.tickets.find(x=>x.id===id);try{await K.doc(id).update({assignedTo:m,assignedName:u?u.name:'',status:m&&t.status==='Open'?'In Progress':t.status,updatedAt:now()});toast(m?'Assigned to '+u.name:'Unassigned')}catch(e){toast(e.message)}}
+async function delT(id){if(confirm('Delete this ticket permanently?'))try{await K.doc(id).delete()}catch(e){toast(e.message)}}
+function aTickets(){
+  const f=S.filter,L=S.tickets.filter(t=>f==='all'||(f==='pending'&&t.approval==='pending')||(f==='rejected'&&t.approval==='rejected')||(t.approval==='approved'&&((f==='open'&&t.status==='Open')||(f==='progress'&&t.status==='In Progress')||(f==='resolved'&&t.status==='Resolved'))));
+  const chips=[['all','All'],['pending','Pending'],['open','Open'],['progress','In Progress'],['resolved','Resolved'],['rejected','Rejected']];
+  return `${head('All Tickets','Assign, close, reopen or delete')}
+  <div class="flex gap-1.5 overflow-x-auto sc pb-1">${chips.map(([k,l])=>`<button onclick="S.filter='${k}';go('tickets')" class="shrink-0 px-3 py-1.5 rounded-full text-[11px] font-semibold border ${f===k?'bg-blue-600 border-blue-600 text-white':'border-[#1E2B45] text-slate-400'}">${l}</button>`).join('')}</div>
+  ${L.map(t=>tk(t,adminAct(t))).join('')||empty('No tickets in this view')}`;
+}
+/* users */
+function aUsers(){
+  const grp=(t,r)=>{const L=S.users.filter(u=>u.role===r&&u.status!=='pending');return `<div class="text-xs font-bold uppercase tracking-wider text-slate-300 pt-2">${t} (${L.length})</div>${L.map(uc).join('')||empty('None yet')}`};
+  return `${head('User Management','Create IDs for staff and admins')}<button onclick="userM()" class="${B} ${P} w-full py-3"><i class="fa-solid fa-user-plus mr-1"></i> Create Staff / Admin ID</button>${grp('Staff','staff')}${grp('Admins','admin')}${grp('Students','student')}`;
+}
+function uc(u){
+  const me=u.id===S.me.id,st={active:'green',blocked:'red',rejected:'red'}[u.status]||'slate';
+  return `<div class="${CARD} space-y-2"><div class="flex justify-between items-start"><div><div class="text-[13px] font-semibold">${esc(u.name)} ${me?'<span class="text-[10px] text-slate-500">(you)</span>':''}</div><div class="text-[11px] text-slate-400"><i class="fa-solid fa-phone text-[9px]"></i> ${esc(u.mobile)} • ${esc(u.trade||u.dept||'')}</div></div>${bd(u.status,st)}</div>
+  ${me?'':`<div class="flex gap-2"><button onclick="userSet('${u.id}','${u.status==='active'?'blocked':'active'}')" class="${B} bg-slate-700 flex-1 text-xs">${u.status==='active'?'Block':'Unblock'}</button><button onclick="pwM('${u.id}')" class="${B} bg-slate-700 flex-1 text-xs">Reset password</button><button onclick="delU('${u.id}')" class="${B} bg-slate-700 px-3 text-xs text-red-400"><i class="fa-solid fa-trash"></i></button></div>`}</div>`;
+}
+async function userSet(id,s){try{await U.doc(id).update({status:s});toast('User '+s)}catch(e){toast(e.message)}}
+async function delU(id){if(confirm('Delete this user?'))try{await U.doc(id).delete()}catch(e){toast(e.message)}}
+function userM(){
+  modal(`<h3 class="font-bold">Create ID</h3><select id="nr" onchange="$('nt').classList.toggle('hidden',this.value!=='staff')" class="${INP}"><option value="staff">Staff / Worker</option><option value="admin">Admin</option></select>
+  <input id="nn" placeholder="Full name" class="${INP}"><input id="nm" inputmode="numeric" maxlength="10" placeholder="Mobile number (login ID)" class="${INP}"><select id="nt" class="${INP}">${opts(TRADES)}</select><input id="np" placeholder="Password (min 6)" class="${INP}">
+  <div class="flex gap-2"><button onclick="closeM()" class="${B} bg-slate-700 flex-1">Cancel</button><button onclick="createUser()" class="${B} ${P} flex-1">Create</button></div>`);
+}
+async function createUser(){
+  const role=$('nr').value,name=$('nn').value.trim(),m=$('nm').value.trim(),p=$('np').value;
+  if(name.length<2||!/^\d{10}$/.test(m)||p.length<6)return toast('Need name, 10-digit mobile and 6+ char password');
+  try{
+    if((await U.doc(m).get()).exists)return toast('Mobile number already in use');
+    await U.doc(m).set({name,mobile:m,role,trade:role==='staff'?$('nt').value:'',status:'active',pass:await hash(m,p),createdBy:S.me.name,createdAt:now()});
+    closeM();toast('ID created. Share: '+m+' / '+p);
+  }catch(e){toast(e.message)}
+}
+function pwM(id){modal(`<h3 class="font-bold">Reset password</h3><input id="npw" placeholder="New password (min 6)" class="${INP}"><div class="flex gap-2"><button onclick="closeM()" class="${B} bg-slate-700 flex-1">Cancel</button><button onclick="setPw('${id}')" class="${B} ${P} flex-1">Save</button></div>`)}
+async function setPw(id){const p=$('npw').value;if(p.length<6)return toast('Min 6 characters');try{await U.doc(id).update({pass:await hash(id,p)});closeM();toast('Password updated')}catch(e){toast(e.message)}}
+/* settings */
+function aSettings(){
+  return `${head('Settings')}
+  <div class="${CARD} space-y-2.5"><div class="text-sm font-semibold">Cloudinary photo upload</div><p class="text-[11px] text-slate-400">Cloud name: <b class="text-slate-200">${CLOUD}</b>. Enter your <b>unsigned</b> upload preset name (Cloudinary → Settings → Upload → Upload presets).</p>
+  <input id="cp" value="${esc(S.cfg.cloudPreset||DEFAULT_PRESET)}" class="${INP}"><button onclick="saveCfg()" class="${B} ${P} w-full">Save preset</button></div>
+  <div class="${CARD} space-y-2.5"><div class="text-sm font-semibold">Change my password</div><input id="mp" type="password" placeholder="New password (min 6)" class="${INP}"><button onclick="myPw()" class="${B} bg-slate-700 w-full">Update password</button></div>`;
+}
+async function saveCfg(){try{await C.set({cloudPreset:$('cp').value.trim()},{merge:true});toast('Preset saved')}catch(e){toast(e.message)}}
+async function myPw(){const p=$('mp').value;if(p.length<6)return toast('Min 6 characters');try{await U.doc(S.me.id).update({pass:await hash(S.me.id,p)});$('mp').value='';toast('Password changed')}catch(e){toast(e.message)}}
 
 /* ============ BOOT ============ */
-applyUser();listen();
-if(user) nav('dashboard');
-setInterval(()=>{if(user&&screen==='dashboard')render()},60000);
+render();
+(async()=>{const m=localStorage.getItem('sentinelMobile');if(m)try{const d=await U.doc(m).get();if(d.exists&&d.data().status==='active')start(m)}catch(e){}})();
+setInterval(()=>{if(S.me&&!['report','settings'].includes(S.tab))render()},60000);
 </script>
 </body>
 </html>
