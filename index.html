@@ -13,33 +13,58 @@ body{font-family:Inter,system-ui,sans-serif;background:#050A14;-webkit-tap-highl
 .sc::-webkit-scrollbar{display:none}.sc{scrollbar-width:none}
 select,input,textarea{font-size:16px}@media(min-width:640px){select,input,textarea{font-size:13px}}
 .hero{background:radial-gradient(120% 60% at 50% 0%,rgba(37,99,235,.28),transparent 65%),#0A1220}
+/* ---- light theme overrides (attribute-selector, no JS class rewrite needed) ---- */
+[data-theme="light"] body{background:#F1F5F9;color:#0F172A}
+[data-theme="light"] .hero{background:radial-gradient(120% 60% at 50% 0%,rgba(37,99,235,.12),transparent 65%),#F8FAFC}
+[data-theme="light"] .bg-\[\#0A1220\]{background:#FFFFFF}
+[data-theme="light"] .bg-\[\#0F1A2E\]{background:#FFFFFF}
+[data-theme="light"] .bg-\[\#0A1424\]{background:#F8FAFC}
+[data-theme="light"] .border-\[\#1E2B45\]{border-color:#E2E8F0}
+[data-theme="light"] .text-white{color:#0F172A}
+[data-theme="light"] .text-slate-100{color:#0F172A}
+[data-theme="light"] .text-slate-200{color:#1E293B}
+[data-theme="light"] .text-slate-300{color:#334155}
+[data-theme="light"] .text-slate-400{color:#64748B}
+[data-theme="light"] .text-slate-500{color:#94A3B8}
+[data-theme="light"] .placeholder-slate-500::placeholder{color:#94A3B8}
+[data-theme="light"] .bg-slate-700{background:#E2E8F0;color:#0F172A}
+[data-theme="light"] .bg-slate-700:hover{background:#CBD5E1}
+[data-theme="light"] .bg-slate-800{background:#E2E8F0;color:#0F172A}
+[data-theme="light"] .bg-slate-800\/70{background:#E2E8F0}
+[data-theme="light"] .border-slate-600{border-color:#CBD5E1}
 </style>
 </head>
 <body class="min-h-screen flex justify-center items-center sm:p-4 text-slate-100">
 <div class="relative w-full max-w-[480px] h-[100dvh] sm:h-[860px] bg-[#0A1220] sm:rounded-[28px] sm:border border-[#1E2B45] shadow-2xl flex flex-col overflow-hidden">
   <header class="px-5 py-3.5 flex items-center justify-between border-b border-[#1E2B45] bg-[#0A1220] z-20">
-    <div class="flex items-center gap-2.5">
-      <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white"><i class="fa-solid fa-shield-halved"></i></div>
-      <div><div class="text-[13px] font-extrabold tracking-wide leading-none">AVCOE SENTINEL</div><div class="text-[10px] text-slate-400 mt-1">Campus Issue Management</div></div>
+    <div class="flex items-center gap-2.5 min-w-0">
+      <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white shrink-0"><i class="fa-solid fa-shield-halved"></i></div>
+      <div class="min-w-0"><div id="orgTitle" class="text-[13px] font-extrabold tracking-wide leading-none truncate">AVCOE SENTINEL</div><div class="text-[10px] text-slate-400 mt-1">Campus Issue Management</div></div>
     </div>
-    <div id="hdr" class="flex items-center gap-2"></div>
+    <div class="flex items-center gap-1.5 shrink-0">
+      <button onclick="cycleLang()" id="langBtn" class="w-8 h-8 rounded-full bg-slate-800 border border-[#1E2B45] text-slate-300 text-[10px] font-bold">EN</button>
+      <button onclick="toggleTheme()" class="w-8 h-8 rounded-full bg-slate-800 border border-[#1E2B45] text-slate-300 text-xs"><i class="fa-solid fa-circle-half-stroke"></i></button>
+      <div id="hdr" class="flex items-center gap-2"></div>
+    </div>
   </header>
   <main id="view" class="flex-1 overflow-y-auto sc"></main>
-  <nav id="nav" class="border-t border-[#1E2B45] bg-[#0A1220] flex justify-around py-2 z-20"></nav>
+  <nav id="nav" class="border-t border-[#1E2B45] bg-[#0A1220] flex overflow-x-auto sc z-20"></nav>
   <div id="modal"></div>
   <div id="toast" class="hidden absolute top-16 inset-x-4 z-[60] bg-slate-800 border border-slate-600 rounded-xl px-4 py-2.5 text-xs text-center shadow-xl"></div>
 </div>
 
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
 <script>
 /* ============ CONFIG ============ */
 const firebaseConfig={apiKey:"AIzaSyBcXm5QQaYCCddVXNgGqTBAszdKEK-0PJQ",authDomain:"multi-service-app-77dd8.firebaseapp.com",projectId:"multi-service-app-77dd8",storageBucket:"multi-service-app-77dd8.appspot.com",messagingSenderId:"123732555482",appId:"1:123732555482:web:ea47c825e0dbb504f597e3"};
 const CLOUD="dbirgrdbp";
 const DEFAULT_PRESET="ml_default";      // admin can change this in Settings (no code edit needed)
 const BOOT_PASS="Admin@123";            // first login: mobile "admin" / this password. Change it in Settings!
+const SLA_HOURS=24;                     // hazard tickets breach SLA after this many hours open
 firebase.initializeApp(firebaseConfig);
-const db=firebase.firestore(),U=db.collection('sentinel_users'),K=db.collection('sentinel_tickets'),C=db.doc('sentinel_config/app');
+const db=firebase.firestore(),U=db.collection('sentinel_users'),K=db.collection('sentinel_tickets'),N=db.collection('sentinel_notices'),LOG=db.collection('sentinel_logs'),C=db.doc('sentinel_config/app');
 const now=()=>firebase.firestore.FieldValue.serverTimestamp();
 
 const CAT={'Power / Fan':['','fa-bolt'],'Water / Plumbing':['','fa-droplet'],'Hygiene & Sanitation':['','fa-broom'],'Furniture & Benches':['','fa-chair'],'Mess & Canteen':['','fa-utensils'],'Safety & Hazard':['','fa-triangle-exclamation'],'IT / Network':['','fa-wifi'],'Other':['','fa-ellipsis']};
@@ -47,14 +72,24 @@ const DEPTS=['CS','AI&DS','IT','E&TC','E&CE','AR','CIVIL','MECH','ELECTRICAL','A
 const FLOORS=['Ground','1st','2nd','3rd','4th'];
 const TRADES=['Electrician','Plumber','IT Staff','Estate / Carpentry','Housekeeping','Other'];
 
+/* ============ I18N ============ */
+const I18N={
+en:{home:'Home',report:'Report',campus:'Campus',leaderboard:'Leaderboard',approvals:'Approvals',tickets:'Tickets',users:'Users',notices:'Notices',logs:'Logs',settings:'Settings',myjobs:'My Jobs'},
+hi:{home:'होम',report:'शिकायत',campus:'कैंपस',leaderboard:'लीडरबोर्ड',approvals:'स्वीकृति',tickets:'टिकट',users:'यूज़र',notices:'सूचना',logs:'लॉग',settings:'सेटिंग्स',myjobs:'मेरे काम'},
+mr:{home:'होम',report:'तक्रार',campus:'कॅम्पस',leaderboard:'लीडरबोर्ड',approvals:'मंजुरी',tickets:'तिकीट',users:'युजर्स',notices:'सूचना',logs:'नोंदी',settings:'सेटिंग्ज',myjobs:'माझी कामे'}
+};
+let LANG=localStorage.getItem('sentinelLang')||'en';
+const t=k=>I18N[LANG]?.[k]||I18N.en[k]||k;
+function cycleLang(){LANG=LANG==='en'?'hi':LANG==='hi'?'mr':'en';localStorage.setItem('sentinelLang',LANG);$('langBtn').textContent=LANG.toUpperCase();render()}
+
 /* ============ HELPERS ============ */
-const S={me:null,tab:'guest',tickets:[],users:[],cfg:{},cat:'Power / Fan',floor:'Ground',photo:null,filter:'all',gtab:'login',unsubs:[]};
+const S={me:null,tab:'guest',tickets:[],users:[],notices:[],logs:[],cfg:{},cat:'Power / Fan',floor:'Ground',photo:null,filter:'all',grole:'student',gsub:'login',unsubs:[]};
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const tm=r=>r.createdAt?.toMillis?.()||Date.now();
 const code=t=>'T-'+t.id.slice(-4).toUpperCase();
 const ago=ms=>{const m=Math.max(0,Math.round((Date.now()-ms)/6e4));return m<1?'just now':m<60?m+'m ago':m<1440?Math.round(m/60)+'h ago':Math.round(m/1440)+'d ago'};
-const toast=t=>{const e=$('toast');e.textContent=t;e.classList.remove('hidden');clearTimeout(toast.t);toast.t=setTimeout(()=>e.classList.add('hidden'),3200)};
+const toast=t=>{const e=$('toast');e.textContent=t;e.classList.remove('hidden');clearTimeout(toast.tt);toast.tt=setTimeout(()=>e.classList.add('hidden'),3200)};
 const CARD='bg-[#0F1A2E] border border-[#1E2B45] rounded-2xl p-3.5';
 const INP='w-full bg-[#0A1424] border border-[#1E2B45] rounded-xl px-3.5 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500';
 const B='font-semibold rounded-xl py-2.5 text-sm transition active:scale-[.98]';
@@ -64,12 +99,20 @@ const bd=(t,c)=>`<span class="text-[10px] font-semibold px-2 py-0.5 rounded-full
 const opts=(a,sel)=>a.map(x=>`<option ${x===sel?'selected':''}>${esc(x)}</option>`).join('');
 const lbl=t=>`<label class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block mb-1.5">${t}</label>`;
 const head=(t,s='')=>`<div><h2 class="text-lg font-bold text-white">${t}</h2>${s?`<p class="text-xs text-slate-400 mt-0.5">${s}</p>`:''}</div>`;
-async function hash(m,p){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(m+':'+p+':avcoe-sentinel'));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
+async function shahash(m,p){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(m+':'+p+':avcoe-sentinel'));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
 const isAdmin=()=>S.me?.role==='admin',isStaff=()=>S.me?.role==='staff';
 const open=t=>t.approval==='approved'&&t.status!=='Resolved';
+const slaBreached=t=>t.hazard&&open(t)&&(Date.now()-tm(t))>SLA_HOURS*3600*1000;
 
 function modal(h){$('modal').innerHTML=`<div class="absolute inset-0 z-50 bg-black/70 flex items-end sm:items-center justify-center" onclick="if(event.target===this)closeM()"><div class="w-full bg-[#0F1A2E] border border-[#1E2B45] rounded-t-3xl sm:rounded-3xl p-5 space-y-3 max-h-[90%] overflow-y-auto sc">${h}</div></div>`}
 function closeM(){$('modal').innerHTML=''}
+
+/* ============ THEME ============ */
+function toggleTheme(){const cur=document.documentElement.dataset.theme==='light'?'dark':'light';document.documentElement.dataset.theme=cur;localStorage.setItem('sentinelTheme',cur)}
+document.documentElement.dataset.theme=localStorage.getItem('sentinelTheme')||'dark';
+
+/* ============ ACTIVITY LOG ============ */
+function logAction(action,detail){try{LOG.add({action,detail:detail||'',actor:S.me?S.me.name:'system',actorRole:S.me?S.me.role:'',ts:now()})}catch(e){}}
 
 /* ============ CLOUDINARY ============ */
 function shrink(file,max=1280){return new Promise(res=>{const img=new Image();img.onload=()=>{const k=Math.min(1,max/Math.max(img.width,img.height)),c=document.createElement('canvas');c.width=img.width*k;c.height=img.height*k;c.getContext('2d').drawImage(img,0,0,c.width,c.height);c.toBlob(b=>res(b||file),'image/jpeg',.82)};img.onerror=()=>res(file);img.src=URL.createObjectURL(file)})}
@@ -90,13 +133,14 @@ async function tryUpload(file){
 /* ============ AUTH ============ */
 function err(m){const e=$('gerr');if(e){e.textContent=m;e.classList.remove('hidden')}else toast(m)}
 async function login(){
-  const m=$('lm').value.trim().toLowerCase(),p=$('lp').value;
+  const m=$('lm').value.trim().toLowerCase(),p=$('lp').value,want=S.grole;
   if(!m||!p)return err('Enter mobile number and password');
   try{
     let d=await U.doc(m).get();
-    if(!d.exists&&m==='admin'&&p===BOOT_PASS){await U.doc('admin').set({name:'Administrator',mobile:'admin',role:'admin',status:'active',pass:await hash('admin',p),createdAt:now()});d=await U.doc('admin').get()}
-    if(!d.exists||d.data().pass!==await hash(m,p))return err('Invalid mobile number or password');
+    if(!d.exists&&m==='admin'&&p===BOOT_PASS&&want==='admin'){await U.doc('admin').set({name:'Administrator',mobile:'admin',role:'admin',status:'active',pass:await shahash('admin',p),createdAt:now()});d=await U.doc('admin').get()}
+    if(!d.exists||d.data().pass!==await shahash(m,p))return err('Invalid mobile number or password');
     const u=d.data();
+    if(u.role!==want)return err(`This ID is registered as ${u.role}. Please switch to the ${u.role[0].toUpperCase()+u.role.slice(1)} tab above.`);
     if(u.status==='pending')return err('Your registration is awaiting admin approval');
     if(u.status!=='active')return err('This account is '+u.status+'. Contact admin.');
     start(m);
@@ -109,8 +153,8 @@ async function register(){
   if(p.length<6)return err('Password must be at least 6 characters');
   try{
     if((await U.doc(m).get()).exists)return err('This mobile number is already registered');
-    await U.doc(m).set({name,mobile:m,dept,role:'student',status:'pending',pass:await hash(m,p),createdAt:now()});
-    S.gtab='login';go('guest');toast('Registered! Wait for admin approval, then log in.');
+    await U.doc(m).set({name,mobile:m,dept,role:'student',status:'pending',pass:await shahash(m,p),createdAt:now()});
+    S.grole='student';S.gsub='login';go('guest');toast('Registered! Wait for admin approval, then log in.');
   }catch(e){err('Registration failed: '+e.message)}
 }
 function start(m){
@@ -124,58 +168,82 @@ function start(m){
 }
 function listenData(){
   S.unsubs.push(K.orderBy('createdAt','desc').limit(500).onSnapshot(s=>{S.tickets=s.docs.map(d=>({id:d.id,...d.data()}));render()},e=>toast('Database error: '+e.code)));
-  if(isAdmin())S.unsubs.push(U.onSnapshot(s=>{S.users=s.docs.map(d=>({id:d.id,...d.data()}));render()}));
+  S.unsubs.push(N.orderBy('ts','desc').limit(10).onSnapshot(s=>{S.notices=s.docs.map(d=>({id:d.id,...d.data()}));render()}));
+  if(isAdmin()){
+    S.unsubs.push(U.onSnapshot(s=>{S.users=s.docs.map(d=>({id:d.id,...d.data()}));render()}));
+    S.unsubs.push(LOG.orderBy('ts','desc').limit(200).onSnapshot(s=>{S.logs=s.docs.map(d=>d.data());render()}));
+  }
 }
 function stop(){S.unsubs.forEach(u=>u());S.unsubs=[]}
-function logout(){stop();localStorage.removeItem('sentinelMobile');S.me=null;S.tickets=[];S.users=[];closeM();go('guest')}
-C.onSnapshot(d=>{S.cfg=d.exists?d.data():{}});
+function logout(){stop();localStorage.removeItem('sentinelMobile');S.me=null;S.tickets=[];S.users=[];S.notices=[];S.logs=[];closeM();go('guest')}
+C.onSnapshot(d=>{S.cfg=d.exists?d.data():{};paintOrg()});
+function paintOrg(){const el=$('orgTitle');if(el)el.textContent=(S.cfg.orgName||'AVCOE Sentinel').toUpperCase()}
 
 /* ============ NAV / RENDER ============ */
 function go(t){S.tab=t;$('view').dataset.t='';render()}
 function navItems(){
-  if(isAdmin())return[['home','fa-chart-pie','Dashboard'],['approvals','fa-circle-check','Approvals'],['tickets','fa-list-check','Tickets'],['users','fa-users','Users'],['settings','fa-gear','Settings']];
-  if(isStaff())return[['home','fa-briefcase','My Jobs'],['campus','fa-map-location-dot','Campus']];
-  return[['home','fa-house','Home'],['report','fa-circle-plus','Report'],['campus','fa-map-location-dot','Campus']];
+  if(isAdmin())return[['home','fa-chart-pie',t('home')],['approvals','fa-circle-check',t('approvals')],['tickets','fa-list-check',t('tickets')],['users','fa-users',t('users')],['notices','fa-bullhorn',t('notices')],['logs','fa-clock-rotate-left',t('logs')],['settings','fa-gear',t('settings')]];
+  if(isStaff())return[['home','fa-briefcase',t('myjobs')],['campus','fa-map-location-dot',t('campus')]];
+  return[['home','fa-house',t('home')],['report','fa-circle-plus',t('report')],['campus','fa-map-location-dot',t('campus')],['leaderboard','fa-trophy',t('leaderboard')]];
 }
 function pendingCount(){return S.tickets.filter(t=>t.approval==='pending').length+S.users.filter(u=>u.status==='pending').length}
 function render(){
-  if(!S.me){$('nav').innerHTML='';$('hdr').innerHTML='';if($('view').dataset.t!=='guest'){$('view').innerHTML=vGuest();$('view').dataset.t='guest'}return}
-  $('hdr').innerHTML=`<div class="text-right leading-tight"><div class="text-[12px] font-semibold text-white">${esc(S.me.name)}</div><div class="text-[10px] text-slate-400 capitalize">${S.me.role}${S.me.trade?' • '+esc(S.me.trade):''}</div></div><button onclick="logout()" title="Sign out" class="w-8 h-8 rounded-full bg-slate-800 border border-[#1E2B45] text-slate-300 text-xs"><i class="fa-solid fa-right-from-bracket"></i></button>`;
+  if(!S.me){$('nav').innerHTML='';$('hdr').innerHTML='';paintOrg();if($('view').dataset.t!=='guest'){$('view').innerHTML=vGuest();$('view').dataset.t='guest'}return}
+  $('hdr').innerHTML=`<div class="text-right leading-tight hidden xs:block"><div class="text-[12px] font-semibold text-white">${esc(S.me.name)}</div><div class="text-[10px] text-slate-400 capitalize">${S.me.role}${S.me.trade?' • '+esc(S.me.trade):''}</div></div><button onclick="logout()" title="Sign out" class="w-8 h-8 rounded-full bg-slate-800 border border-[#1E2B45] text-slate-300 text-xs"><i class="fa-solid fa-right-from-bracket"></i></button>`;
   const pc=isAdmin()?pendingCount():0;
-  $('nav').innerHTML=navItems().map(([k,i,l])=>`<button onclick="go('${k}')" class="relative flex flex-col items-center gap-0.5 px-3 py-1 text-[10px] font-medium ${S.tab===k?'text-blue-400':'text-slate-500'}"><i class="fa-solid ${i} text-[15px]"></i>${l}${k==='approvals'&&pc?`<span class="absolute -top-0.5 right-0 min-w-[16px] h-4 px-1 rounded-full bg-red-500 text-white text-[9px] flex items-center justify-center">${pc}</span>`:''}</button>`).join('');
-  if(['report','settings'].includes(S.tab)&&$('view').dataset.t===S.tab)return; // don't wipe forms
-  const V=isAdmin()?{home:aHome,approvals:aApprovals,tickets:aTickets,users:aUsers,settings:aSettings}:isStaff()?{home:sHome,campus:vCampus}:{home:stHome,report:stReport,campus:vCampus};
+  $('nav').innerHTML=navItems().map(([k,i,l])=>`<button onclick="go('${k}')" class="relative shrink-0 flex flex-col items-center gap-0.5 px-3.5 py-2 text-[10px] font-medium ${S.tab===k?'text-blue-400':'text-slate-500'}"><i class="fa-solid ${i} text-[15px]"></i>${l}${k==='approvals'&&pc?`<span class="absolute top-0.5 right-1 min-w-[16px] h-4 px-1 rounded-full bg-red-500 text-white text-[9px] flex items-center justify-center">${pc}</span>`:''}</button>`).join('');
+  if(['report','settings','notices'].includes(S.tab)&&$('view').dataset.t===S.tab)return; // don't wipe forms mid-typing
+  const V=isAdmin()?{home:aHome,approvals:aApprovals,tickets:aTickets,users:aUsers,notices:aNotices,logs:aLogs,settings:aSettings}
+        :isStaff()?{home:sHome,campus:vCampus}
+        :{home:stHome,report:stReport,campus:vCampus,leaderboard:vLeaderboard};
   $('view').innerHTML=`<div class="p-5 space-y-4 pb-8">${(V[S.tab]||V.home)()}</div>`;$('view').dataset.t=S.tab;
+  if(S.tab==='report')requestAnimationFrame(renderSimilar);
+  if(S.tab==='home'&&isAdmin())requestAnimationFrame(drawCharts);
 }
 
 /* ============ TICKET CARD ============ */
 function badge(t){return t.approval==='pending'?bd('Awaiting Approval','amber'):t.approval==='rejected'?bd('Rejected','red'):t.status==='Resolved'?bd('Resolved','green'):t.status==='In Progress'?bd('In Progress','blue'):bd('Open','slate')}
+function reporterLabel(t){if(t.isAnon)return isAdmin()?esc(t.reporterName)+' (anonymous)':'Anonymous';return esc(t.reporterName)}
 function tk(t,act=''){
-  const c=CAT[t.category]||['','fa-circle'];
+  const c=CAT[t.category]||['','fa-circle'],affN=t.affectedBy?.length||0;
   return `<div class="${CARD} ${t.hazard&&open(t)?'!border-red-500/40':''} space-y-2.5">
-  <div class="flex justify-between items-center"><div class="flex items-center gap-2"><span class="text-[10px] font-mono font-bold text-blue-400">${code(t)}</span>${t.hazard?bd('P1 Hazard','red'):''}</div><span class="text-[10px] text-slate-500">${ago(tm(t))}</span></div>
-  <div class="flex gap-3"><div class="w-9 h-9 rounded-xl bg-slate-800/70 flex items-center justify-center text-blue-400 shrink-0"><i class="fa-solid ${c[1]}"></i></div><div class="min-w-0"><h4 class="text-[13px] font-semibold text-white leading-snug">${esc(t.title)}</h4><p class="text-[11px] text-slate-400">${esc(t.dept)} • ${esc(t.floor)} • ${esc(t.landmark)}</p></div></div>
-  ${t.photoUrl?`<img src="${esc(t.photoUrl)}" loading="lazy" onclick="window.open(this.src)" class="w-full h-36 object-cover rounded-xl border border-[#1E2B45]">`:''}
-  <div class="flex items-center justify-between">${badge(t)}<span class="text-[10px] text-slate-500">${t.assignedName?'<i class="fa-solid fa-user-gear"></i> '+esc(t.assignedName):esc(t.reporterName)}</span></div>
+  <div class="flex justify-between items-center"><div class="flex items-center gap-1.5 flex-wrap"><span class="text-[10px] font-mono font-bold text-blue-400">${code(t)}</span>${t.hazard?bd('P1 Hazard','red'):''}${slaBreached(t)?`<span class="animate-pulse">${bd('SLA Breached','red')}</span>`:''}</div><span class="text-[10px] text-slate-500">${ago(tm(t))}</span></div>
+  <div class="flex gap-3"><div class="w-9 h-9 rounded-xl bg-slate-800/70 flex items-center justify-center text-blue-400 shrink-0"><i class="fa-solid ${c[1]}"></i></div><div class="min-w-0"><h4 class="text-[13px] font-semibold text-white leading-snug">${esc(t.title)}</h4><p class="text-[11px] text-slate-400">${esc(t.dept)} • ${esc(t.floor)} • ${esc(t.landmark)}${affN?` • <span class="text-blue-400">+${affN} also affected</span>`:''}</p></div></div>
+  ${t.photoUrl||t.proofUrl?`<div class="grid ${t.photoUrl&&t.proofUrl?'grid-cols-2':'grid-cols-1'} gap-1.5">${t.photoUrl?`<div><div class="text-[9px] text-slate-500 mb-0.5">Reported</div><img src="${esc(t.photoUrl)}" loading="lazy" onclick="window.open(this.src)" class="w-full h-28 object-cover rounded-xl border border-[#1E2B45]"></div>`:''}${t.proofUrl?`<div><div class="text-[9px] text-emerald-500 mb-0.5">Fixed</div><img src="${esc(t.proofUrl)}" loading="lazy" onclick="window.open(this.src)" class="w-full h-28 object-cover rounded-xl border border-[#1E2B45]"></div>`:''}</div>`:''}
+  <div class="flex items-center justify-between"><div class="flex items-center gap-1.5 flex-wrap">${badge(t)}</div><span class="text-[10px] text-slate-500">${t.assignedName?'<i class="fa-solid fa-user-gear"></i> '+esc(t.assignedName):reporterLabel(t)}</span></div>
   ${t.approval==='rejected'&&t.rejectReason?`<div class="text-[11px] text-red-300 bg-red-500/10 border border-red-500/20 rounded-lg p-2">Reason: ${esc(t.rejectReason)}</div>`:''}
-  ${t.status==='Resolved'&&t.approval==='approved'?`<div class="text-[11px] bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-2 text-slate-300"><b class="text-emerald-400">Fix note:</b> ${esc(t.resolvedNote||'Issue fixed and verified.')}${t.resolvedBy?` — ${esc(t.resolvedBy)}`:''}${t.proofUrl?`<img src="${esc(t.proofUrl)}" loading="lazy" onclick="window.open(this.src)" class="mt-2 w-full h-28 object-cover rounded-lg">`:''}</div>`:''}
+  ${t.status==='Resolved'&&t.approval==='approved'?`<div class="text-[11px] bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-2 text-slate-300"><b class="text-emerald-400">Fix note:</b> ${esc(t.resolvedNote||'Issue fixed and verified.')}${t.resolvedBy?` — ${esc(t.resolvedBy)}`:''}${t.reopenCount?`<div class="text-amber-400 mt-1">Reopened ${t.reopenCount}x</div>`:''}</div>`:''}
   ${act}</div>`;
 }
 const empty=t=>`<div class="text-center text-xs text-slate-500 py-8">${t}</div>`;
 const stat=(l,v,c='text-white')=>`<div class="${CARD} text-center !p-3"><div class="text-[10px] text-slate-400 uppercase tracking-wider">${l}</div><div class="text-2xl font-extrabold ${c}">${v}</div></div>`;
+function noticeBanner(){const n=S.notices?.[0];if(!n)return'';return `<div class="${CARD} !border-blue-500/40 bg-blue-500/5"><div class="text-[10px] font-bold uppercase text-blue-400"><i class="fa-solid fa-bullhorn"></i> Notice</div><div class="text-[13px] font-semibold mt-0.5">${esc(n.title)}</div><div class="text-[11px] text-slate-400 mt-0.5">${esc(n.body)}</div></div>`}
 
 /* ============ GUEST ============ */
-function gtab(t){S.gtab=t;go('guest')}
+function grole(r){S.grole=r;S.gsub='login';go('guest')}
+function gsub(v){S.gsub=v;go('guest')}
+const ROLE_UI={
+  student:{icon:'fa-user-graduate',color:'text-blue-400 border-blue-500 bg-blue-500/10',placeholder:'Your mobile number'},
+  staff:{icon:'fa-screwdriver-wrench',color:'text-emerald-400 border-emerald-500 bg-emerald-500/10',placeholder:'Staff mobile number (given by admin)'},
+  admin:{icon:'fa-user-shield',color:'text-amber-400 border-amber-500 bg-amber-500/10',placeholder:'Admin ID / mobile number'}
+};
 function vGuest(){
-  const L=S.gtab==='login';
+  const role=S.grole,ui=ROLE_UI[role],L=S.gsub==='login';
   return `<div class="hero min-h-full px-6 py-8 flex flex-col">
-  <div class="text-center pt-2"><div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-[10px] font-semibold text-blue-300 uppercase tracking-widest"><i class="fa-solid fa-graduation-cap"></i> AVCOE Sangamner</div>
+  <div class="text-center pt-2"><div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-[10px] font-semibold text-blue-300 uppercase tracking-widest"><i class="fa-solid fa-graduation-cap"></i> ${esc(S.cfg.orgName||'AVCOE Sangamner')}</div>
   <h1 class="text-[28px] font-extrabold mt-3 leading-tight">Campus <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">Sentinel</span></h1>
   <p class="text-xs text-slate-400 mt-2 max-w-[280px] mx-auto">Report, approve and resolve campus issues with live tracking and photo proof.</p></div>
-  <div class="${CARD} !p-5 mt-6 space-y-3">
-    <div class="grid grid-cols-2 gap-1 p-1 bg-[#0A1424] rounded-xl text-xs font-semibold"><button onclick="gtab('login')" class="py-2 rounded-lg ${L?'bg-blue-600 text-white':'text-slate-400'}">Login</button><button onclick="gtab('reg')" class="py-2 rounded-lg ${L?'text-slate-400':'bg-blue-600 text-white'}">Student Sign Up</button></div>
-    ${L?`<input id="lm" inputmode="numeric" placeholder="Mobile number (or admin ID)" class="${INP}"><input id="lp" type="password" placeholder="Password" class="${INP}" onkeydown="if(event.key==='Enter')login()">
-    <button onclick="login()" class="${B} ${P} w-full">Sign in</button><p class="text-[10px] text-slate-500 text-center">Staff & admin IDs are created by the administrator.</p>`
+
+  <div class="mt-6"><p class="text-[10px] font-semibold text-slate-500 uppercase tracking-widest text-center mb-2">Select your portal</p>
+  <div class="grid grid-cols-3 gap-2">
+    ${Object.entries(ROLE_UI).map(([k,v])=>`<button onclick="grole('${k}')" class="flex flex-col items-center gap-1.5 py-3 rounded-2xl border transition ${role===k?v.color:'border-[#1E2B45] bg-[#0F1A2E] text-slate-400'}"><i class="fa-solid ${v.icon} text-lg"></i><span class="text-[10px] font-bold capitalize">${k}</span></button>`).join('')}
+  </div></div>
+
+  <div class="${CARD} !p-5 mt-4 space-y-3">
+    ${role==='student'?`<div class="grid grid-cols-2 gap-1 p-1 bg-[#0A1424] rounded-xl text-xs font-semibold"><button onclick="gsub('login')" class="py-2 rounded-lg ${L?'bg-blue-600 text-white':'text-slate-400'}">Login</button><button onclick="gsub('reg')" class="py-2 rounded-lg ${L?'text-slate-400':'bg-blue-600 text-white'}">Sign Up</button></div>`
+    :`<div class="text-center text-[11px] font-semibold ${ui.color.split(' ')[0]} uppercase tracking-wider"><i class="fa-solid ${ui.icon}"></i> ${role} Portal</div>`}
+    ${L?`<input id="lm" inputmode="numeric" placeholder="${ui.placeholder}" class="${INP}"><input id="lp" type="password" placeholder="Password" class="${INP}" onkeydown="if(event.key==='Enter')login()">
+    <button onclick="login()" class="${B} ${P} w-full">Sign in</button>${role!=='student'?`<p class="text-[10px] text-slate-500 text-center">${role[0].toUpperCase()+role.slice(1)} IDs are created by the administrator.</p>`:''}`
     :`<input id="rn" placeholder="Full name" class="${INP}"><input id="rm" inputmode="numeric" maxlength="10" placeholder="10-digit mobile number" class="${INP}"><select id="rd" class="${INP}">${opts(DEPTS)}</select><input id="rp" type="password" placeholder="Create password (min 6)" class="${INP}">
     <button onclick="register()" class="${B} ${P} w-full">Request Access</button><p class="text-[10px] text-slate-500 text-center">Admin must approve your account before you can log in.</p>`}
     <div id="gerr" class="hidden text-[11px] text-red-300 bg-red-500/10 border border-red-500/20 rounded-lg p-2 text-center"></div>
@@ -185,26 +253,35 @@ function vGuest(){
 /* ============ STUDENT ============ */
 function stHome(){
   const mine=S.tickets.filter(t=>t.reporterMobile===S.me.mobile),fixed=S.tickets.filter(t=>t.approval==='approved'&&t.status==='Resolved');
-  return `${head('Hello, '+esc(S.me.name.split(' ')[0]),esc(S.me.dept)+' • live updates')}
+  return `${noticeBanner()}${head('Hello, '+esc(S.me.name.split(' ')[0]),esc(S.me.dept)+' • live updates')}
   <div class="grid grid-cols-3 gap-2">${stat('My reports',mine.length)}${stat('In progress',mine.filter(t=>t.approval==='approved'&&t.status==='In Progress').length,'text-blue-400')}${stat('Campus fixed',fixed.length,'text-emerald-400')}</div>
   <button onclick="go('report')" class="${B} ${P} w-full py-3.5"><i class="fa-solid fa-plus mr-1"></i> Report a Problem</button>
-  <div class="text-xs font-bold uppercase tracking-wider text-slate-300 pt-1">My Reports</div>${mine.map(t=>tk(t)).join('')||empty('You have not reported anything yet')}
+  <div class="text-xs font-bold uppercase tracking-wider text-slate-300 pt-1">My Reports</div>${mine.map(t=>tk(t,ratingRow(t)+reopenBtn(t))).join('')||empty('You have not reported anything yet')}
   <div class="text-xs font-bold uppercase tracking-wider text-slate-300 pt-2">Recently Fixed on Campus</div>${fixed.slice(0,10).map(t=>tk(t)).join('')||empty('No verified fixes yet')}`;
 }
 function stReport(){
   return `${head('Report a Problem','Sent to admin for approval, then assigned to staff')}
   <div>${lbl('Category')}<div class="grid grid-cols-4 gap-2">${Object.entries(CAT).map(([k,v])=>`<button type="button" data-c="${esc(k)}" onclick="setCat(this.dataset.c)" class="cb p-2 rounded-xl border text-[10px] font-medium flex flex-col items-center gap-1 text-center ${k===S.cat?'border-blue-500 bg-blue-500/10 text-blue-300':'border-[#1E2B45] bg-[#0A1424] text-slate-400'}"><i class="fa-solid ${v[1]} text-sm"></i>${k.split(' ')[0]}</button>`).join('')}</div></div>
-  <div>${lbl('Department / Facility')}<select id="rdept" class="${INP}">${opts(DEPTS,S.me.dept)}</select></div>
+  <div>${lbl('Department / Facility')}<select id="rdept" onchange="renderSimilar()" class="${INP}">${opts(DEPTS,S.me.dept)}</select></div>
+  <div id="simbox" class="space-y-1.5"></div>
   <div>${lbl('Floor')}<div class="grid grid-cols-5 gap-1.5">${FLOORS.map(f=>`<button type="button" onclick="setFloor('${f}')" data-f="${f}" class="fb py-2 rounded-lg border text-xs font-medium ${f===S.floor?'border-blue-500 bg-blue-500/10 text-blue-300':'border-[#1E2B45] bg-[#0A1424] text-slate-400'}">${f}</button>`).join('')}</div></div>
   <div>${lbl('Room / Landmark')}<input id="rland" placeholder="e.g. Computer Lab 3, PC 14" class="${INP}"></div>
   <div>${lbl('Description')}<textarea id="rdesc" rows="3" placeholder="Describe the problem..." class="${INP} resize-none"></textarea></div>
   <div>${lbl('Photo (optional)')}<input type="file" id="rphoto" accept="image/*" capture="environment" class="hidden" onchange="pickPhoto(event)">
   <div id="pbox" onclick="$('rphoto').click()" class="cursor-pointer border-2 border-dashed border-[#1E2B45] rounded-xl p-4 text-center text-xs text-slate-400"><i class="fa-solid fa-camera text-lg text-blue-400 block mb-1"></i><span id="ptxt">Take photo or upload</span></div></div>
+  <label class="flex items-center gap-2 text-[11px] text-slate-400"><input type="checkbox" id="ranon" class="accent-blue-600"> Submit anonymously (staff/admin still see your name for accountability)</label>
   <button id="sbtn" onclick="submitReport()" class="${B} ${P} w-full py-3.5"><i class="fa-solid fa-paper-plane mr-1"></i> Submit Report</button>`;
 }
-function setCat(c){S.cat=c;document.querySelectorAll('.cb').forEach(b=>b.className=`cb p-2 rounded-xl border text-[10px] font-medium flex flex-col items-center gap-1 text-center ${b.dataset.c===c?'border-blue-500 bg-blue-500/10 text-blue-300':'border-[#1E2B45] bg-[#0A1424] text-slate-400'}`)}
+function setCat(c){S.cat=c;document.querySelectorAll('.cb').forEach(b=>b.className=`cb p-2 rounded-xl border text-[10px] font-medium flex flex-col items-center gap-1 text-center ${b.dataset.c===c?'border-blue-500 bg-blue-500/10 text-blue-300':'border-[#1E2B45] bg-[#0A1424] text-slate-400'}`);renderSimilar()}
 function setFloor(f){S.floor=f;document.querySelectorAll('.fb').forEach(b=>b.className=`fb py-2 rounded-lg border text-xs font-medium ${b.dataset.f===f?'border-blue-500 bg-blue-500/10 text-blue-300':'border-[#1E2B45] bg-[#0A1424] text-slate-400'}`)}
 function pickPhoto(e){const f=e.target.files[0];if(!f)return;S.photo=f;$('ptxt').textContent='✓ '+f.name.slice(0,26)+' attached'}
+function renderSimilar(){
+  const el=$('simbox');if(!el)return;
+  const dept=$('rdept')?.value;
+  const sim=S.tickets.filter(t=>open(t)&&t.dept===dept&&t.category===S.cat&&!(t.affectedBy||[]).includes(S.me.mobile)&&t.reporterMobile!==S.me.mobile);
+  el.innerHTML=sim.length?`<div class="text-[11px] text-amber-400 flex items-center gap-1"><i class="fa-solid fa-circle-info"></i> ${sim.length} similar open report(s) — mark "me too" instead of duplicating</div>`+sim.slice(0,3).map(t=>`<div class="${CARD} !p-2.5 flex items-center justify-between gap-2"><div class="text-[11px] min-w-0"><div class="truncate">${esc(t.title)}</div><div class="text-[10px] text-slate-500">${esc(t.landmark)}</div></div><button onclick="meToo('${t.id}')" class="shrink-0 text-[10px] font-semibold bg-blue-600 px-2.5 py-1.5 rounded-lg">+1 Me too</button></div>`).join(''):'';
+}
+async function meToo(id){try{await K.doc(id).update({affectedBy:firebase.firestore.FieldValue.arrayUnion(S.me.mobile)});toast('Marked as affected too — no need to file a duplicate');go('home')}catch(e){toast(e.message)}}
 async function submitReport(){
   const landmark=$('rland').value.trim(),desc=$('rdesc').value.trim();
   if(!landmark||!desc)return toast('Fill room/landmark and description');
@@ -212,71 +289,116 @@ async function submitReport(){
   try{
     if(S.photo)btn.textContent='Uploading photo…';
     const photoUrl=await tryUpload(S.photo);btn.textContent='Saving…';
-    await K.add({title:desc.length>44?desc.slice(0,44)+'…':desc,desc,category:S.cat,dept:$('rdept').value,floor:S.floor,landmark,photoUrl,hazard:S.cat==='Safety & Hazard',approval:'pending',status:'Open',assignedTo:'',assignedName:'',reporterMobile:S.me.mobile,reporterName:S.me.name,createdAt:now()});
+    await K.add({title:desc.length>44?desc.slice(0,44)+'…':desc,desc,category:S.cat,dept:$('rdept').value,floor:S.floor,landmark,photoUrl,hazard:S.cat==='Safety & Hazard',approval:'pending',status:'Open',assignedTo:'',assignedName:'',affectedBy:[],isAnon:$('ranon').checked,reporterMobile:S.me.mobile,reporterName:S.me.name,createdAt:now()});
     S.photo=null;toast('Report sent for admin approval');go('home');
   }catch(e){if(e.message!=='cancelled')toast('Failed: '+e.message);const b=$('sbtn');if(b){b.disabled=false;b.textContent='Submit Report'}}
 }
+function ratingRow(t){
+  if(t.status!=='Resolved'||t.approval!=='approved')return '';
+  if(t.rating)return `<div class="text-[11px] text-amber-400">${'★'.repeat(t.rating)}${'☆'.repeat(5-t.rating)} <span class="text-slate-500">you rated this fix</span></div>`;
+  return `<div class="flex items-center gap-1 pt-1" id="rate-${t.id}">${[1,2,3,4,5].map(n=>`<button onclick="rateTicket('${t.id}',${n})" class="text-amber-400 text-lg leading-none">☆</button>`).join('')}<span class="text-[10px] text-slate-500 ml-1">Rate this fix</span></div>`;
+}
+async function rateTicket(id,n){try{await K.doc(id).update({rating:n});toast('Thanks for rating! ★'+n)}catch(e){toast(e.message)}}
+function reopenBtn(t){if(t.status!=='Resolved'||t.approval!=='approved'||t.reporterMobile!==S.me?.mobile)return '';return `<button onclick="reopenM('${t.id}')" class="text-[10px] text-red-400 underline">Not actually fixed? Reopen</button>`}
+function reopenM(id){modal(`<h3 class="font-bold">Reopen ticket ${code({id})}</h3>${lbl("Why isn't it fixed?")}<textarea id="rorsn" rows="3" placeholder="Explain what's still wrong" class="${INP} resize-none"></textarea><div class="flex gap-2"><button onclick="closeM()" class="${B} bg-slate-700 flex-1">Cancel</button><button onclick="doReopen('${id}')" class="${B} bg-red-600 flex-1">Reopen</button></div>`)}
+async function doReopen(id){
+  const reason=$('rorsn').value.trim();if(!reason)return toast('Explain the issue');
+  try{await K.doc(id).update({status:'Open',reopenReason:reason,reopenCount:firebase.firestore.FieldValue.increment(1),reopenedAt:now()});logAction('reopen',code({id})+': '+reason);closeM();toast('Ticket reopened')}catch(e){toast(e.message)}
+}
 
-/* ============ CAMPUS HEATMAP + INSIGHTS (shared) ============ */
+/* ============ LEADERBOARD ============ */
+function vLeaderboard(){
+  const m={};S.tickets.filter(t=>t.approval==='approved'&&!t.isAnon).forEach(t=>{const k=t.reporterMobile;m[k]=m[k]||{name:t.reporterName,pts:0};m[k].pts+=10+(t.status==='Resolved'?5:0)});
+  const L=Object.values(m).sort((a,b)=>b.pts-a.pts).slice(0,10);
+  return `${head(t('leaderboard'),'Top campus reporters — points for valid, resolved reports')}
+  ${L.map((u,i)=>`<div class="${CARD} flex items-center justify-between"><div class="flex items-center gap-3"><div class="w-7 h-7 rounded-full ${i<3?'bg-amber-500/20 text-amber-400':'bg-slate-700 text-slate-300'} flex items-center justify-center text-xs font-bold">${i+1}</div><div class="text-[13px] font-semibold">${esc(u.name)}</div></div><div class="text-sm font-bold text-blue-400">${u.pts} pts</div></div>`).join('')||empty('No approved reports yet')}
+  <p class="text-[10px] text-slate-500 text-center pt-1">Anonymous reports don't appear here to protect privacy, but still count toward campus fixes.</p>`;
+}
+
+/* ============ CAMPUS HEATMAP (shared) ============ */
 function heat(){
   return `<div class="grid grid-cols-2 gap-2.5">${DEPTS.map(d=>{const n=S.tickets.filter(t=>open(t)&&t.dept===d).length,z=n>=3?['border-red-500/40','text-red-400','fa-fire']:n?['border-amber-500/30','text-amber-400','fa-triangle-exclamation']:['border-emerald-500/20','text-emerald-400','fa-circle-check'];return `<div class="${CARD} !p-3 ${z[0]}"><div class="text-[10px] font-bold uppercase ${z[1]}"><i class="fa-solid ${z[2]}"></i> ${n?n+' open':'Clear'}</div><div class="text-xs font-semibold mt-0.5">${esc(d)}</div></div>`}).join('')}</div>`;
 }
-function vCampus(){return `${head('Campus Heatmap','Live open issues by block')}${heat()}`}
+function vCampus(){return `${head('Campus Heatmap','Live open issues by block — full GPS map needs a Google Maps key, ask admin')}${heat()}`}
 function clusters(){const m={};S.tickets.filter(open).forEach(t=>{const k=t.dept+'|'+t.category;(m[k]=m[k]||[]).push(t)});return Object.values(m).filter(a=>a.length>=3).sort((a,b)=>b.length-a.length)}
 
 /* ============ STAFF ============ */
+function dutyColor(d){return d==='available'?'bg-emerald-500/10 text-emerald-400 border-emerald-500/30':d==='busy'?'bg-amber-500/10 text-amber-400 border-amber-500/30':'bg-slate-500/10 text-slate-400 border-slate-500/30'}
+async function setDuty(d){try{await U.doc(S.me.id).update({duty:d})}catch(e){toast(e.message)}}
 function sHome(){
-  const mine=S.tickets.filter(t=>t.assignedTo===S.me.mobile&&t.approval==='approved'),act=mine.filter(t=>t.status!=='Resolved'),done=mine.filter(t=>t.status==='Resolved');
-  return `${head('My Jobs',esc(S.me.trade||'Staff')+' • assigned by admin')}
+  const mine=S.tickets.filter(t=>t.assignedTo===S.me.mobile&&t.approval==='approved'),act=mine.filter(t=>t.status!=='Resolved'),done=mine.filter(t=>t.status==='Resolved'),duty=S.me.duty||'available';
+  return `${noticeBanner()}${head('My Jobs',esc(S.me.trade||'Staff')+' • assigned by admin')}
+  <div class="flex gap-1.5">${['available','busy','off'].map(d=>`<button onclick="setDuty('${d}')" class="px-2.5 py-1 rounded-full text-[10px] font-semibold border ${duty===d?dutyColor(d):'border-[#1E2B45] text-slate-400'}">${d}</button>`).join('')}</div>
   <div class="grid grid-cols-2 gap-2">${stat('Active',act.length,'text-blue-400')}${stat('Completed',done.length,'text-emerald-400')}</div>
   ${act.map(t=>tk(t,`<div class="flex gap-2 pt-2 border-t border-[#1E2B45]">${t.status==='Open'?`<button onclick="setStatus('${t.id}','In Progress')" class="${B} bg-slate-700 hover:bg-slate-600 flex-1 text-xs">Start work</button>`:''}<button onclick="resolveM('${t.id}')" class="${B} bg-emerald-600 hover:bg-emerald-500 flex-1 text-xs">Done & Upload Proof</button></div>`)).join('')||empty('No active jobs assigned to you')}
   ${done.length?`<div class="text-xs font-bold uppercase tracking-wider text-slate-300 pt-2">Completed</div>${done.slice(0,8).map(t=>tk(t)).join('')}`:''}`;
 }
 async function setStatus(id,s){try{await K.doc(id).update({status:s,updatedAt:now()});toast('Status: '+s)}catch(e){toast(e.message)}}
 function resolveM(id){
-  modal(`<h3 class="font-bold">Close ticket ${'T-'+id.slice(-4).toUpperCase()}</h3>${lbl('Fix note')}<textarea id="rnote" rows="3" placeholder="What was fixed?" class="${INP} resize-none"></textarea>
-  ${lbl('Proof photo')}<input type="file" id="rproof" accept="image/*" capture="environment" class="${INP} !text-xs">
+  modal(`<h3 class="font-bold">Close ticket ${code({id})}</h3>${lbl('Fix note')}<textarea id="rnote" rows="3" placeholder="What was fixed?" class="${INP} resize-none"></textarea>
+  ${lbl('Proof photo (after)')}<input type="file" id="rproof" accept="image/*" capture="environment" class="${INP} !text-xs">
   <div class="flex gap-2"><button onclick="closeM()" class="${B} bg-slate-700 flex-1">Cancel</button><button id="rbtn" onclick="doResolve('${id}')" class="${B} bg-emerald-600 flex-1">Mark Resolved</button></div>`);
 }
 async function doResolve(id){
   const note=$('rnote').value.trim();if(!note)return toast('Add a fix note');
   const b=$('rbtn');b.disabled=true;b.textContent='Saving…';
-  try{const proofUrl=await tryUpload($('rproof').files[0]);await K.doc(id).update({status:'Resolved',resolvedNote:note,proofUrl,resolvedBy:S.me.name,resolvedAt:now(),updatedAt:now()});closeM();toast('Ticket resolved')}
+  try{const proofUrl=await tryUpload($('rproof').files[0]);await K.doc(id).update({status:'Resolved',resolvedNote:note,proofUrl,resolvedBy:S.me.name,resolvedAt:now(),updatedAt:now()});logAction('resolve',code({id}));closeM();toast('Ticket resolved')}
   catch(e){if(e.message!=='cancelled')toast(e.message);b.disabled=false;b.textContent='Mark Resolved'}
 }
 
 /* ============ ADMIN ============ */
+let CH={};
+function drawCharts(){
+  if(!window.Chart)return;
+  const days=[...Array(14)].map((_,i)=>{const d=new Date();d.setDate(d.getDate()-(13-i));return d});
+  const counts=days.map(d=>S.tickets.filter(x=>new Date(tm(x)).toDateString()===d.toDateString()).length);
+  const labels=days.map(d=>d.getDate()+'/'+(d.getMonth()+1));
+  const gridColor=document.documentElement.dataset.theme==='light'?'#E2E8F0':'#1E2B45',tickColor='#64748B';
+  const c1=$('chTrend');if(c1){if(CH.trend)CH.trend.destroy();CH.trend=new Chart(c1,{type:'line',data:{labels,datasets:[{data:counts,borderColor:'#3B82F6',backgroundColor:'rgba(59,130,246,.15)',fill:true,tension:.3,pointRadius:2}]},options:{plugins:{legend:{display:false}},scales:{x:{ticks:{color:tickColor,font:{size:9}},grid:{display:false}},y:{beginAtZero:true,ticks:{color:tickColor,font:{size:9},precision:0},grid:{color:gridColor}}}}})}
+  const cats=Object.keys(CAT),cc=cats.map(c=>S.tickets.filter(x=>x.category===c).length);
+  const c2=$('chCat');if(c2){if(CH.cat)CH.cat.destroy();CH.cat=new Chart(c2,{type:'bar',data:{labels:cats.map(c=>c.split(' ')[0]),datasets:[{data:cc,backgroundColor:'#3B82F6',borderRadius:6}]},options:{plugins:{legend:{display:false}},scales:{x:{ticks:{color:tickColor,font:{size:9}},grid:{display:false}},y:{beginAtZero:true,ticks:{color:tickColor,font:{size:9},precision:0},grid:{color:gridColor}}}}})}
+}
 function aHome(){
-  const T=S.tickets,ap=T.filter(t=>t.approval==='approved'),cl=clusters();
-  return `${head('Admin Dashboard','Live overview of the whole campus')}
+  const T=S.tickets,ap=T.filter(t=>t.approval==='approved'),cl=clusters(),breach=ap.filter(slaBreached);
+  return `${noticeBanner()}${head('Admin Dashboard','Live overview of the whole campus')}
   <div class="grid grid-cols-2 gap-2">${stat('Pending approval',pendingCount(),'text-amber-400')}${stat('Open',ap.filter(t=>t.status==='Open').length,'text-white')}${stat('In progress',ap.filter(t=>t.status==='In Progress').length,'text-blue-400')}${stat('Resolved',ap.filter(t=>t.status==='Resolved').length,'text-emerald-400')}</div>
+  <div class="${CARD}"><div class="text-xs font-bold uppercase text-slate-300 mb-2">Reports — last 14 days</div><canvas id="chTrend" height="140"></canvas></div>
+  <div class="${CARD}"><div class="text-xs font-bold uppercase text-slate-300 mb-2">By category</div><canvas id="chCat" height="140"></canvas></div>
+  ${breach.length?`<div class="text-xs font-bold uppercase tracking-wider text-red-400">SLA breaches (open ${SLA_HOURS}h+)</div>${breach.map(t=>tk(t,adminAct(t))).join('')}`:''}
   ${cl.length?`<div class="text-xs font-bold uppercase tracking-wider text-red-400">Root-cause alerts</div>${cl.map(g=>`<div class="${CARD} !border-red-500/40 bg-red-500/5"><div class="text-sm font-semibold">${esc(g[0].category)} — ${esc(g[0].dept)}</div><div class="text-[11px] text-slate-400 mt-0.5">${g.length} open reports share this block and category. Send one technician to check the common source.</div></div>`).join('')}`:''}
-  ${ap.filter(t=>t.hazard&&t.status!=='Resolved').length?`<div class="text-xs font-bold uppercase tracking-wider text-red-400">Open hazards</div>${ap.filter(t=>t.hazard&&t.status!=='Resolved').map(t=>tk(t,adminAct(t))).join('')}`:''}
   <div class="text-xs font-bold uppercase tracking-wider text-slate-300 pt-1">Campus heatmap</div>${heat()}`;
 }
 function aApprovals(){
   const pt=S.tickets.filter(t=>t.approval==='pending'),pu=S.users.filter(u=>u.status==='pending');
   return `${head('Approvals','Review reports and new student accounts')}
-  <div class="text-xs font-bold uppercase tracking-wider text-slate-300">Reports (${pt.length})</div>
-  ${pt.map(t=>tk(t,`<div class="flex gap-2 pt-2 border-t border-[#1E2B45]"><button onclick="approve('${t.id}')" class="${B} bg-emerald-600 hover:bg-emerald-500 flex-1 text-xs"><i class="fa-solid fa-check"></i> Approve</button><button onclick="rejectM('${t.id}')" class="${B} bg-red-600/80 hover:bg-red-500 flex-1 text-xs"><i class="fa-solid fa-xmark"></i> Reject</button></div>`)).join('')||empty('No reports waiting')}
+  <div class="flex items-center justify-between"><div class="text-xs font-bold uppercase tracking-wider text-slate-300">Reports (${pt.length})</div>${pt.length?`<button onclick="bulkApprove()" class="text-[11px] font-semibold text-blue-400">Approve selected</button>`:''}</div>
+  ${pt.map(t=>`<label class="flex gap-2 items-start"><input type="checkbox" class="bulkchk mt-4 accent-blue-600" value="${t.id}">${tk(t,approvalAct(t))}</label>`).join('')||empty('No reports waiting')}
   <div class="text-xs font-bold uppercase tracking-wider text-slate-300 pt-2">Student sign-ups (${pu.length})</div>
   ${pu.map(u=>`<div class="${CARD} flex items-center justify-between gap-2"><div><div class="text-[13px] font-semibold">${esc(u.name)}</div><div class="text-[11px] text-slate-400">${esc(u.mobile)} • ${esc(u.dept)}</div></div><div class="flex gap-1.5"><button onclick="userSet('${u.id}','active')" class="${B} bg-emerald-600 px-3 text-xs">Approve</button><button onclick="userSet('${u.id}','rejected')" class="${B} bg-red-600/80 px-3 text-xs">Reject</button></div></div>`).join('')||empty('No sign-ups waiting')}`;
 }
-async function approve(id){try{await K.doc(id).update({approval:'approved',approvedBy:S.me.name,updatedAt:now()});toast('Approved')}catch(e){toast(e.message)}}
+function bulkApprove(){const ids=[...document.querySelectorAll('.bulkchk:checked')].map(c=>c.value);if(!ids.length)return toast('Select at least one');ids.forEach(id=>approve(id));toast(ids.length+' approved')}
+function approvalAct(t){return `<div class="flex gap-2 pt-2 border-t border-[#1E2B45]"><button onclick="approve('${t.id}')" class="${B} bg-emerald-600 hover:bg-emerald-500 flex-1 text-xs"><i class="fa-solid fa-check"></i> Approve</button><button onclick="rejectM('${t.id}')" class="${B} bg-red-600/80 hover:bg-red-500 flex-1 text-xs"><i class="fa-solid fa-xmark"></i> Reject</button></div>`}
+async function approve(id){try{await K.doc(id).update({approval:'approved',approvedBy:S.me.name,updatedAt:now()});logAction('approve',code({id}));toast('Approved')}catch(e){toast(e.message)}}
 function rejectM(id){modal(`<h3 class="font-bold">Reject report</h3><textarea id="rrsn" rows="3" placeholder="Reason (student will see this)" class="${INP} resize-none"></textarea><div class="flex gap-2"><button onclick="closeM()" class="${B} bg-slate-700 flex-1">Cancel</button><button onclick="doReject('${id}')" class="${B} bg-red-600 flex-1">Reject</button></div>`)}
-async function doReject(id){try{await K.doc(id).update({approval:'rejected',rejectReason:$('rrsn').value.trim()||'Not valid',updatedAt:now()});closeM();toast('Rejected')}catch(e){toast(e.message)}}
+async function doReject(id){const reason=$('rrsn').value.trim()||'Not valid';try{await K.doc(id).update({approval:'rejected',rejectReason:reason,updatedAt:now()});logAction('reject',code({id})+': '+reason);closeM();toast('Rejected')}catch(e){toast(e.message)}}
 function adminAct(t){
   if(t.approval!=='approved')return `<div class="flex gap-2 pt-2 border-t border-[#1E2B45]">${t.approval==='rejected'?`<button onclick="approve('${t.id}')" class="${B} bg-emerald-600 flex-1 text-xs">Approve anyway</button>`:''}<button onclick="delT('${t.id}')" class="${B} bg-slate-700 px-4 text-xs text-red-400"><i class="fa-solid fa-trash"></i></button></div>`;
   const staff=S.users.filter(u=>u.role==='staff'&&u.status==='active');
-  return `<div class="flex gap-2 pt-2 border-t border-[#1E2B45]"><select onchange="assign('${t.id}',this.value)" class="${INP} !py-2 !text-xs flex-1"><option value="">Assign staff…</option>${staff.map(u=>`<option value="${u.mobile}" ${t.assignedTo===u.mobile?'selected':''}>${esc(u.name)} (${esc(u.trade||'')})</option>`).join('')}</select>
+  return `<div class="flex gap-2 pt-2 border-t border-[#1E2B45]"><select onchange="assign('${t.id}',this.value)" class="${INP} !py-2 !text-xs flex-1"><option value="">Assign staff…</option>${staff.map(u=>`<option value="${u.mobile}" ${t.assignedTo===u.mobile?'selected':''}>${esc(u.name)} (${esc(u.trade||'')}) ${u.duty==='off'?'⚪':u.duty==='busy'?'🟡':'🟢'}</option>`).join('')}</select>
   ${t.status!=='Resolved'?`<button onclick="resolveM('${t.id}')" class="${B} bg-emerald-600 px-3 text-xs">Close</button>`:`<button onclick="setStatus('${t.id}','Open')" class="${B} bg-slate-700 px-3 text-xs">Reopen</button>`}<button onclick="delT('${t.id}')" class="${B} bg-slate-700 px-3 text-xs text-red-400"><i class="fa-solid fa-trash"></i></button></div>`;
 }
-async function assign(id,m){const u=S.users.find(x=>x.mobile===m),t=S.tickets.find(x=>x.id===id);try{await K.doc(id).update({assignedTo:m,assignedName:u?u.name:'',status:m&&t.status==='Open'?'In Progress':t.status,updatedAt:now()});toast(m?'Assigned to '+u.name:'Unassigned')}catch(e){toast(e.message)}}
-async function delT(id){if(confirm('Delete this ticket permanently?'))try{await K.doc(id).delete()}catch(e){toast(e.message)}}
+async function assign(id,m){const u=S.users.find(x=>x.mobile===m),t=S.tickets.find(x=>x.id===id);try{await K.doc(id).update({assignedTo:m,assignedName:u?u.name:'',status:m&&t.status==='Open'?'In Progress':t.status,updatedAt:now()});logAction('assign',code({id})+' → '+(u?u.name:'unassigned'));toast(m?'Assigned to '+u.name:'Unassigned')}catch(e){toast(e.message)}}
+async function delT(id){if(confirm('Delete this ticket permanently?'))try{await K.doc(id).delete();logAction('delete_ticket',code({id}))}catch(e){toast(e.message)}}
+function exportCSV(){
+  const rows=[['Ticket','Title','Category','Dept','Floor','Landmark','Status','Approval','Reporter','Assigned','Rating','Created']];
+  S.tickets.forEach(t=>rows.push([code(t),t.title,t.category,t.dept,t.floor,t.landmark,t.status,t.approval,t.isAnon?'Anonymous':t.reporterName,t.assignedName||'',t.rating||'',new Date(tm(t)).toLocaleString()]));
+  const csv=rows.map(r=>r.map(v=>`"${String(v??'').replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob=new Blob([csv],{type:'text/csv'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='avcoe-sentinel-tickets.csv';a.click();
+}
 function aTickets(){
   const f=S.filter,L=S.tickets.filter(t=>f==='all'||(f==='pending'&&t.approval==='pending')||(f==='rejected'&&t.approval==='rejected')||(t.approval==='approved'&&((f==='open'&&t.status==='Open')||(f==='progress'&&t.status==='In Progress')||(f==='resolved'&&t.status==='Resolved'))));
   const chips=[['all','All'],['pending','Pending'],['open','Open'],['progress','In Progress'],['resolved','Resolved'],['rejected','Rejected']];
-  return `${head('All Tickets','Assign, close, reopen or delete')}
+  return `<div class="flex items-center justify-between">${head('All Tickets','Assign, close, reopen or delete')}<button onclick="exportCSV()" class="${B} bg-slate-700 !py-2 px-3 text-xs shrink-0"><i class="fa-solid fa-file-csv mr-1"></i>CSV</button></div>
   <div class="flex gap-1.5 overflow-x-auto sc pb-1">${chips.map(([k,l])=>`<button onclick="S.filter='${k}';go('tickets')" class="shrink-0 px-3 py-1.5 rounded-full text-[11px] font-semibold border ${f===k?'bg-blue-600 border-blue-600 text-white':'border-[#1E2B45] text-slate-400'}">${l}</button>`).join('')}</div>
   ${L.map(t=>tk(t,adminAct(t))).join('')||empty('No tickets in this view')}`;
 }
@@ -285,13 +407,14 @@ function aUsers(){
   const grp=(t,r)=>{const L=S.users.filter(u=>u.role===r&&u.status!=='pending');return `<div class="text-xs font-bold uppercase tracking-wider text-slate-300 pt-2">${t} (${L.length})</div>${L.map(uc).join('')||empty('None yet')}`};
   return `${head('User Management','Create IDs for staff and admins')}<button onclick="userM()" class="${B} ${P} w-full py-3"><i class="fa-solid fa-user-plus mr-1"></i> Create Staff / Admin ID</button>${grp('Staff','staff')}${grp('Admins','admin')}${grp('Students','student')}`;
 }
+function avgRating(mobile){const rs=S.tickets.filter(t=>t.assignedTo===mobile&&t.rating);if(!rs.length)return null;return(rs.reduce((a,b)=>a+b.rating,0)/rs.length).toFixed(1)}
 function uc(u){
-  const me=u.id===S.me.id,st={active:'green',blocked:'red',rejected:'red'}[u.status]||'slate';
-  return `<div class="${CARD} space-y-2"><div class="flex justify-between items-start"><div><div class="text-[13px] font-semibold">${esc(u.name)} ${me?'<span class="text-[10px] text-slate-500">(you)</span>':''}</div><div class="text-[11px] text-slate-400"><i class="fa-solid fa-phone text-[9px]"></i> ${esc(u.mobile)} • ${esc(u.trade||u.dept||'')}</div></div>${bd(u.status,st)}</div>
+  const me=u.id===S.me.id,st={active:'green',blocked:'red',rejected:'red'}[u.status]||'slate',ar=u.role==='staff'?avgRating(u.mobile):null;
+  return `<div class="${CARD} space-y-2"><div class="flex justify-between items-start"><div><div class="text-[13px] font-semibold">${esc(u.name)} ${me?'<span class="text-[10px] text-slate-500">(you)</span>':''}</div><div class="text-[11px] text-slate-400"><i class="fa-solid fa-phone text-[9px]"></i> ${esc(u.mobile)} • ${esc(u.trade||u.dept||'')}${u.duty?' • '+esc(u.duty):''}${ar?` • ★${ar}`:''}</div></div>${bd(u.status,st)}</div>
   ${me?'':`<div class="flex gap-2"><button onclick="userSet('${u.id}','${u.status==='active'?'blocked':'active'}')" class="${B} bg-slate-700 flex-1 text-xs">${u.status==='active'?'Block':'Unblock'}</button><button onclick="pwM('${u.id}')" class="${B} bg-slate-700 flex-1 text-xs">Reset password</button><button onclick="delU('${u.id}')" class="${B} bg-slate-700 px-3 text-xs text-red-400"><i class="fa-solid fa-trash"></i></button></div>`}</div>`;
 }
-async function userSet(id,s){try{await U.doc(id).update({status:s});toast('User '+s)}catch(e){toast(e.message)}}
-async function delU(id){if(confirm('Delete this user?'))try{await U.doc(id).delete()}catch(e){toast(e.message)}}
+async function userSet(id,s){try{await U.doc(id).update({status:s});logAction('user_status',id+' → '+s);toast('User '+s)}catch(e){toast(e.message)}}
+async function delU(id){if(confirm('Delete this user?'))try{await U.doc(id).delete();logAction('delete_user',id)}catch(e){toast(e.message)}}
 function userM(){
   modal(`<h3 class="font-bold">Create ID</h3><select id="nr" onchange="$('nt').classList.toggle('hidden',this.value!=='staff')" class="${INP}"><option value="staff">Staff / Worker</option><option value="admin">Admin</option></select>
   <input id="nn" placeholder="Full name" class="${INP}"><input id="nm" inputmode="numeric" maxlength="10" placeholder="Mobile number (login ID)" class="${INP}"><select id="nt" class="${INP}">${opts(TRADES)}</select><input id="np" placeholder="Password (min 6)" class="${INP}">
@@ -302,26 +425,40 @@ async function createUser(){
   if(name.length<2||!/^\d{10}$/.test(m)||p.length<6)return toast('Need name, 10-digit mobile and 6+ char password');
   try{
     if((await U.doc(m).get()).exists)return toast('Mobile number already in use');
-    await U.doc(m).set({name,mobile:m,role,trade:role==='staff'?$('nt').value:'',status:'active',pass:await hash(m,p),createdBy:S.me.name,createdAt:now()});
-    closeM();toast('ID created. Share: '+m+' / '+p);
+    await U.doc(m).set({name,mobile:m,role,trade:role==='staff'?$('nt').value:'',duty:role==='staff'?'available':'',status:'active',pass:await shahash(m,p),createdBy:S.me.name,createdAt:now()});
+    logAction('create_user',role+': '+name+' ('+m+')');closeM();toast('ID created. Share: '+m+' / '+p);
   }catch(e){toast(e.message)}
 }
 function pwM(id){modal(`<h3 class="font-bold">Reset password</h3><input id="npw" placeholder="New password (min 6)" class="${INP}"><div class="flex gap-2"><button onclick="closeM()" class="${B} bg-slate-700 flex-1">Cancel</button><button onclick="setPw('${id}')" class="${B} ${P} flex-1">Save</button></div>`)}
-async function setPw(id){const p=$('npw').value;if(p.length<6)return toast('Min 6 characters');try{await U.doc(id).update({pass:await hash(id,p)});closeM();toast('Password updated')}catch(e){toast(e.message)}}
+async function setPw(id){const p=$('npw').value;if(p.length<6)return toast('Min 6 characters');try{await U.doc(id).update({pass:await shahash(id,p)});logAction('reset_password',id);closeM();toast('Password updated')}catch(e){toast(e.message)}}
+/* notices */
+function aNotices(){
+  return `${head('Notices','Post campus-wide announcements')}<div class="${CARD} space-y-2"><input id="ntitle" placeholder="Title" class="${INP}"><textarea id="nbody" rows="2" placeholder="Message" class="${INP} resize-none"></textarea><button onclick="postNotice()" class="${B} ${P} w-full">Post</button></div>${(S.notices||[]).map(n=>`<div class="${CARD} flex justify-between items-start gap-2"><div><div class="text-[13px] font-semibold">${esc(n.title)}</div><div class="text-[11px] text-slate-400">${esc(n.body)}</div><div class="text-[10px] text-slate-500 mt-1">${esc(n.postedBy)} • ${ago(n.ts?.toMillis?n.ts.toMillis():Date.now())}</div></div><button onclick="delNotice('${n.id}')" class="text-red-400 text-xs"><i class="fa-solid fa-trash"></i></button></div>`).join('')||empty('No notices yet')}`;
+}
+async function postNotice(){const title=$('ntitle').value.trim(),body=$('nbody').value.trim();if(!title||!body)return toast('Fill both fields');try{await N.add({title,body,postedBy:S.me.name,ts:now()});logAction('notice','Posted: '+title);toast('Notice posted');go('notices')}catch(e){toast(e.message)}}
+async function delNotice(id){try{await N.doc(id).delete()}catch(e){toast(e.message)}}
+/* logs */
+function aLogs(){
+  return `${head('Activity Log','Every approval, assignment and change')}${(S.logs||[]).map(l=>`<div class="${CARD} !p-2.5"><div class="text-[11px]"><b>${esc(l.actor)}</b> <span class="text-slate-500">(${esc(l.actorRole)})</span> — ${esc(l.action)}</div><div class="text-[10px] text-slate-500">${esc(l.detail||'')} • ${ago(l.ts?.toMillis?l.ts.toMillis():Date.now())}</div></div>`).join('')||empty('No activity yet')}`;
+}
 /* settings */
 function aSettings(){
   return `${head('Settings')}
+  <div class="${CARD} space-y-2.5"><div class="text-sm font-semibold">Institution branding</div><p class="text-[11px] text-slate-400">Rename the app header for your campus (useful if you reuse this app for another college).</p>
+  <input id="orgn" value="${esc(S.cfg.orgName||'')}" placeholder="e.g. AVCOE Sentinel" class="${INP}"><button onclick="saveOrg()" class="${B} bg-slate-700 w-full">Save name</button></div>
   <div class="${CARD} space-y-2.5"><div class="text-sm font-semibold">Cloudinary photo upload</div><p class="text-[11px] text-slate-400">Cloud name: <b class="text-slate-200">${CLOUD}</b>. Enter your <b>unsigned</b> upload preset name (Cloudinary → Settings → Upload → Upload presets).</p>
   <input id="cp" value="${esc(S.cfg.cloudPreset||DEFAULT_PRESET)}" class="${INP}"><button onclick="saveCfg()" class="${B} ${P} w-full">Save preset</button></div>
   <div class="${CARD} space-y-2.5"><div class="text-sm font-semibold">Change my password</div><input id="mp" type="password" placeholder="New password (min 6)" class="${INP}"><button onclick="myPw()" class="${B} bg-slate-700 w-full">Update password</button></div>`;
 }
 async function saveCfg(){try{await C.set({cloudPreset:$('cp').value.trim()},{merge:true});toast('Preset saved')}catch(e){toast(e.message)}}
-async function myPw(){const p=$('mp').value;if(p.length<6)return toast('Min 6 characters');try{await U.doc(S.me.id).update({pass:await hash(S.me.id,p)});$('mp').value='';toast('Password changed')}catch(e){toast(e.message)}}
+async function saveOrg(){try{await C.set({orgName:$('orgn').value.trim()},{merge:true});toast('Branding saved')}catch(e){toast(e.message)}}
+async function myPw(){const p=$('mp').value;if(p.length<6)return toast('Min 6 characters');try{await U.doc(S.me.id).update({pass:await shahash(S.me.id,p)});$('mp').value='';toast('Password changed')}catch(e){toast(e.message)}}
 
 /* ============ BOOT ============ */
+$('langBtn').textContent=LANG.toUpperCase();
 render();
 (async()=>{const m=localStorage.getItem('sentinelMobile');if(m)try{const d=await U.doc(m).get();if(d.exists&&d.data().status==='active')start(m)}catch(e){}})();
-setInterval(()=>{if(S.me&&!['report','settings'].includes(S.tab))render()},60000);
+setInterval(()=>{if(S.me&&!['report','settings','notices'].includes(S.tab))render()},60000);
 </script>
 </body>
 </html>
