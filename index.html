@@ -493,40 +493,52 @@
 
     <div id="toast" class="hidden"></div>
 
-    <!-- ================= LOGIN / AUTH MODAL ================= -->
+    <!-- ================= LOGIN / SIGNUP MODAL ================= -->
     <div id="loginModal" class="hidden absolute inset-0 bg-black/85 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
-      <div class="w-full bg-sentinelCard border border-slate-800 rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl relative">
+      <div class="w-full bg-sentinelCard border border-slate-800 rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl relative max-h-[90%] overflow-y-auto scrollbar-none">
         <div class="flex items-center justify-between mb-4">
           <div>
-            <h3 class="text-base font-bold text-white">Campus Sentinel Login</h3>
-            <p class="text-xs text-slate-400">Choose your access credentials</p>
+            <h3 id="authTitle" class="text-base font-bold text-white">Campus Sentinel Login</h3>
+            <p class="text-xs text-slate-400">Choose your access</p>
           </div>
           <button onclick="closeLoginModal()" class="w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center">
             ✕
           </button>
         </div>
 
-        <div class="grid grid-cols-3 gap-1 bg-slate-900 p-1 rounded-xl mb-5 border border-slate-800">
-          <button id="tabBtnStudent" onclick="switchLoginRole('student')" class="py-2 text-xs font-bold rounded-lg bg-cyan-500 text-slate-950 transition">
+        <div class="grid grid-cols-3 gap-1 bg-slate-900 p-1 rounded-xl mb-3 border border-slate-800">
+          <button id="tabBtnStudent" onclick="switchAuthRole('student')" class="py-2 text-xs font-bold rounded-lg bg-cyan-500 text-slate-950 transition">
             Student
           </button>
-          <button id="tabBtnAdmin" onclick="switchLoginRole('admin')" class="py-2 text-xs font-bold rounded-lg text-slate-400 hover:text-white transition">
+          <button id="tabBtnAdmin" onclick="switchAuthRole('admin')" class="py-2 text-xs font-bold rounded-lg text-slate-400 hover:text-white transition">
             Admin / Staff
           </button>
-          <button id="tabBtnWorker" onclick="switchLoginRole('worker')" class="py-2 text-xs font-bold rounded-lg text-slate-400 hover:text-white transition">
+          <button id="tabBtnWorker" onclick="switchAuthRole('worker')" class="py-2 text-xs font-bold rounded-lg text-slate-400 hover:text-white transition">
             Worker
           </button>
         </div>
 
-        <!-- Student Form -->
-        <form id="studentLoginForm" onsubmit="handleLoginSubmit(event, 'student')" class="space-y-3.5">
-          <div>
-            <label class="text-[10px] font-bold uppercase text-slate-400 block mb-1">Student ERP No. (10 Digits)</label>
-            <input id="studentErp" type="tel" maxlength="10" placeholder="e.g., 2024101234" required pattern="[0-9]{10}" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-cyan-500 tracking-wider font-mono" />
+        <div class="grid grid-cols-2 gap-1 bg-slate-900 p-1 rounded-xl mb-4 border border-slate-800">
+          <button id="modeBtnLogin" onclick="switchAuthMode('login')" class="py-1.5 text-xs font-bold rounded-lg bg-slate-700 text-white transition">Login</button>
+          <button id="modeBtnSignup" onclick="switchAuthMode('signup')" class="py-1.5 text-xs font-bold rounded-lg text-slate-400 hover:text-white transition">Sign Up</button>
+        </div>
+
+        <form id="authForm" onsubmit="handleAuthSubmit(event)" novalidate class="space-y-3.5">
+          <div data-for="student-signup admin-signup worker-signup">
+            <label class="text-[10px] font-bold uppercase text-slate-400 block mb-1">Full Name</label>
+            <input id="authName" type="text" placeholder="Your full name" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-cyan-500" />
           </div>
-          <div>
+          <div data-for="student-signup student-login">
+            <label class="text-[10px] font-bold uppercase text-slate-400 block mb-1">Enrollment / ERP No. (10 Digits)</label>
+            <input id="authErp" type="tel" maxlength="10" placeholder="e.g., 2024101234" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-cyan-500 tracking-wider font-mono" />
+          </div>
+          <div data-for="student-signup admin-signup admin-login worker-signup worker-login">
+            <label class="text-[10px] font-bold uppercase text-slate-400 block mb-1">Mobile No. (10 Digits)</label>
+            <input id="authMobile" type="tel" maxlength="10" placeholder="e.g., 9822300000" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-cyan-500 tracking-wider font-mono" />
+          </div>
+          <div data-for="student-signup">
             <label class="text-[10px] font-bold uppercase text-slate-400 block mb-1">Department</label>
-            <select id="studentDeptSelect" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-500">
+            <select id="authDept" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-500">
               <option value="CS">CS (Computer Engineering)</option>
               <option value="AI&DS">AI&DS (Artificial Intelligence & Data Science)</option>
               <option value="IT">IT (Information Technology)</option>
@@ -538,51 +550,21 @@
               <option value="ELECTRICAL">ELECTRICAL (Electrical Engineering)</option>
             </select>
           </div>
-          <div>
-            <label class="text-[10px] font-bold uppercase text-slate-400 block mb-1">Pass Key</label>
-            <input id="studentPass" type="password" placeholder="Enter student passkey" required class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-cyan-500" />
-          </div>
-          <button type="submit" class="w-full py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs glow-cyan transition mt-2">
-            Login as Student
-          </button>
-        </form>
-
-        <!-- Admin Form -->
-        <form id="adminLoginForm" onsubmit="handleLoginSubmit(event, 'admin')" class="space-y-3.5 hidden">
-          <div>
-            <label class="text-[10px] font-bold uppercase text-slate-400 block mb-1">Mobile No. (10 Digits)</label>
-            <input id="adminMobile" type="tel" maxlength="10" placeholder="e.g., 9822300000" required pattern="[0-9]{10}" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-cyan-500 tracking-wider font-mono" />
-          </div>
-          <div>
-            <label class="text-[10px] font-bold uppercase text-slate-400 block mb-1">Admin Pass Key</label>
-            <input id="adminPass" type="password" placeholder="Enter admin passkey" required class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-cyan-500" />
-          </div>
-          <button type="submit" class="w-full py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs glow-cyan transition mt-2">
-            Login as Admin / Staff
-          </button>
-        </form>
-
-        <!-- Worker Form -->
-        <form id="workerLoginForm" onsubmit="handleLoginSubmit(event, 'worker')" class="space-y-3.5 hidden">
-          <div>
-            <label class="text-[10px] font-bold uppercase text-slate-400 block mb-1">Staff / Worker Mobile No.</label>
-            <input id="workerMobile" type="tel" maxlength="10" placeholder="e.g., 9876543210" required pattern="[0-9]{10}" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-cyan-500 font-mono" />
-          </div>
-          <div>
+          <div data-for="worker-signup">
             <label class="text-[10px] font-bold uppercase text-slate-400 block mb-1">Worker Profile</label>
-            <select id="workerProfileSelect" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-500">
-              <option value="Suresh (Plumber)">Suresh (Plumber)</option>
-              <option value="Ramesh (Electrician)">Ramesh (Electrician)</option>
-              <option value="Manoj (IT Staff)">Manoj (IT / Audio Staff)</option>
-              <option value="Kailash (Estate / Carpentry)">Kailash (Estate / Carpentry)</option>
+            <select id="authProfile" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-500">
+              <option value="Suresh (Plumber)">Plumber</option>
+              <option value="Ramesh (Electrician)">Electrician</option>
+              <option value="Manoj (IT Staff)">IT / Audio Staff</option>
+              <option value="Kailash (Estate / Carpentry)">Estate / Carpentry</option>
             </select>
           </div>
-          <div>
-            <label class="text-[10px] font-bold uppercase text-slate-400 block mb-1">Worker Pass Key</label>
-            <input id="workerPass" type="password" placeholder="Enter passkey" required class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-cyan-500" />
+          <div data-for="admin-signup admin-login worker-signup worker-login">
+            <label class="text-[10px] font-bold uppercase text-slate-400 block mb-1">Pass Key / Password</label>
+            <input id="authPass" type="password" placeholder="Enter passkey" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-cyan-500" />
           </div>
-          <button type="submit" class="w-full py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs transition mt-2">
-            Login as Staff Worker
+          <button id="authSubmitBtn" type="submit" class="w-full py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs glow-cyan transition mt-2">
+            Login
           </button>
         </form>
       </div>
@@ -626,7 +608,7 @@
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, doc, onSnapshot, setDoc, updateDoc, runTransaction, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, collection, doc, getDoc, onSnapshot, setDoc, updateDoc, runTransaction, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = { apiKey: "AIzaSyBcXm5QQaYCCddVXNgGqTBAszdKEK-0PJQ", authDomain: "multi-service-app-77dd8.firebaseapp.com", projectId: "multi-service-app-77dd8", storageBucket: "multi-service-app-77dd8.appspot.com", messagingSenderId: "123732555482", appId: "1:123732555482:web:ea47c825e0dbb504f597e3" };
 const db = getFirestore(initializeApp(firebaseConfig));
@@ -634,7 +616,6 @@ const db = getFirestore(initializeApp(firebaseConfig));
 // ===== CONFIG =====
 // Cloudinary config: admin panel se badalta hai (Firestore meta/config), ye sirf default hai
 const CFG = { cloudName: 'dbirgrdbp', preset: 'ml_default' };
-const PASS = { student: "avcoe123", admin: "admin123", worker: "worker123" };
 
 const WORKER_BY_CAT = {
   'Power / Fan': 'Ramesh (Electrician)', 'Water / Plumbing': 'Suresh (Plumber)',
@@ -656,7 +637,7 @@ const POS = {
   'Mess & Canteen': 'bottom:50px;left:110px', 'Parking Area': 'bottom:24px;left:160px', 'Boys Hostel': 'top:40px;left:36px', 'Girls Hostel': 'top:40px;right:36px'
 };
 
-const S = { role: 'guest', dept: 'CS', erp: '', worker: 'Suresh (Plumber)', tab: 'home', cat: 'Power / Fan', floor: 'Ground',
+const S = { role: 'guest', name: '', dept: 'CS', erp: '', worker: 'Suresh (Plumber)', tab: 'home', cat: 'Power / Fan', floor: 'Ground',
   resolveId: null, tickets: [], photo: null, proof: null, ready: false };
 
 const $ = id => document.getElementById(id);
@@ -786,34 +767,83 @@ function applySession() {
   $('studentDeptBadge').innerText = `${S.dept} Dept`;
   $('workerNameBadge').innerText = S.worker;
   const b = { guest: ['Guest', 'AV'], student: ['Student', 'ST'], admin: ['Admin / Staff', 'AD'], worker: ['Staff Crew', 'WK'] }[S.role];
-  $('headerRoleBadge').innerText = b[0];
-  $('headerAvatar').innerText = b[1];
+  const named = S.role !== 'guest' && S.name;
+  $('headerRoleBadge').innerText = named ? S.name.split(' ')[0] : b[0];
+  $('headerAvatar').innerText = named ? S.name.substring(0, 2).toUpperCase() : b[1];
 }
-function saveSession() { try { localStorage.setItem('sentinel_session', JSON.stringify({ role: S.role, dept: S.dept, erp: S.erp, worker: S.worker })); } catch {} }
+function saveSession() { try { localStorage.setItem('sentinel_session', JSON.stringify({ role: S.role, name: S.name, dept: S.dept, erp: S.erp, worker: S.worker })); } catch {} }
 function openLoginModal() { $('loginModal').classList.remove('hidden'); }
 function closeLoginModal() { $('loginModal').classList.add('hidden'); }
 function logout() {
   if (S.role === 'guest' || !confirm('Logout karna hai?')) return;
-  Object.assign(S, { role: 'guest', erp: '' });
+  Object.assign(S, { role: 'guest', erp: '', name: '' });
   try { localStorage.removeItem('sentinel_session'); } catch {}
   applySession(); renderAll(); switchTab('home');
 }
-function switchLoginRole(role) {
-  const map = { student: ['studentLoginForm', 'tabBtnStudent'], admin: ['adminLoginForm', 'tabBtnAdmin'], worker: ['workerLoginForm', 'tabBtnWorker'] };
-  Object.entries(map).forEach(([r, [f, b]]) => {
-    $(f).classList.toggle('hidden', r !== role);
-    $(b).className = 'py-2 text-xs font-bold rounded-lg ' + (r === role ? (r === 'worker' ? 'bg-emerald-500' : 'bg-cyan-500') + ' text-slate-950 transition' : 'text-slate-400 hover:text-white transition');
-  });
+
+// ---- Login / Signup ----
+const A = { role: 'student', mode: 'login' };
+async function hashPass(s) {
+  if (!window.crypto?.subtle) return s;
+  const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+  return [...new Uint8Array(b)].map(x => x.toString(16).padStart(2, '0')).join('');
 }
-function handleLoginSubmit(event, role) {
+function refreshAuthForm() {
+  const key = `${A.role}-${A.mode}`;
+  document.querySelectorAll('#authForm [data-for]').forEach(el => el.classList.toggle('hidden', !el.dataset.for.split(' ').includes(key)));
+  const on = 'py-2 text-xs font-bold rounded-lg text-slate-950 transition ';
+  const off = 'py-2 text-xs font-bold rounded-lg text-slate-400 hover:text-white transition';
+  $('tabBtnStudent').className = A.role === 'student' ? on + 'bg-cyan-500' : off;
+  $('tabBtnAdmin').className = A.role === 'admin' ? on + 'bg-cyan-500' : off;
+  $('tabBtnWorker').className = A.role === 'worker' ? on + 'bg-emerald-500' : off;
+  $('modeBtnLogin').className = 'py-1.5 text-xs font-bold rounded-lg transition ' + (A.mode === 'login' ? 'bg-slate-700 text-white' : 'text-slate-400 hover:text-white');
+  $('modeBtnSignup').className = 'py-1.5 text-xs font-bold rounded-lg transition ' + (A.mode === 'signup' ? 'bg-slate-700 text-white' : 'text-slate-400 hover:text-white');
+  $('authTitle').innerText = A.mode === 'login' ? 'Campus Sentinel Login' : 'Create New Account';
+  $('authSubmitBtn').innerText = A.mode === 'login' ? 'Login' : 'Sign Up';
+  $('authSubmitBtn').className = 'w-full py-3 rounded-xl ' + (A.role === 'worker' ? 'bg-emerald-500 hover:bg-emerald-400' : 'bg-cyan-500 hover:bg-cyan-400 glow-cyan') + ' text-slate-950 font-bold text-xs transition mt-2';
+}
+function switchAuthRole(role) { A.role = role; refreshAuthForm(); }
+function switchAuthMode(mode) { A.mode = mode; refreshAuthForm(); }
+
+async function handleAuthSubmit(event) {
   event.preventDefault();
-  const pass = $({ student: 'studentPass', admin: 'adminPass', worker: 'workerPass' }[role]).value;
-  if (pass !== PASS[role]) { toast('Galat pass key', true); return; }
-  S.role = role;
-  if (role === 'student') { S.dept = $('studentDeptSelect').value; S.erp = $('studentErp').value; }
-  if (role === 'worker') { S.worker = $('workerProfileSelect').value; S.erp = 'staff-' + $('workerMobile').value; }
-  if (role === 'admin') S.erp = 'admin-' + $('adminMobile').value;
-  saveSession(); applySession(); closeLoginModal(); renderAll(); switchTab('home');
+  const { role, mode } = A, v = id => $(id).value.trim();
+  const name = v('authName'), mobile = v('authMobile'), erp = v('authErp'), pass = $('authPass').value;
+  const ten = x => /^\d{10}$/.test(x);
+  const needPass = role !== 'student';
+
+  if (mode === 'signup' && name.length < 2) return toast('Apna naam likho', true);
+  if (role === 'student' && !ten(erp)) return toast('ERP No. 10 digit ka hona chahiye', true);
+  if ((role !== 'student' || mode === 'signup') && !ten(mobile)) return toast('Mobile No. 10 digit ka hona chahiye', true);
+  if (needPass && pass.length < 4) return toast('Pass key kam se kam 4 character ka rakho', true);
+
+  const id = role === 'student' ? `student-${erp}` : `${role}-${mobile}`;
+  const btn = $('authSubmitBtn');
+  btn.disabled = true;
+  try {
+    const ref = doc(db, 'users', id);
+    const snap = await getDoc(ref);
+    let u;
+    if (mode === 'signup') {
+      if (snap.exists()) { toast('Account pehle se hai, Login karo', true); return; }
+      u = { role, name, mobile, erp: role === 'student' ? erp : '', dept: role === 'student' ? $('authDept').value : '',
+            profile: role === 'worker' ? $('authProfile').value : '', createdMs: Date.now() };
+      if (needPass) u.passHash = await hashPass(pass);
+      await setDoc(ref, u);
+      toast('Account ban gaya ✓');
+    } else {
+      if (!snap.exists()) { toast('Account nahi mila, pehle Sign Up karo', true); return; }
+      u = snap.data();
+      if (needPass && u.passHash !== await hashPass(pass)) { toast('Galat pass key', true); return; }
+    }
+    S.role = role; S.name = u.name || '';
+    if (role === 'student') { S.dept = u.dept || 'CS'; S.erp = u.erp; }
+    if (role === 'worker') { S.worker = u.profile; S.erp = 'staff-' + u.mobile; }
+    if (role === 'admin') S.erp = 'admin-' + u.mobile;
+    ['authName', 'authMobile', 'authErp', 'authPass'].forEach(i => { $(i).value = ''; });
+    saveSession(); applySession(); closeLoginModal(); renderAll(); switchTab('home');
+  } catch (e) { console.error(e); toast('Login fail: internet / Firestore rules check karo', true); }
+  finally { btn.disabled = false; }
 }
 
 // ===== FORM =====
@@ -1026,11 +1056,12 @@ function renderMap() {
   }).join('') || '<div class="text-[11px] text-slate-500 py-1">Koi active issue nahi ✓</div>';
 }
 
-Object.assign(window, { switchTab, openLoginModal, closeLoginModal, switchLoginRole, handleLoginSubmit, logout, selectCategory, selectFloor,
+Object.assign(window, { switchTab, openLoginModal, closeLoginModal, switchAuthRole, switchAuthMode, handleAuthSubmit, logout, selectCategory, selectFloor,
   handleImageUpload, handleProofUpload, saveCloudCfg, testCloudCfg, submitNewReport, openResolveModal, closeResolveModal, submitTicketResolution, assignWorker });
 
 // ===== INIT =====
 try { Object.assign(S, JSON.parse(localStorage.getItem('sentinel_session') || '{}')); } catch {}
+refreshAuthForm();
 lucide.createIcons();
 applySession(); renderAll(); switchTab('home');
 listenCfg();
