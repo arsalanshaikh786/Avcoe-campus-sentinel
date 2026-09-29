@@ -1,464 +1,1040 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<title>AVCOE Campus Sentinel</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://cdn.tailwindcss.com"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-<style>
-body{font-family:Inter,system-ui,sans-serif;background:#050A14;-webkit-tap-highlight-color:transparent}
-.sc::-webkit-scrollbar{display:none}.sc{scrollbar-width:none}
-select,input,textarea{font-size:16px}@media(min-width:640px){select,input,textarea{font-size:13px}}
-.hero{background:radial-gradient(120% 60% at 50% 0%,rgba(37,99,235,.28),transparent 65%),#0A1220}
-/* ---- light theme overrides (attribute-selector, no JS class rewrite needed) ---- */
-[data-theme="light"] body{background:#F1F5F9;color:#0F172A}
-[data-theme="light"] .hero{background:radial-gradient(120% 60% at 50% 0%,rgba(37,99,235,.12),transparent 65%),#F8FAFC}
-[data-theme="light"] .bg-\[\#0A1220\]{background:#FFFFFF}
-[data-theme="light"] .bg-\[\#0F1A2E\]{background:#FFFFFF}
-[data-theme="light"] .bg-\[\#0A1424\]{background:#F8FAFC}
-[data-theme="light"] .border-\[\#1E2B45\]{border-color:#E2E8F0}
-[data-theme="light"] .text-white{color:#0F172A}
-[data-theme="light"] .text-slate-100{color:#0F172A}
-[data-theme="light"] .text-slate-200{color:#1E293B}
-[data-theme="light"] .text-slate-300{color:#334155}
-[data-theme="light"] .text-slate-400{color:#64748B}
-[data-theme="light"] .text-slate-500{color:#94A3B8}
-[data-theme="light"] .placeholder-slate-500::placeholder{color:#94A3B8}
-[data-theme="light"] .bg-slate-700{background:#E2E8F0;color:#0F172A}
-[data-theme="light"] .bg-slate-700:hover{background:#CBD5E1}
-[data-theme="light"] .bg-slate-800{background:#E2E8F0;color:#0F172A}
-[data-theme="light"] .bg-slate-800\/70{background:#E2E8F0}
-[data-theme="light"] .border-slate-600{border-color:#CBD5E1}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>AVCOE Campus Sentinel</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            sentinelDark: '#070D18',
+            sentinelCard: '#0E1726',
+            sentinelBorder: '#1E293B',
+            sentinelCyan: '#06B6D4',
+            sentinelCyanHover: '#0891B2',
+            sentinelBlue: '#2563EB',
+            sentinelTextMuted: '#94A3B8'
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    body {
+      background-color: #030712;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .scrollbar-none::-webkit-scrollbar {
+      display: none;
+    }
+    .scrollbar-none {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .glow-cyan {
+      box-shadow: 0 0 25px rgba(6, 182, 212, 0.35);
+    }
+  </style>
 </head>
-<body class="min-h-screen flex justify-center items-center sm:p-4 text-slate-100">
-<div class="relative w-full max-w-[480px] h-[100dvh] sm:h-[860px] bg-[#0A1220] sm:rounded-[28px] sm:border border-[#1E2B45] shadow-2xl flex flex-col overflow-hidden">
-  <header class="px-5 py-3.5 flex items-center justify-between border-b border-[#1E2B45] bg-[#0A1220] z-20">
-    <div class="flex items-center gap-2.5 min-w-0">
-      <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center text-white shrink-0"><i class="fa-solid fa-shield-halved"></i></div>
-      <div class="min-w-0"><div id="orgTitle" class="text-[13px] font-extrabold tracking-wide leading-none truncate">AVCOE SENTINEL</div><div class="text-[10px] text-slate-400 mt-1">Campus Issue Management</div></div>
+<body class="flex justify-center items-center min-h-screen text-slate-100 p-0 sm:p-4">
+
+  <!-- Mobile Screen Container -->
+  <div class="w-full max-w-[420px] h-[100dvh] sm:h-[890px] bg-sentinelDark border border-slate-800 sm:rounded-[36px] overflow-hidden flex flex-col relative shadow-2xl">
+
+    <!-- TOP SYSTEM HEADER -->
+    <header class="flex items-center justify-between px-5 pt-5 pb-3 border-b border-slate-800/80 bg-sentinelDark/95 backdrop-blur z-20">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-600 to-blue-600 p-[1px] flex items-center justify-center shadow-lg shadow-cyan-950/40">
+          <div class="w-full h-full bg-sentinelDark rounded-xl flex items-center justify-center">
+            <i data-lucide="shield" class="w-5 h-5 text-cyan-400"></i>
+          </div>
+        </div>
+        <div>
+          <h1 class="text-sm font-extrabold tracking-wide text-white leading-none">AVCOE SENTINEL</h1>
+          <p class="text-[10px] text-cyan-400 font-medium tracking-tight mt-0.5">Smart Campus AI System</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button onclick="openLoginModal()" class="px-2.5 py-1 rounded-full bg-slate-900 border border-slate-700/80 text-[11px] text-slate-300 font-semibold flex items-center gap-1 hover:border-cyan-500 transition">
+          <span id="headerRoleBadge">Guest</span>
+        </button>
+        <div id="headerAvatar" onclick="logout()" title="Logout" class="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center text-xs font-bold text-slate-300">
+          AV
+        </div>
+      </div>
+    </header>
+
+    <!-- MAIN SCROLLABLE CONTENT BODY -->
+    <main id="mainContainer" class="flex-1 overflow-y-auto scrollbar-none pb-2 relative">
+
+      <!-- ================= 1. LANDING PORTAL VIEW (NO BOTTOM NAV) ================= -->
+      <section id="landingScreen" class="flex flex-col items-center justify-between min-h-full px-6 py-8 text-center">
+        <div class="w-full flex flex-col items-center mt-4">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900/90 border border-cyan-800/50 text-[11px] font-semibold text-cyan-300 mb-6">
+            <i data-lucide="graduation-cap" class="w-4 h-4 text-cyan-400"></i>
+            AVCOE SANGAMNER
+          </div>
+
+          <h2 class="text-3xl font-black tracking-tight text-white mb-1">AVCOE</h2>
+          <h2 class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400 mb-4">
+            Campus Sentinel
+          </h2>
+          <p class="text-xs text-slate-400 max-w-[280px] leading-relaxed mb-8">
+            Report issues across engineering departments, labs, hostels, and workshops. Powered by Sentinel AI correlation.
+          </p>
+
+          <!-- 4 Feature Highlights -->
+          <div class="grid grid-cols-2 gap-3 w-full max-w-[320px] mb-8">
+            <div class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-sentinelCard border border-slate-800/80 text-left">
+              <i data-lucide="zap" class="w-4 h-4 text-cyan-400 shrink-0"></i>
+              <span class="text-[11px] font-semibold text-slate-200">Instant Reports</span>
+            </div>
+            <div class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-sentinelCard border border-slate-800/80 text-left">
+              <i data-lucide="cpu" class="w-4 h-4 text-cyan-400 shrink-0"></i>
+              <span class="text-[11px] font-semibold text-slate-200">Smart AI Triage</span>
+            </div>
+            <div class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-sentinelCard border border-slate-800/80 text-left">
+              <i data-lucide="map" class="w-4 h-4 text-cyan-400 shrink-0"></i>
+              <span class="text-[11px] font-semibold text-slate-200">Campus Layout</span>
+            </div>
+            <div class="flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-sentinelCard border border-slate-800/80 text-left">
+              <i data-lucide="wrench" class="w-4 h-4 text-cyan-400 shrink-0"></i>
+              <span class="text-[11px] font-semibold text-slate-200">Staff Dispatch</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="w-full max-w-[320px] flex flex-col items-center">
+          <button onclick="openLoginModal()" class="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 font-bold text-sm text-white flex items-center justify-center gap-2 shadow-lg glow-cyan transition transform active:scale-95">
+            Enter Campus Portal
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </button>
+          <span class="text-[10px] text-slate-500 font-medium mt-4">Official Student & Faculty Feedback Platform</span>
+        </div>
+      </section>
+
+      <!-- ================= 2. STUDENT DASHBOARD ================= -->
+      <section id="studentDashboard" class="hidden px-5 py-5 space-y-5 pb-16">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">AVCOE STUDENT,</div>
+            <div class="text-xl font-bold text-white flex items-center gap-2">
+              Campus Dashboard
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            </div>
+          </div>
+          <span id="studentDeptBadge" class="text-[11px] font-semibold px-2.5 py-1 rounded-lg bg-slate-800 border border-slate-700 text-cyan-300">
+            CS Dept
+          </span>
+        </div>
+
+        <!-- Metrics -->
+        <div class="grid grid-cols-3 gap-2.5">
+          <div class="bg-sentinelCard border border-slate-800 p-3 rounded-2xl text-center">
+            <span class="text-[10px] uppercase font-bold text-slate-400 block">TOTAL</span>
+            <span id="studentTotalCount" class="text-xl font-black text-white mt-0.5 block">48</span>
+            <span data-stat="week" class="text-[9px] font-medium text-cyan-400">+12% wk</span>
+          </div>
+          <div class="bg-sentinelCard border border-slate-800 p-3 rounded-2xl text-center">
+            <span class="text-[10px] uppercase font-bold text-slate-400 block">RESOLVED</span>
+            <span id="studentResolvedCount" class="text-xl font-black text-emerald-400 mt-0.5 block">32</span>
+            <span data-stat="today" class="text-[9px] font-medium text-emerald-400">+8 solved</span>
+          </div>
+          <div class="bg-sentinelCard border border-slate-800 p-3 rounded-2xl text-center">
+            <span class="text-[10px] uppercase font-bold text-slate-400 block">OPEN</span>
+            <span id="studentOpenCount" class="text-xl font-black text-amber-400 mt-0.5 block">6</span>
+            <span class="text-[9px] font-medium text-amber-400">Pending</span>
+          </div>
+        </div>
+
+        <button onclick="switchTab('report')" class="w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-600 font-bold text-sm text-white flex items-center justify-center gap-2 glow-cyan transition transform active:scale-95">
+          <i data-lucide="plus-circle" class="w-5 h-5"></i>
+          Report New Campus Problem
+        </button>
+
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-extrabold uppercase tracking-wider text-slate-300">My Reports & Recently Solved Wall</span>
+            <span class="text-[10px] font-bold text-cyan-400 flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span> Realtime
+            </span>
+          </div>
+          <div class="space-y-3">
+            <span class="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">Your Personal Submissions</span>
+            <div id="studentPersonalList" class="space-y-2.5"></div>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-cyan-400 block pt-3">Campus-Wide Verified Fixes</span>
+            <div id="studentPublicList" class="space-y-2.5"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 3. SUBMIT INCIDENT REPORT ================= -->
+      <section id="reportScreen" class="hidden px-5 py-5 space-y-4 pb-16">
+        <div>
+          <h2 class="text-lg font-bold text-white leading-tight">Submit Incident Report</h2>
+          <p class="text-xs text-slate-400">AVCOE AI will categorize and auto-route this ticket</p>
+        </div>
+
+        <div>
+          <label class="text-[10px] font-bold tracking-wider uppercase text-slate-400 block mb-2">CATEGORY</label>
+          <div class="grid grid-cols-3 gap-2" id="categoryGrid">
+            <button type="button" onclick="selectCategory('Power / Fan')" class="cat-btn flex flex-col items-center justify-center p-3 rounded-2xl bg-cyan-950/40 border border-cyan-500/80 text-cyan-300 transition">
+              <i data-lucide="zap" class="w-5 h-5 mb-1.5"></i>
+              <span class="text-[11px] font-semibold text-center leading-none">Power / Fan</span>
+            </button>
+            <button type="button" onclick="selectCategory('Water / Plumbing')" class="cat-btn flex flex-col items-center justify-center p-3 rounded-2xl bg-sentinelCard border border-slate-800 text-slate-300 hover:border-slate-700 transition">
+              <i data-lucide="droplet" class="w-5 h-5 mb-1.5"></i>
+              <span class="text-[11px] font-semibold text-center leading-none">Water</span>
+            </button>
+            <button type="button" onclick="selectCategory('Hygiene & Sanitation')" class="cat-btn flex flex-col items-center justify-center p-3 rounded-2xl bg-sentinelCard border border-slate-800 text-slate-300 hover:border-slate-700 transition">
+              <i data-lucide="sparkles" class="w-5 h-5 mb-1.5"></i>
+              <span class="text-[11px] font-semibold text-center leading-none">Hygiene</span>
+            </button>
+            <button type="button" onclick="selectCategory('Furniture & Benches')" class="cat-btn flex flex-col items-center justify-center p-3 rounded-2xl bg-sentinelCard border border-slate-800 text-slate-300 hover:border-slate-700 transition">
+              <i data-lucide="armchair" class="w-5 h-5 mb-1.5"></i>
+              <span class="text-[11px] font-semibold text-center leading-none">Furniture</span>
+            </button>
+            <button type="button" onclick="selectCategory('Mess & Canteen')" class="cat-btn flex flex-col items-center justify-center p-3 rounded-2xl bg-sentinelCard border border-slate-800 text-slate-300 hover:border-slate-700 transition">
+              <i data-lucide="utensils" class="w-5 h-5 mb-1.5"></i>
+              <span class="text-[11px] font-semibold text-center leading-none">Mess</span>
+            </button>
+            <button type="button" onclick="selectCategory('Safety & Hazard')" class="cat-btn flex flex-col items-center justify-center p-3 rounded-2xl bg-sentinelCard border border-slate-800 text-slate-300 hover:border-slate-700 transition">
+              <i data-lucide="alert-triangle" class="w-5 h-5 mb-1.5"></i>
+              <span class="text-[11px] font-semibold text-center leading-none">Hazard</span>
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <label class="text-[10px] font-bold tracking-wider uppercase text-slate-400 block mb-1.5">CAMPUS DEPARTMENT / FACILITY</label>
+          <select id="reportLocation" class="w-full bg-sentinelCard border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-slate-200 focus:outline-none focus:border-cyan-500">
+            <optgroup label="9 Engineering Departments">
+              <option value="CS">Computer Engineering (CS)</option>
+              <option value="AI&DS">AI & Data Science (AI&DS)</option>
+              <option value="IT">Information Technology (IT)</option>
+              <option value="E&TC">Electronics & Telecommunication (E&TC)</option>
+              <option value="E&CE">Electronics & Computer Engineering (E&CE)</option>
+              <option value="AR">Automation & Robotics (AR)</option>
+              <option value="CIVIL">Civil Engineering</option>
+              <option value="MECH">Mechanical Engineering & Workshops</option>
+              <option value="ELECTRICAL">Electrical Engineering</option>
+            </optgroup>
+            <optgroup label="Campus Facilities, Arenas & Hostels">
+              <option value="Amrut Kalamanch">Amrut Kalamanch</option>
+              <option value="Amphitheater">Amphitheater</option>
+              <option value="Vasantdada Ground">Vasantdada Ground</option>
+              <option value="Medha Ground">Medha Ground</option>
+              <option value="Central Library">Central Library & Reading Hall</option>
+              <option value="Mess & Canteen">Mess & Canteen</option>
+              <option value="Parking Area">Campus Parking Area</option>
+              <option value="Boys Hostel">Boys' Hostel Complex</option>
+              <option value="Girls Hostel">Girls' Hostel Complex</option>
+            </optgroup>
+          </select>
+        </div>
+
+        <div>
+          <label class="text-[10px] font-bold tracking-wider uppercase text-slate-400 block mb-1.5">FLOOR LEVEL</label>
+          <div class="grid grid-cols-5 gap-2" id="floorSelector">
+            <button type="button" onclick="selectFloor('Ground')" class="floor-btn py-2 rounded-xl bg-cyan-950/40 border border-cyan-500/80 text-cyan-300 text-xs font-semibold">Ground</button>
+            <button type="button" onclick="selectFloor('1st')" class="floor-btn py-2 rounded-xl bg-sentinelCard border border-slate-800 text-slate-400 text-xs font-semibold">1st</button>
+            <button type="button" onclick="selectFloor('2nd')" class="floor-btn py-2 rounded-xl bg-sentinelCard border border-slate-800 text-slate-400 text-xs font-semibold">2nd</button>
+            <button type="button" onclick="selectFloor('3rd')" class="floor-btn py-2 rounded-xl bg-sentinelCard border border-slate-800 text-slate-400 text-xs font-semibold">3rd</button>
+            <button type="button" onclick="selectFloor('4th')" class="floor-btn py-2 rounded-xl bg-sentinelCard border border-slate-800 text-slate-400 text-xs font-semibold">4th</button>
+          </div>
+        </div>
+
+        <div>
+          <label class="text-[10px] font-bold tracking-wider uppercase text-slate-400 block mb-1.5">SPECIFIC ROOM / BAY / LANDMARK</label>
+          <input id="reportLandmark" type="text" placeholder="e.g., Computer Lab 3, Bay 2 Cooler, Room 14" class="w-full bg-sentinelCard border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500" />
+        </div>
+
+        <div>
+          <label class="text-[10px] font-bold tracking-wider uppercase text-slate-400 block mb-1.5">PROBLEM DESCRIPTION</label>
+          <textarea id="reportDescription" rows="3" placeholder="Explain the malfunction or hazard details..." class="w-full bg-sentinelCard border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500 resize-none"></textarea>
+        </div>
+
+        <div>
+          <label class="text-[10px] font-bold tracking-wider uppercase text-slate-400 block mb-1.5">ADD PHOTO PROOF</label>
+          <label class="w-full border-2 border-dashed border-slate-800 hover:border-cyan-600/60 rounded-2xl p-4 flex flex-col items-center justify-center cursor-pointer bg-sentinelCard/40 transition">
+            <input id="reportPhotoInput" type="file" accept="image/*" class="hidden" onchange="handleImageUpload(event)" />
+            <i data-lucide="camera" class="w-7 h-7 text-cyan-400 mb-1"></i>
+            <span id="photoStatusText" class="text-xs font-bold text-slate-200">Take photo or upload image</span>
+            <span class="text-[10px] text-slate-500 mt-0.5">Camera opens automatically on mobile</span>
+          </label>
+        </div>
+
+        <button onclick="submitNewReport()" class="w-full py-3.5 rounded-2xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-extrabold text-sm flex items-center justify-center gap-2 glow-cyan transition">
+          <i data-lucide="send" class="w-4 h-4"></i>
+          Submit Incident Report
+        </button>
+      </section>
+
+      <!-- ================= 4. ADMIN DASHBOARD ================= -->
+      <section id="adminDashboard" class="hidden px-5 py-5 space-y-5 pb-16">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">AVCOE STAFF,</div>
+            <div class="text-xl font-bold text-white flex items-center gap-2">
+              Campus Dashboard
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            </div>
+          </div>
+          <span class="text-[11px] font-semibold px-2.5 py-1 rounded-lg bg-slate-800 border border-slate-700 text-cyan-300">
+            Estate Manager
+          </span>
+        </div>
+
+        <!-- Metrics -->
+        <div class="grid grid-cols-3 gap-2.5">
+          <div class="bg-sentinelCard border border-slate-800 p-3 rounded-2xl text-center">
+            <span class="text-[10px] uppercase font-bold text-slate-400 block">TOTAL</span>
+            <span id="adminTotalStat" class="text-xl font-black text-white mt-0.5 block">0</span>
+            <span data-stat="week" class="text-[9px] font-medium text-cyan-400">+12% wk</span>
+          </div>
+          <div class="bg-sentinelCard border border-slate-800 p-3 rounded-2xl text-center">
+            <span class="text-[10px] uppercase font-bold text-slate-400 block">RESOLVED</span>
+            <span id="adminResolvedStat" class="text-xl font-black text-emerald-400 mt-0.5 block">32</span>
+            <span data-stat="today" class="text-[9px] font-medium text-emerald-400">+8 solved</span>
+          </div>
+          <div class="bg-sentinelCard border border-slate-800 p-3 rounded-2xl text-center">
+            <span class="text-[10px] uppercase font-bold text-slate-400 block">OPEN</span>
+            <span id="adminOpenStat" class="text-xl font-black text-amber-400 mt-0.5 block">6</span>
+            <span class="text-[9px] font-medium text-amber-400">Pending</span>
+          </div>
+        </div>
+
+        <!-- AI Root Cause Alert -->
+        <div id="rootCauseAlert" onclick="switchTab('insights')" class="p-3.5 rounded-2xl bg-red-950/30 border border-red-900/50 flex items-center justify-between cursor-pointer hover:border-red-700 transition">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-red-900/40 border border-red-700/50 flex items-center justify-center shrink-0">
+              <i data-lucide="alert-octagon" class="w-4 h-4 text-red-400"></i>
+            </div>
+            <div>
+              <span class="text-[9px] font-extrabold uppercase tracking-wide text-red-400 block">AI ROOT CAUSE ALERT</span>
+              <h4 id="rcTitle" class="text-xs font-bold text-slate-100">Exposed Terminal & MCB Tripping</h4>
+              <p id="rcDesc" class="text-[10px] text-slate-400">Correlated from 4 student reports across Mech Workshop</p>
+            </div>
+          </div>
+          <i data-lucide="chevron-right" class="w-4 h-4 text-slate-400"></i>
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-extrabold uppercase tracking-wider text-slate-300">ADMIN TRIAGE & WORKER DISPATCH QUEUE</span>
+            <span class="text-[10px] font-bold text-cyan-400 flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span> Realtime
+            </span>
+          </div>
+          <div id="adminTicketList" class="space-y-3"></div>
+        </div>
+
+        <!-- Cloudinary control (admin only) -->
+        <div class="bg-sentinelCard border border-slate-800 p-4 rounded-2xl space-y-3">
+          <div class="flex items-center gap-2">
+            <i data-lucide="cloud-upload" class="w-4 h-4 text-cyan-400"></i>
+            <span class="text-xs font-extrabold uppercase tracking-wider text-slate-300">Photo Upload (Cloudinary)</span>
+          </div>
+          <div>
+            <label class="text-[10px] font-bold uppercase text-slate-400 block mb-1">Cloud Name</label>
+            <input id="cfgCloud" type="text" value="dbirgrdbp" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono" />
+          </div>
+          <div>
+            <label class="text-[10px] font-bold uppercase text-slate-400 block mb-1">Unsigned Upload Preset</label>
+            <input id="cfgPreset" type="text" value="ml_default" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-500 font-mono" />
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="testCloudCfg()" class="py-2.5 rounded-xl bg-slate-800 border border-slate-700 text-slate-200 text-xs font-bold hover:border-cyan-500 transition">Test Upload</button>
+            <button onclick="saveCloudCfg()" class="py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 text-xs font-bold transition">Save</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= 5. ADMIN HEATMAP ================= -->
+      <section id="heatmapScreen" class="hidden px-5 py-5 space-y-4 pb-16">
+        <div>
+          <h2 class="text-lg font-bold text-white leading-tight">AVCOE Incident Heatmap</h2>
+          <p class="text-xs text-slate-400">Visual density of reported campus anomalies</p>
+        </div>
+
+        <div class="w-full h-80 rounded-2xl bg-slate-900 border border-slate-800 relative overflow-hidden flex items-center justify-center">
+          <div class="absolute inset-0 opacity-20 bg-[radial-gradient(#06b6d4_1px,transparent_1px)] [background-size:14px_14px]"></div>
+          <div class="absolute top-12 left-10 w-28 h-28 rounded-full bg-red-600/35 filter blur-xl animate-pulse"></div>
+          <div class="absolute top-24 right-10 w-24 h-24 rounded-full bg-amber-500/30 filter blur-xl"></div>
+          <div class="absolute bottom-12 left-16 w-20 h-20 rounded-full bg-cyan-500/20 filter blur-lg"></div>
+
+          <div class="absolute top-14 left-10 text-[9px] font-black text-red-300 bg-red-950/80 px-2 py-1 rounded border border-red-700/80">
+            <span id="hmMech">Mech & Workshops (HIGH)</span>
+          </div>
+          <div class="absolute top-26 right-8 text-[9px] font-bold text-amber-300 bg-amber-950/80 px-2 py-1 rounded border border-amber-700/80">
+            <span id="hmCS">CS / IT Labs (MODERATE)</span>
+          </div>
+          <div class="absolute bottom-14 left-12 text-[9px] font-bold text-emerald-400 bg-emerald-950/80 px-2 py-1 rounded border border-emerald-700/80">
+            <span id="hmHost">Hostels (NORMAL)</span>
+          </div>
+          <div class="absolute bottom-4 right-8 text-[9px] font-bold text-slate-400 bg-slate-950/80 px-2 py-1 rounded border border-slate-800">
+            Library & Arenas
+          </div>
+        </div>
+
+        <div class="bg-sentinelCard border border-slate-800 p-4 rounded-2xl space-y-3">
+          <span class="text-xs font-bold text-white block">Zone Risk Index</span>
+          <div id="zoneRiskList" class="space-y-2"></div>
+        </div>
+      </section>
+
+      <!-- ================= 6. ADMIN AI INSIGHTS ================= -->
+      <section id="insightsScreen" class="hidden px-5 py-5 space-y-4 pb-16">
+        <div>
+          <h2 class="text-lg font-bold text-white leading-tight">Sentinel AI Insights</h2>
+          <p class="text-xs text-slate-400">Autonomous ticket correlation & root cause clustering</p>
+        </div>
+
+        <div id="insightsList" class="space-y-3"></div>
+      </section>
+
+      <!-- ================= 7. STUDENT CAMPUS MAP ================= -->
+      <section id="mapScreen" class="hidden px-5 py-5 space-y-4 pb-16">
+        <div>
+          <h2 class="text-lg font-bold text-white leading-tight">AVCOE Campus Map</h2>
+          <p class="text-xs text-slate-400">Real ground landmarks & verified issue pins</p>
+        </div>
+
+        <div class="w-full h-80 rounded-2xl bg-slate-900 border border-slate-800 relative overflow-hidden flex items-center justify-center">
+          <div class="absolute inset-0 opacity-15 bg-[radial-gradient(#06b6d4_1px,transparent_1px)] [background-size:16px_16px]"></div>
+
+          <div class="absolute top-4 left-6 text-[9px] font-bold text-slate-400 bg-slate-950/80 px-2 py-1 rounded border border-slate-800">
+            Boys' Hostels
+          </div>
+          <div class="absolute top-4 right-6 text-[9px] font-bold text-slate-400 bg-slate-950/80 px-2 py-1 rounded border border-slate-800">
+            Girls' Hostels
+          </div>
+          <div class="absolute top-16 left-10 text-[10px] font-extrabold text-cyan-400 bg-slate-950/90 px-2 py-1 rounded border border-cyan-800">
+            Mech & Workshops
+          </div>
+          <div class="absolute top-28 right-8 text-[10px] font-extrabold text-cyan-400 bg-slate-950/90 px-2 py-1 rounded border border-cyan-800">
+            CS / IT / AI&DS Block
+          </div>
+          <div class="absolute top-40 left-8 text-[10px] font-extrabold text-blue-400 bg-slate-950/90 px-2 py-1 rounded border border-blue-800">
+            E&TC / Electrical
+          </div>
+          <div class="absolute top-40 right-14 text-[9px] font-bold text-slate-400 bg-slate-950/80 px-2 py-1 rounded border border-slate-800">
+            Central Library
+          </div>
+          <div class="absolute bottom-16 left-8 text-[9px] font-bold text-amber-300 bg-slate-950/80 px-2 py-1 rounded border border-amber-800">
+            Amrut Kalamanch
+          </div>
+          <div class="absolute bottom-16 right-8 text-[9px] font-bold text-emerald-400 bg-slate-950/80 px-2 py-1 rounded border border-emerald-800">
+            Vasantdada Ground
+          </div>
+          <div class="absolute bottom-4 left-1/3 text-[9px] font-bold text-slate-400 bg-slate-950/80 px-2 py-1 rounded border border-slate-800">
+            Main Gate & Parking
+          </div>
+
+          <div id="mapPins"></div>
+        </div>
+
+        <div class="bg-sentinelCard border border-slate-800 p-3.5 rounded-2xl space-y-2">
+          <span class="text-xs font-bold text-white block">Active Campus Zones</span>
+          <div id="mapZoneList"></div>
+        </div>
+      </section>
+
+      <!-- ================= 8. WORKER DASHBOARD ================= -->
+      <section id="workerDashboard" class="hidden px-5 py-5 space-y-5 pb-16">
+        <div class="flex items-center justify-between">
+          <div>
+            <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400">ASSIGNED CREW,</div>
+            <div class="text-xl font-bold text-white flex items-center gap-2">
+              My Task Board
+              <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+            </div>
+          </div>
+          <span id="workerNameBadge" class="text-[11px] font-semibold px-2.5 py-1 rounded-lg bg-slate-800 border border-slate-700 text-emerald-400">
+            Suresh (Plumber)
+          </span>
+        </div>
+
+        <div class="bg-sentinelCard border border-slate-800 p-3.5 rounded-2xl flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-cyan-950 border border-cyan-800 flex items-center justify-center shrink-0">
+            <i data-lucide="hard-hat" class="w-5 h-5 text-cyan-400"></i>
+          </div>
+          <div>
+            <h3 class="text-xs font-bold text-white">Field Repair Roster</h3>
+            <p class="text-[10px] text-slate-400">Accept job, visit location and publish resolution proof</p>
+          </div>
+        </div>
+
+        <div>
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs font-extrabold uppercase tracking-wider text-slate-300">Assigned Jobs For You</span>
+            <span id="workerPendingCount" class="text-[10px] font-bold text-amber-400 bg-amber-950/40 px-2 py-0.5 rounded-md border border-amber-800">
+              1 Active
+            </span>
+          </div>
+          <div id="workerTaskList" class="space-y-3"></div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ================= DYNAMIC BOTTOM NAVIGATION (HIDDEN ON GUEST/LANDING) ================= -->
+    <nav id="bottomNav" class="hidden absolute bottom-0 inset-x-0 h-16 bg-sentinelDark/95 border-t border-slate-800/80 backdrop-blur flex items-center justify-around px-4 z-30">
+      <!-- Injected when user logs in -->
+    </nav>
+
+    <div id="toast" class="hidden"></div>
+
+    <!-- ================= LOGIN / AUTH MODAL ================= -->
+    <div id="loginModal" class="hidden absolute inset-0 bg-black/85 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+      <div class="w-full bg-sentinelCard border border-slate-800 rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl relative">
+        <div class="flex items-center justify-between mb-4">
+          <div>
+            <h3 class="text-base font-bold text-white">Campus Sentinel Login</h3>
+            <p class="text-xs text-slate-400">Choose your access credentials</p>
+          </div>
+          <button onclick="closeLoginModal()" class="w-8 h-8 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center">
+            ✕
+          </button>
+        </div>
+
+        <div class="grid grid-cols-3 gap-1 bg-slate-900 p-1 rounded-xl mb-5 border border-slate-800">
+          <button id="tabBtnStudent" onclick="switchLoginRole('student')" class="py-2 text-xs font-bold rounded-lg bg-cyan-500 text-slate-950 transition">
+            Student
+          </button>
+          <button id="tabBtnAdmin" onclick="switchLoginRole('admin')" class="py-2 text-xs font-bold rounded-lg text-slate-400 hover:text-white transition">
+            Admin / Staff
+          </button>
+          <button id="tabBtnWorker" onclick="switchLoginRole('worker')" class="py-2 text-xs font-bold rounded-lg text-slate-400 hover:text-white transition">
+            Worker
+          </button>
+        </div>
+
+        <!-- Student Form -->
+        <form id="studentLoginForm" onsubmit="handleLoginSubmit(event, 'student')" class="space-y-3.5">
+          <div>
+            <label class="text-[10px] font-bold uppercase text-slate-400 block mb-1">Student ERP No. (10 Digits)</label>
+            <input id="studentErp" type="tel" maxlength="10" placeholder="e.g., 2024101234" required pattern="[0-9]{10}" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-cyan-500 tracking-wider font-mono" />
+          </div>
+          <div>
+            <label class="text-[10px] font-bold uppercase text-slate-400 block mb-1">Department</label>
+            <select id="studentDeptSelect" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-500">
+              <option value="CS">CS (Computer Engineering)</option>
+              <option value="AI&DS">AI&DS (Artificial Intelligence & Data Science)</option>
+              <option value="IT">IT (Information Technology)</option>
+              <option value="E&TC">E&TC (Electronics & Telecommunication)</option>
+              <option value="E&CE">E&CE (Electronics & Computer Engineering)</option>
+              <option value="AR">AR (Automation & Robotics)</option>
+              <option value="CIVIL">CIVIL (Civil Engineering)</option>
+              <option value="MECH">MECH (Mechanical Engineering)</option>
+              <option value="ELECTRICAL">ELECTRICAL (Electrical Engineering)</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-[10px] font-bold uppercase text-slate-400 block mb-1">Pass Key</label>
+            <input id="studentPass" type="password" placeholder="Enter student passkey" required class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-cyan-500" />
+          </div>
+          <button type="submit" class="w-full py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs glow-cyan transition mt-2">
+            Login as Student
+          </button>
+        </form>
+
+        <!-- Admin Form -->
+        <form id="adminLoginForm" onsubmit="handleLoginSubmit(event, 'admin')" class="space-y-3.5 hidden">
+          <div>
+            <label class="text-[10px] font-bold uppercase text-slate-400 block mb-1">Mobile No. (10 Digits)</label>
+            <input id="adminMobile" type="tel" maxlength="10" placeholder="e.g., 9822300000" required pattern="[0-9]{10}" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-cyan-500 tracking-wider font-mono" />
+          </div>
+          <div>
+            <label class="text-[10px] font-bold uppercase text-slate-400 block mb-1">Admin Pass Key</label>
+            <input id="adminPass" type="password" placeholder="Enter admin passkey" required class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-cyan-500" />
+          </div>
+          <button type="submit" class="w-full py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs glow-cyan transition mt-2">
+            Login as Admin / Staff
+          </button>
+        </form>
+
+        <!-- Worker Form -->
+        <form id="workerLoginForm" onsubmit="handleLoginSubmit(event, 'worker')" class="space-y-3.5 hidden">
+          <div>
+            <label class="text-[10px] font-bold uppercase text-slate-400 block mb-1">Staff / Worker Mobile No.</label>
+            <input id="workerMobile" type="tel" maxlength="10" placeholder="e.g., 9876543210" required pattern="[0-9]{10}" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-cyan-500 font-mono" />
+          </div>
+          <div>
+            <label class="text-[10px] font-bold uppercase text-slate-400 block mb-1">Worker Profile</label>
+            <select id="workerProfileSelect" class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-500">
+              <option value="Suresh (Plumber)">Suresh (Plumber)</option>
+              <option value="Ramesh (Electrician)">Ramesh (Electrician)</option>
+              <option value="Manoj (IT Staff)">Manoj (IT / Audio Staff)</option>
+              <option value="Kailash (Estate / Carpentry)">Kailash (Estate / Carpentry)</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-[10px] font-bold uppercase text-slate-400 block mb-1">Worker Pass Key</label>
+            <input id="workerPass" type="password" placeholder="Enter passkey" required class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-cyan-500" />
+          </div>
+          <button type="submit" class="w-full py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs transition mt-2">
+            Login as Staff Worker
+          </button>
+        </form>
+      </div>
     </div>
-    <div class="flex items-center gap-1.5 shrink-0">
-      <button onclick="cycleLang()" id="langBtn" class="w-8 h-8 rounded-full bg-slate-800 border border-[#1E2B45] text-slate-300 text-[10px] font-bold">EN</button>
-      <button onclick="toggleTheme()" class="w-8 h-8 rounded-full bg-slate-800 border border-[#1E2B45] text-slate-300 text-xs"><i class="fa-solid fa-circle-half-stroke"></i></button>
-      <div id="hdr" class="flex items-center gap-2"></div>
+
+    <!-- ================= RESOLUTION MODAL ================= -->
+    <div id="resolveModal" class="hidden absolute inset-0 bg-black/85 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+      <div class="w-full bg-sentinelCard border border-slate-800 rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl relative">
+        <div class="flex items-center justify-between mb-3">
+          <div>
+            <h3 class="text-sm font-bold text-white">Upload Fix & Close Ticket</h3>
+            <p id="modalTicketId" class="text-[10px] text-cyan-400 font-mono">TICKET: T-101</p>
+          </div>
+          <button onclick="closeResolveModal()" class="w-7 h-7 rounded-full bg-slate-800 text-slate-400 hover:text-white flex items-center justify-center">✕</button>
+        </div>
+
+        <form onsubmit="submitTicketResolution(event)" class="space-y-3.5">
+          <div>
+            <label class="text-[10px] font-bold uppercase text-slate-400 block mb-1">Worker Note / Public Explanation</label>
+            <textarea id="resolveNote" rows="2" placeholder="Explain what was replaced/repaired for public transparency..." required class="w-full bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-600 focus:outline-none focus:border-cyan-500"></textarea>
+          </div>
+
+          <div>
+            <label class="text-[10px] font-bold uppercase text-slate-400 block mb-1">Done / Resolved Photo Proof</label>
+            <label class="w-full border border-dashed border-slate-700 rounded-xl p-3 text-center bg-slate-900 flex flex-col items-center cursor-pointer">
+              <input id="proofInput" type="file" accept="image/*" class="hidden" onchange="handleProofUpload(event)" />
+              <i data-lucide="check-circle" class="w-6 h-6 text-emerald-400 mb-1"></i>
+              <span id="proofStatus" class="text-xs font-semibold text-slate-200">Tap to attach done photo</span>
+              <span class="text-[9px] text-slate-500">Timestamped proof Cloudinary par upload hoga</span>
+            </label>
+          </div>
+
+          <button type="submit" class="w-full py-3 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold text-xs transition">
+            Publish Fix to Campus Wall
+          </button>
+        </form>
+      </div>
     </div>
-  </header>
-  <main id="view" class="flex-1 overflow-y-auto sc"></main>
-  <nav id="nav" class="border-t border-[#1E2B45] bg-[#0A1220] flex overflow-x-auto sc z-20"></nav>
-  <div id="modal"></div>
-  <div id="toast" class="hidden absolute top-16 inset-x-4 z-[60] bg-slate-800 border border-slate-600 rounded-xl px-4 py-2.5 text-xs text-center shadow-xl"></div>
-</div>
 
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
-<script>
-/* ============ CONFIG ============ */
-const firebaseConfig={apiKey:"AIzaSyBcXm5QQaYCCddVXNgGqTBAszdKEK-0PJQ",authDomain:"multi-service-app-77dd8.firebaseapp.com",projectId:"multi-service-app-77dd8",storageBucket:"multi-service-app-77dd8.appspot.com",messagingSenderId:"123732555482",appId:"1:123732555482:web:ea47c825e0dbb504f597e3"};
-const CLOUD="dbirgrdbp";
-const DEFAULT_PRESET="ml_default";      // admin can change this in Settings (no code edit needed)
-const BOOT_PASS="Admin@123";            // first login: mobile "admin" / this password. Change it in Settings!
-const SLA_HOURS=24;                     // hazard tickets breach SLA after this many hours open
-firebase.initializeApp(firebaseConfig);
-const db=firebase.firestore(),U=db.collection('sentinel_users'),K=db.collection('sentinel_tickets'),N=db.collection('sentinel_notices'),LOG=db.collection('sentinel_logs'),C=db.doc('sentinel_config/app');
-const now=()=>firebase.firestore.FieldValue.serverTimestamp();
+  </div>
 
-const CAT={'Power / Fan':['','fa-bolt'],'Water / Plumbing':['','fa-droplet'],'Hygiene & Sanitation':['','fa-broom'],'Furniture & Benches':['','fa-chair'],'Mess & Canteen':['','fa-utensils'],'Safety & Hazard':['','fa-triangle-exclamation'],'IT / Network':['','fa-wifi'],'Other':['','fa-ellipsis']};
-const DEPTS=['CS','AI&DS','IT','E&TC','E&CE','AR','CIVIL','MECH','ELECTRICAL','Amrut Kalamanch','Amphitheater','Vasantdada Ground','Medha Ground','Central Library','Mess & Canteen','Parking Area','Boys Hostel','Girls Hostel'];
-const FLOORS=['Ground','1st','2nd','3rd','4th'];
-const TRADES=['Electrician','Plumber','IT Staff','Estate / Carpentry','Housekeeping','Other'];
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, doc, onSnapshot, setDoc, updateDoc, runTransaction, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-/* ============ I18N ============ */
-const I18N={
-en:{home:'Home',report:'Report',campus:'Campus',leaderboard:'Leaderboard',approvals:'Approvals',tickets:'Tickets',users:'Users',notices:'Notices',logs:'Logs',settings:'Settings',myjobs:'My Jobs'},
-hi:{home:'होम',report:'शिकायत',campus:'कैंपस',leaderboard:'लीडरबोर्ड',approvals:'स्वीकृति',tickets:'टिकट',users:'यूज़र',notices:'सूचना',logs:'लॉग',settings:'सेटिंग्स',myjobs:'मेरे काम'},
-mr:{home:'होम',report:'तक्रार',campus:'कॅम्पस',leaderboard:'लीडरबोर्ड',approvals:'मंजुरी',tickets:'तिकीट',users:'युजर्स',notices:'सूचना',logs:'नोंदी',settings:'सेटिंग्ज',myjobs:'माझी कामे'}
+const firebaseConfig = { apiKey: "AIzaSyBcXm5QQaYCCddVXNgGqTBAszdKEK-0PJQ", authDomain: "multi-service-app-77dd8.firebaseapp.com", projectId: "multi-service-app-77dd8", storageBucket: "multi-service-app-77dd8.appspot.com", messagingSenderId: "123732555482", appId: "1:123732555482:web:ea47c825e0dbb504f597e3" };
+const db = getFirestore(initializeApp(firebaseConfig));
+
+// ===== CONFIG =====
+// Cloudinary config: admin panel se badalta hai (Firestore meta/config), ye sirf default hai
+const CFG = { cloudName: 'dbirgrdbp', preset: 'ml_default' };
+const PASS = { student: "avcoe123", admin: "admin123", worker: "worker123" };
+
+const WORKER_BY_CAT = {
+  'Power / Fan': 'Ramesh (Electrician)', 'Water / Plumbing': 'Suresh (Plumber)',
+  'Hygiene & Sanitation': 'Kailash (Estate / Carpentry)', 'Furniture & Benches': 'Kailash (Estate / Carpentry)',
+  'Mess & Canteen': 'Kailash (Estate / Carpentry)', 'Safety & Hazard': 'Ramesh (Electrician)'
 };
-let LANG=localStorage.getItem('sentinelLang')||'en';
-const t=k=>I18N[LANG]?.[k]||I18N.en[k]||k;
-function cycleLang(){LANG=LANG==='en'?'hi':LANG==='hi'?'mr':'en';localStorage.setItem('sentinelLang',LANG);$('langBtn').textContent=LANG.toUpperCase();render()}
+const ZONES = {
+  MECH: 'Mechanical Workshops & Labs', CS: 'Computer & IT Department', 'AI&DS': 'Computer & IT Department', IT: 'Computer & IT Department',
+  'E&TC': 'Electronics & Electrical', 'E&CE': 'Electronics & Electrical', ELECTRICAL: 'Electronics & Electrical', AR: 'Electronics & Electrical',
+  CIVIL: 'Civil Department', 'Boys Hostel': 'Hostels', 'Girls Hostel': 'Hostels', 'Central Library': 'Library & Arenas',
+  'Amrut Kalamanch': 'Library & Arenas', Amphitheater: 'Library & Arenas', 'Vasantdada Ground': 'Library & Arenas',
+  'Medha Ground': 'Library & Arenas', 'Mess & Canteen': 'Mess & Parking', 'Parking Area': 'Mess & Parking'
+};
+const POS = {
+  MECH: 'top:80px;left:70px', CS: 'top:112px;right:60px', 'AI&DS': 'top:132px;right:90px', IT: 'top:92px;right:96px',
+  'E&TC': 'top:150px;left:40px', ELECTRICAL: 'top:172px;left:74px', 'E&CE': 'top:130px;left:112px', AR: 'top:192px;left:112px',
+  CIVIL: 'top:204px;left:40px', 'Central Library': 'top:160px;right:56px', 'Amrut Kalamanch': 'bottom:70px;left:40px',
+  Amphitheater: 'bottom:100px;left:100px', 'Vasantdada Ground': 'bottom:70px;right:40px', 'Medha Ground': 'bottom:100px;right:90px',
+  'Mess & Canteen': 'bottom:50px;left:110px', 'Parking Area': 'bottom:24px;left:160px', 'Boys Hostel': 'top:40px;left:36px', 'Girls Hostel': 'top:40px;right:36px'
+};
 
-/* ============ HELPERS ============ */
-const S={me:null,tab:'guest',tickets:[],users:[],notices:[],logs:[],cfg:{},cat:'Power / Fan',floor:'Ground',photo:null,filter:'all',grole:'student',gsub:'login',unsubs:[]};
-const $=id=>document.getElementById(id);
-const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const tm=r=>r.createdAt?.toMillis?.()||Date.now();
-const code=t=>'T-'+t.id.slice(-4).toUpperCase();
-const ago=ms=>{const m=Math.max(0,Math.round((Date.now()-ms)/6e4));return m<1?'just now':m<60?m+'m ago':m<1440?Math.round(m/60)+'h ago':Math.round(m/1440)+'d ago'};
-const toast=t=>{const e=$('toast');e.textContent=t;e.classList.remove('hidden');clearTimeout(toast.tt);toast.tt=setTimeout(()=>e.classList.add('hidden'),3200)};
-const CARD='bg-[#0F1A2E] border border-[#1E2B45] rounded-2xl p-3.5';
-const INP='w-full bg-[#0A1424] border border-[#1E2B45] rounded-xl px-3.5 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-blue-500';
-const B='font-semibold rounded-xl py-2.5 text-sm transition active:scale-[.98]';
-const P='bg-blue-600 hover:bg-blue-500 text-white';
-const COL={amber:'bg-amber-500/10 text-amber-400 border-amber-500/30',blue:'bg-blue-500/10 text-blue-400 border-blue-500/30',green:'bg-emerald-500/10 text-emerald-400 border-emerald-500/30',red:'bg-red-500/10 text-red-400 border-red-500/30',slate:'bg-slate-500/10 text-slate-300 border-slate-500/30'};
-const bd=(t,c)=>`<span class="text-[10px] font-semibold px-2 py-0.5 rounded-full border ${COL[c]}">${t}</span>`;
-const opts=(a,sel)=>a.map(x=>`<option ${x===sel?'selected':''}>${esc(x)}</option>`).join('');
-const lbl=t=>`<label class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider block mb-1.5">${t}</label>`;
-const head=(t,s='')=>`<div><h2 class="text-lg font-bold text-white">${t}</h2>${s?`<p class="text-xs text-slate-400 mt-0.5">${s}</p>`:''}</div>`;
-async function shahash(m,p){const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(m+':'+p+':avcoe-sentinel'));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('')}
-const isAdmin=()=>S.me?.role==='admin',isStaff=()=>S.me?.role==='staff';
-const open=t=>t.approval==='approved'&&t.status!=='Resolved';
-const slaBreached=t=>t.hazard&&open(t)&&(Date.now()-tm(t))>SLA_HOURS*3600*1000;
+const S = { role: 'guest', dept: 'CS', erp: '', worker: 'Suresh (Plumber)', tab: 'home', cat: 'Power / Fan', floor: 'Ground',
+  resolveId: null, tickets: [], photo: null, proof: null, ready: false };
 
-function modal(h){$('modal').innerHTML=`<div class="absolute inset-0 z-50 bg-black/70 flex items-end sm:items-center justify-center" onclick="if(event.target===this)closeM()"><div class="w-full bg-[#0F1A2E] border border-[#1E2B45] rounded-t-3xl sm:rounded-3xl p-5 space-y-3 max-h-[90%] overflow-y-auto sc">${h}</div></div>`}
-function closeM(){$('modal').innerHTML=''}
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const open = t => t.status !== 'Resolved';
 
-/* ============ THEME ============ */
-function toggleTheme(){const cur=document.documentElement.dataset.theme==='light'?'dark':'light';document.documentElement.dataset.theme=cur;localStorage.setItem('sentinelTheme',cur)}
-document.documentElement.dataset.theme=localStorage.getItem('sentinelTheme')||'dark';
-
-/* ============ ACTIVITY LOG ============ */
-function logAction(action,detail){try{LOG.add({action,detail:detail||'',actor:S.me?S.me.name:'system',actorRole:S.me?S.me.role:'',ts:now()})}catch(e){}}
-
-/* ============ CLOUDINARY ============ */
-function shrink(file,max=1280){return new Promise(res=>{const img=new Image();img.onload=()=>{const k=Math.min(1,max/Math.max(img.width,img.height)),c=document.createElement('canvas');c.width=img.width*k;c.height=img.height*k;c.getContext('2d').drawImage(img,0,0,c.width,c.height);c.toBlob(b=>res(b||file),'image/jpeg',.82)};img.onerror=()=>res(file);img.src=URL.createObjectURL(file)})}
-async function upload(file){
-  const formData=new FormData();
-  formData.append('file',await shrink(file),'photo.jpg');
-  formData.append('upload_preset',S.cfg.cloudPreset||DEFAULT_PRESET);
-  const response=await fetch(`https://api.cloudinary.com/v1_1/${CLOUD}/image/upload`,{method:'POST',body:formData});
-  const data=await response.json();
-  if(data.secure_url)return data.secure_url;
-  throw new Error(data.error?.message||'Cloudinary upload failed');
+function toast(msg, bad) {
+  const el = $('toast');
+  el.textContent = msg;
+  el.className = `absolute top-20 inset-x-4 z-[60] px-4 py-2.5 rounded-xl text-xs font-bold text-center border shadow-xl ${bad ? 'bg-red-950 border-red-700 text-red-200' : 'bg-slate-900 border-cyan-700 text-cyan-300'}`;
+  clearTimeout(toast.t);
+  toast.t = setTimeout(() => el.classList.add('hidden'), 3500);
 }
-async function tryUpload(file){
-  if(!file)return '';
-  try{return await upload(file)}catch(e){if(!confirm('Photo upload failed: '+e.message+'\n\nContinue without photo?'))throw new Error('cancelled');return ''}
+function timeAgo(ms) {
+  const m = Math.floor((Date.now() - ms) / 60000);
+  if (m < 1) return 'Just now';
+  if (m < 60) return `${m}m ago`;
+  const h = Math.floor(m / 60);
+  if (h < 24) return `${h}h ago`;
+  return h < 48 ? 'Yesterday' : `${Math.floor(h / 24)}d ago`;
+}
+const photoLink = (url, label = 'View photo') => url
+  ? `<a href="${esc(url)}" target="_blank" rel="noopener" class="inline-flex items-center gap-1 text-[10px] text-cyan-400 font-semibold mt-1.5"><i data-lucide="image" class="w-3 h-3"></i>${label}</a>` : '';
+
+// ===== CLOUDINARY =====
+async function shrink(file) {
+  try {
+    const img = await createImageBitmap(file);
+    const k = Math.min(1, 1280 / Math.max(img.width, img.height));
+    const c = document.createElement('canvas');
+    c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+    c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+    return await new Promise(r => c.toBlob(b => r(b || file), 'image/jpeg', 0.8));
+  } catch { return file; }
+}
+async function uploadPhoto(file) {
+  const fd = new FormData();
+  fd.append('file', await shrink(file));
+  fd.append('upload_preset', CFG.preset);
+  const r = await fetch(`https://api.cloudinary.com/v1_1/${CFG.cloudName}/image/upload`, { method: 'POST', body: fd });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error('Cloudinary: ' + (j.error?.message || r.status));
+  return j.secure_url;
 }
 
-/* ============ AUTH ============ */
-function err(m){const e=$('gerr');if(e){e.textContent=m;e.classList.remove('hidden')}else toast(m)}
-async function login(){
-  const m=$('lm').value.trim().toLowerCase(),p=$('lp').value,want=S.grole;
-  if(!m||!p)return err('Enter mobile number and password');
-  try{
-    let d=await U.doc(m).get();
-    if(!d.exists&&m==='admin'&&p===BOOT_PASS&&want==='admin'){await U.doc('admin').set({name:'Administrator',mobile:'admin',role:'admin',status:'active',pass:await shahash('admin',p),createdAt:now()});d=await U.doc('admin').get()}
-    if(!d.exists||d.data().pass!==await shahash(m,p))return err('Invalid mobile number or password');
-    const u=d.data();
-    if(u.role!==want)return err(`This ID is registered as ${u.role}. Please switch to the ${u.role[0].toUpperCase()+u.role.slice(1)} tab above.`);
-    if(u.status==='pending')return err('Your registration is awaiting admin approval');
-    if(u.status!=='active')return err('This account is '+u.status+'. Contact admin.');
-    start(m);
-  }catch(e){err('Login failed: '+e.message)}
+// ===== FIRESTORE =====
+async function seedIfEmpty() {
+  const demo = [
+    { id: 'T-101', title: 'Projector HDMI Cable Faulty', category: 'Furniture & Benches', location: 'CS', locationLabel: 'Computer Dept • 2nd Floor • Seminar Hall 1', status: 'In Progress', isHazard: false, assignedWorker: 'Manoj (IT Staff)', ago: 3 * 3600000 },
+    { id: 'T-102', title: 'Water Filter Cartridge Leak', category: 'Water / Plumbing', location: 'MECH', locationLabel: 'Workshop • Ground Floor • Bay 2 Cooler', status: 'Resolved', isHazard: false, assignedWorker: 'Suresh (Plumber)', ago: 26 * 3600000, resolvedNote: 'Replaced brass inlet valve and new cartridge seal installed.' },
+    { id: 'T-103', title: 'Exposed 230V Machine Terminal', category: 'Safety & Hazard', location: 'MECH', locationLabel: 'Workshop • Ground Floor • CNC Bay 3', status: 'Open', isHazard: true, assignedWorker: 'Unassigned', ago: 45 * 60000 },
+    { id: 'T-104', title: 'Fluorescent Tube Choke Burning', category: 'Power / Fan', location: 'Boys Hostel', locationLabel: 'Boys Hostel • 1st Floor • Wing B Room 14', status: 'Open', isHazard: false, assignedWorker: 'Unassigned', ago: 3600000 }
+  ];
+  await runTransaction(db, async tx => {
+    const ref = doc(db, 'meta', 'counter');
+    if ((await tx.get(ref)).exists()) return;
+    tx.set(ref, { n: 4 });
+    demo.forEach(({ ago, ...d }) => tx.set(doc(db, 'tickets', d.id), { resolvedNote: null, photoUrl: null, resolvedPhotoUrl: null, reporterErp: 'demo', ...d, createdMs: Date.now() - ago }));
+  });
 }
-async function register(){
-  const name=$('rn').value.trim(),m=$('rm').value.trim(),dept=$('rd').value,p=$('rp').value;
-  if(name.length<2)return err('Enter your full name');
-  if(!/^\d{10}$/.test(m))return err('Enter a valid 10-digit mobile number');
-  if(p.length<6)return err('Password must be at least 6 characters');
-  try{
-    if((await U.doc(m).get()).exists)return err('This mobile number is already registered');
-    await U.doc(m).set({name,mobile:m,dept,role:'student',status:'pending',pass:await shahash(m,p),createdAt:now()});
-    S.grole='student';S.gsub='login';go('guest');toast('Registered! Wait for admin approval, then log in.');
-  }catch(e){err('Registration failed: '+e.message)}
+function listen() {
+  let first = true;
+  onSnapshot(query(collection(db, 'tickets'), orderBy('createdMs', 'desc')), snap => {
+    if (!first && S.role === 'admin') {
+      snap.docChanges().forEach(c => { if (c.type === 'added' && c.doc.data().isHazard) toast(`⚠️ P1 HAZARD: ${c.doc.data().title}`, true); });
+    }
+    first = false;
+    S.tickets = snap.docs.map(d => ({ ...d.data(), id: d.id }));
+    S.ready = true;
+    renderAll();
+    if (snap.empty && !snap.metadata.fromCache) seedIfEmpty().catch(console.error);
+  }, err => { console.error(err); toast('Firestore error: rules / internet check karo', true); });
 }
-function start(m){
-  localStorage.setItem('sentinelMobile',m);stop();
-  S.unsubs.push(U.doc(m).onSnapshot(d=>{
-    if(!d.exists||d.data().status!=='active'){toast('Your account is no longer active');logout();return}
-    const first=!S.me;S.me={...d.data(),id:d.id};
-    if(first){S.tab='home';listenData()}
-    render();
-  }));
+
+// ===== CLOUDINARY ADMIN CONTROL =====
+function listenCfg() {
+  onSnapshot(doc(db, 'meta', 'config'), s => {
+    if (s.exists()) { const d = s.data(); if (d.cloudName) CFG.cloudName = d.cloudName; if (d.preset) CFG.preset = d.preset; }
+    ['cfgCloud', 'cfgPreset'].forEach((id, i) => { const el = $(id); if (el && document.activeElement !== el) el.value = i ? CFG.preset : CFG.cloudName; });
+  });
 }
-function listenData(){
-  S.unsubs.push(K.orderBy('createdAt','desc').limit(500).onSnapshot(s=>{S.tickets=s.docs.map(d=>({id:d.id,...d.data()}));render()},e=>toast('Database error: '+e.code)));
-  S.unsubs.push(N.orderBy('ts','desc').limit(10).onSnapshot(s=>{S.notices=s.docs.map(d=>({id:d.id,...d.data()}));render()}));
-  if(isAdmin()){
-    S.unsubs.push(U.onSnapshot(s=>{S.users=s.docs.map(d=>({id:d.id,...d.data()}));render()}));
-    S.unsubs.push(LOG.orderBy('ts','desc').limit(200).onSnapshot(s=>{S.logs=s.docs.map(d=>d.data());render()}));
+async function saveCloudCfg() {
+  const cloudName = $('cfgCloud').value.trim(), preset = $('cfgPreset').value.trim();
+  if (!cloudName || !preset) { toast('Cloud name aur preset dono bharo', true); return; }
+  try { await setDoc(doc(db, 'meta', 'config'), { cloudName, preset }, { merge: true }); toast('Cloudinary settings save ✓'); }
+  catch (e) { toast('Save fail hua', true); }
+}
+async function testCloudCfg() {
+  toast('Test upload chal raha hai...');
+  const c = document.createElement('canvas'); c.width = c.height = 8;
+  const b = await new Promise(r => c.toBlob(r, 'image/png'));
+  const old = { ...CFG };
+  CFG.cloudName = $('cfgCloud').value.trim() || CFG.cloudName; CFG.preset = $('cfgPreset').value.trim() || CFG.preset;
+  try { await uploadPhoto(b); toast('✓ Cloudinary working hai!'); } catch (e) { toast(e.message, true); }
+  Object.assign(CFG, old);
+}
+
+// ===== NAV / ROUTING =====
+function updateBottomNavBar() {
+  const nav = $('bottomNav');
+  if (S.role === 'guest') { nav.classList.add('hidden'); return; }
+  nav.classList.remove('hidden');
+  const c = t => S.tab === t ? 'text-cyan-400' : 'text-slate-400';
+  nav.innerHTML = S.role === 'admin' ? `
+    <button onclick="switchTab('home')" class="nav-item flex flex-col items-center ${c('home')} transition"><i data-lucide="home" class="w-5 h-5"></i><span class="text-[10px] font-medium mt-1">Home</span></button>
+    <button onclick="switchTab('heatmap')" class="nav-item flex flex-col items-center ${c('heatmap')} transition"><i data-lucide="map-pin" class="w-5 h-5"></i><span class="text-[10px] font-medium mt-1">Heatmap</span></button>
+    <button onclick="switchTab('insights')" class="nav-item flex flex-col items-center relative ${c('insights')} transition"><span class="absolute -top-0.5 right-2 w-2 h-2 rounded-full bg-red-500"></span><i data-lucide="brain" class="w-5 h-5"></i><span class="text-[10px] font-medium mt-1">AI Insights</span></button>` : `
+    <button onclick="switchTab('home')" class="nav-item flex flex-col items-center ${c('home')} transition"><i data-lucide="home" class="w-5 h-5"></i><span class="text-[10px] font-medium mt-1">Home</span></button>
+    <button onclick="switchTab('report')" class="nav-item flex flex-col items-center ${c('report')} transition"><div class="w-8 h-8 rounded-full bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400"><i data-lucide="plus" class="w-5 h-5"></i></div><span class="text-[10px] font-medium mt-0.5">Report</span></button>
+    <button onclick="switchTab('map')" class="nav-item flex flex-col items-center ${c('map')} transition"><i data-lucide="map" class="w-5 h-5"></i><span class="text-[10px] font-medium mt-1">Campus Map</span></button>`;
+  lucide.createIcons();
+}
+function switchTab(tab) {
+  S.tab = tab;
+  ['landingScreen', 'studentDashboard', 'adminDashboard', 'heatmapScreen', 'insightsScreen', 'mapScreen', 'workerDashboard', 'reportScreen']
+    .forEach(id => $(id).classList.add('hidden'));
+  const home = { guest: 'landingScreen', student: 'studentDashboard', admin: 'adminDashboard', worker: 'workerDashboard' }[S.role];
+  const target = tab === 'home' ? home : { report: 'reportScreen', heatmap: 'heatmapScreen', insights: 'insightsScreen', map: 'mapScreen' }[tab];
+  $(target).classList.remove('hidden');
+  $('mainContainer').scrollTop = 0;
+  updateBottomNavBar();
+  lucide.createIcons();
+}
+
+// ===== AUTH (session localStorage me save hota hai) =====
+function applySession() {
+  $('studentDeptBadge').innerText = `${S.dept} Dept`;
+  $('workerNameBadge').innerText = S.worker;
+  const b = { guest: ['Guest', 'AV'], student: ['Student', 'ST'], admin: ['Admin / Staff', 'AD'], worker: ['Staff Crew', 'WK'] }[S.role];
+  $('headerRoleBadge').innerText = b[0];
+  $('headerAvatar').innerText = b[1];
+}
+function saveSession() { try { localStorage.setItem('sentinel_session', JSON.stringify({ role: S.role, dept: S.dept, erp: S.erp, worker: S.worker })); } catch {} }
+function openLoginModal() { $('loginModal').classList.remove('hidden'); }
+function closeLoginModal() { $('loginModal').classList.add('hidden'); }
+function logout() {
+  if (S.role === 'guest' || !confirm('Logout karna hai?')) return;
+  Object.assign(S, { role: 'guest', erp: '' });
+  try { localStorage.removeItem('sentinel_session'); } catch {}
+  applySession(); renderAll(); switchTab('home');
+}
+function switchLoginRole(role) {
+  const map = { student: ['studentLoginForm', 'tabBtnStudent'], admin: ['adminLoginForm', 'tabBtnAdmin'], worker: ['workerLoginForm', 'tabBtnWorker'] };
+  Object.entries(map).forEach(([r, [f, b]]) => {
+    $(f).classList.toggle('hidden', r !== role);
+    $(b).className = 'py-2 text-xs font-bold rounded-lg ' + (r === role ? (r === 'worker' ? 'bg-emerald-500' : 'bg-cyan-500') + ' text-slate-950 transition' : 'text-slate-400 hover:text-white transition');
+  });
+}
+function handleLoginSubmit(event, role) {
+  event.preventDefault();
+  const pass = $({ student: 'studentPass', admin: 'adminPass', worker: 'workerPass' }[role]).value;
+  if (pass !== PASS[role]) { toast('Galat pass key', true); return; }
+  S.role = role;
+  if (role === 'student') { S.dept = $('studentDeptSelect').value; S.erp = $('studentErp').value; }
+  if (role === 'worker') { S.worker = $('workerProfileSelect').value; S.erp = 'staff-' + $('workerMobile').value; }
+  if (role === 'admin') S.erp = 'admin-' + $('adminMobile').value;
+  saveSession(); applySession(); closeLoginModal(); renderAll(); switchTab('home');
+}
+
+// ===== FORM =====
+function selectCategory(cat) {
+  S.cat = cat;
+  document.querySelectorAll('.cat-btn').forEach(b => { b.className = 'cat-btn flex flex-col items-center justify-center p-3 rounded-2xl bg-sentinelCard border border-slate-800 text-slate-300 hover:border-slate-700 transition'; });
+  window.event.currentTarget.className = 'cat-btn flex flex-col items-center justify-center p-3 rounded-2xl bg-cyan-950/40 border border-cyan-500/80 text-cyan-300 transition';
+  lucide.createIcons();
+}
+function selectFloor(floor) {
+  S.floor = floor;
+  document.querySelectorAll('.floor-btn').forEach(b => { b.className = 'floor-btn py-2 rounded-xl bg-sentinelCard border border-slate-800 text-slate-400 text-xs font-semibold'; });
+  window.event.currentTarget.className = 'floor-btn py-2 rounded-xl bg-cyan-950/40 border border-cyan-500/80 text-cyan-300 text-xs font-semibold';
+}
+function handleImageUpload(e) {
+  S.photo = e.target.files[0] || null;
+  if (S.photo) { $('photoStatusText').innerText = `✓ ${S.photo.name.substring(0, 18)}... attached`; $('photoStatusText').classList.add('text-cyan-400'); }
+}
+function handleProofUpload(e) {
+  S.proof = e.target.files[0] || null;
+  if (S.proof) $('proofStatus').innerText = `✓ ${S.proof.name.substring(0, 22)} ready`;
+}
+async function submitNewReport() {
+  const btn = window.event?.currentTarget;
+  const landmark = $('reportLandmark').value.trim(), desc = $('reportDescription').value.trim(), loc = $('reportLocation').value;
+  if (!landmark || !desc) { toast('Room/landmark aur problem description bharo', true); return; }
+  if (btn) btn.disabled = true;
+  try {
+    toast(S.photo ? 'Photo upload ho rahi hai...' : 'Report submit ho rahi hai...');
+    const photoUrl = S.photo ? await uploadPhoto(S.photo) : null;
+    const id = await runTransaction(db, async tx => {
+      const ref = doc(db, 'meta', 'counter');
+      const n = ((await tx.get(ref)).data()?.n || 0) + 1;
+      tx.set(ref, { n });
+      return `T-${100 + n}`;
+    });
+    await setDoc(doc(db, 'tickets', id), {
+      title: desc.length > 34 ? desc.substring(0, 34) + '...' : desc, description: desc, category: S.cat, location: loc,
+      locationLabel: `${loc} • ${S.floor} Floor • ${landmark}`, status: 'Open', isHazard: S.cat === 'Safety & Hazard',
+      assignedWorker: 'Unassigned', aiSuggested: WORKER_BY_CAT[S.cat], reporterErp: S.erp || 'guest', photoUrl,
+      resolvedNote: null, resolvedPhotoUrl: null, createdMs: Date.now()
+    });
+    toast(`Report ${id} Sentinel AI triage me bhej di gayi!`);
+    $('reportLandmark').value = ''; $('reportDescription').value = ''; $('reportPhotoInput').value = '';
+    S.photo = null;
+    $('photoStatusText').innerText = 'Take photo or upload image'; $('photoStatusText').classList.remove('text-cyan-400');
+    switchTab('home');
+  } catch (e) { console.error(e); toast(e.message || 'Submit fail hua', true); }
+  if (btn) btn.disabled = false;
+}
+
+// ===== RESOLVE / ASSIGN =====
+function openResolveModal(id) {
+  S.resolveId = id; S.proof = null;
+  $('modalTicketId').innerText = `TICKET: ${id}`;
+  $('resolveNote').value = ''; $('proofInput').value = '';
+  $('proofStatus').innerText = 'Tap to attach done photo';
+  $('resolveModal').classList.remove('hidden');
+}
+function closeResolveModal() { $('resolveModal').classList.add('hidden'); }
+async function submitTicketResolution(event) {
+  event.preventDefault();
+  const btn = event.submitter;
+  const t = S.tickets.find(x => x.id === S.resolveId);
+  if (!t) return;
+  if (btn) btn.disabled = true;
+  try {
+    toast('Fix publish ho raha hai...');
+    const resolvedPhotoUrl = S.proof ? await uploadPhoto(S.proof) : null;
+    await updateDoc(doc(db, 'tickets', t.id), {
+      status: 'Resolved', resolvedNote: $('resolveNote').value.trim(), resolvedPhotoUrl, resolvedMs: Date.now(),
+      assignedWorker: t.assignedWorker === 'Unassigned' && S.role === 'worker' ? S.worker : t.assignedWorker
+    });
+    closeResolveModal(); toast(`${t.id} closed ✓`);
+  } catch (e) { console.error(e); toast(e.message || 'Update fail hua', true); }
+  if (btn) btn.disabled = false;
+}
+async function assignWorker(id, name) {
+  const t = S.tickets.find(x => x.id === id);
+  if (!t) return;
+  try { await updateDoc(doc(db, 'tickets', id), { assignedWorker: name, status: t.status === 'Open' && name !== 'Unassigned' ? 'In Progress' : t.status }); }
+  catch (e) { toast('Assign fail hua', true); }
+}
+
+// ===== AI CORRELATION =====
+function clusters() {
+  const g = {};
+  S.tickets.filter(open).forEach(t => { (g[t.location + '|' + t.category] ||= []).push(t); });
+  return Object.values(g).filter(a => a.length >= 2 || a.some(t => t.isHazard))
+    .sort((a, b) => (b.some(t => t.isHazard) - a.some(t => t.isHazard)) || b.length - a.length);
+}
+
+// ===== RENDER =====
+function renderAll() {
+  renderStudent(); renderAdmin(); renderWorker(); renderHeatmap(); renderInsights(); renderMap();
+  lucide.createIcons();
+}
+function setStats() {
+  const total = S.tickets.length, res = S.tickets.filter(t => !open(t)).length, op = total - res;
+  const wk = S.tickets.filter(t => Date.now() - t.createdMs < 6048e5).length;
+  const today = S.tickets.filter(t => t.resolvedMs && Date.now() - t.resolvedMs < 864e5).length;
+  [['studentTotalCount', total], ['studentResolvedCount', res], ['studentOpenCount', op], ['adminTotalStat', total], ['adminResolvedStat', res], ['adminOpenStat', op]]
+    .forEach(([id, v]) => { $(id).innerText = v; });
+  document.querySelectorAll('[data-stat=week]').forEach(e => { e.innerText = `${wk} this wk`; });
+  document.querySelectorAll('[data-stat=today]').forEach(e => { e.innerText = `${today} today`; });
+}
+function renderStudent() {
+  setStats();
+  const mine = S.tickets.filter(t => S.erp && t.reporterErp === S.erp);
+  const fixed = S.tickets.filter(t => !open(t));
+  const empty = m => `<div class="text-center py-4 text-slate-500 text-[11px]">${m}</div>`;
+  $('studentPersonalList').innerHTML = mine.length ? mine.map(t => {
+    let c = 'bg-amber-950/40 text-amber-400 border-amber-800';
+    if (t.status === 'Resolved') c = 'bg-emerald-950/40 text-emerald-400 border-emerald-800';
+    if (t.status === 'Open') c = 'bg-blue-950/40 text-cyan-400 border-cyan-800';
+    return `<div class="bg-sentinelCard border border-slate-800 p-3.5 rounded-2xl">
+      <div class="flex items-center justify-between mb-1.5"><span class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${c}">${esc(t.status)}</span><span class="text-[10px] text-slate-500 font-medium">${timeAgo(t.createdMs)}</span></div>
+      <h4 class="text-xs font-bold text-white leading-snug">${esc(t.title)}</h4><p class="text-[11px] text-slate-400 mt-1">${esc(t.locationLabel)}</p>${photoLink(t.photoUrl)}</div>`;
+  }).join('') : empty('Abhi tak koi report nahi ki');
+  $('studentPublicList').innerHTML = fixed.length ? fixed.map(t => `
+    <div class="bg-sentinelCard border border-slate-800 p-3.5 rounded-2xl">
+      <div class="flex items-center justify-between mb-1.5"><span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-950/50 text-emerald-400 border border-emerald-800 flex items-center gap-1">✓ Verified Fixed</span><span class="text-[10px] text-slate-500 font-medium">${timeAgo(t.resolvedMs || t.createdMs)}</span></div>
+      <h4 class="text-xs font-bold text-white leading-snug">${esc(t.title)}</h4>
+      <p class="text-[11px] text-slate-400 mt-1">${esc(t.locationLabel)} — Fixed by <span class="text-slate-200 font-semibold">${esc(t.assignedWorker)}</span></p>
+      <div class="mt-2.5 p-2 rounded-xl bg-slate-900 border border-slate-800 flex items-center gap-2.5">
+        ${t.resolvedPhotoUrl ? `<a href="${esc(t.resolvedPhotoUrl)}" target="_blank" rel="noopener" class="shrink-0"><img src="${esc(t.resolvedPhotoUrl)}" class="w-8 h-8 rounded-lg object-cover border border-emerald-800" alt="proof"></a>`
+          : `<div class="w-8 h-8 rounded-lg bg-emerald-950/60 border border-emerald-800 flex items-center justify-center shrink-0"><i data-lucide="image" class="w-4 h-4 text-emerald-400"></i></div>`}
+        <div class="text-[10px] text-slate-300 truncate"><span class="font-bold text-emerald-400 block">Staff Note:</span>${esc(t.resolvedNote || 'Issue fixed and verified on site.')}</div>
+      </div></div>`).join('') : empty('Abhi koi fix publish nahi hua');
+}
+function renderAdmin() {
+  const top = clusters()[0];
+  $('rootCauseAlert').classList.toggle('hidden', !top);
+  if (top) {
+    $('rcTitle').innerText = top[0].isHazard && top.length === 1 ? top[0].title : `${top[0].category} — ${top[0].location}`;
+    $('rcDesc').innerText = `Correlated from ${top.length} report${top.length > 1 ? 's' : ''} at ${ZONES[top[0].location] || top[0].location}`;
   }
+  $('adminTicketList').innerHTML = S.tickets.map(t => {
+    const w = ['Ramesh (Electrician)', 'Suresh (Plumber)', 'Manoj (IT Staff)', 'Kailash (Estate / Carpentry)'];
+    return `<div class="${t.isHazard ? 'border-red-900/60 bg-red-950/10' : 'border-slate-800 bg-sentinelCard'} border p-3.5 rounded-2xl space-y-2.5">
+      <div class="flex items-center justify-between"><div class="flex items-center gap-2"><span class="text-[10px] font-mono font-bold text-cyan-400">${esc(t.id)}</span>
+        ${t.isHazard ? '<span class="text-[9px] font-extrabold text-red-400 bg-red-950 border border-red-800 px-1.5 py-0.5 rounded">⚠️ P1 HAZARD</span>' : ''}</div><span class="text-[10px] text-slate-500">${timeAgo(t.createdMs)}</span></div>
+      <div><h4 class="text-xs font-bold text-white leading-tight">${esc(t.title)}</h4><p class="text-[10px] text-slate-400 mt-0.5">${esc(t.locationLabel)}</p>
+        ${t.aiSuggested && t.assignedWorker === 'Unassigned' ? `<p class="text-[10px] text-cyan-400 mt-0.5">AI suggests: ${esc(t.aiSuggested)}</p>` : ''}${photoLink(t.photoUrl)}</div>
+      <div class="flex items-center justify-between gap-2 pt-1 border-t border-slate-800/60">
+        <select onchange="assignWorker('${esc(t.id)}', this.value)" class="bg-slate-900 border border-slate-700/80 rounded-xl px-2 py-1.5 text-[11px] text-slate-200 focus:outline-none">
+          <option value="Unassigned" ${t.assignedWorker === 'Unassigned' ? 'selected' : ''}>Assign Worker...</option>
+          ${w.map(n => `<option value="${n}" ${t.assignedWorker === n ? 'selected' : ''}>${n.replace(' / Carpentry', '')}</option>`).join('')}
+        </select>
+        ${!open(t) ? '<span class="text-emerald-400 text-xs font-bold flex items-center gap-1">✓ Closed</span>'
+          : `<button onclick="openResolveModal('${esc(t.id)}')" class="px-3 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 text-xs font-bold transition">Upload Fix & Close</button>`}
+      </div></div>`;
+  }).join('') || '<div class="text-center py-6 text-slate-500 text-xs">Koi ticket nahi</div>';
 }
-function stop(){S.unsubs.forEach(u=>u());S.unsubs=[]}
-function logout(){stop();localStorage.removeItem('sentinelMobile');S.me=null;S.tickets=[];S.users=[];S.notices=[];S.logs=[];closeM();go('guest')}
-C.onSnapshot(d=>{S.cfg=d.exists?d.data():{};paintOrg()});
-function paintOrg(){const el=$('orgTitle');if(el)el.textContent=(S.cfg.orgName||'AVCOE Sentinel').toUpperCase()}
-
-/* ============ NAV / RENDER ============ */
-function go(t){S.tab=t;$('view').dataset.t='';render()}
-function navItems(){
-  if(isAdmin())return[['home','fa-chart-pie',t('home')],['approvals','fa-circle-check',t('approvals')],['tickets','fa-list-check',t('tickets')],['users','fa-users',t('users')],['notices','fa-bullhorn',t('notices')],['logs','fa-clock-rotate-left',t('logs')],['settings','fa-gear',t('settings')]];
-  if(isStaff())return[['home','fa-briefcase',t('myjobs')],['campus','fa-map-location-dot',t('campus')]];
-  return[['home','fa-house',t('home')],['report','fa-circle-plus',t('report')],['campus','fa-map-location-dot',t('campus')],['leaderboard','fa-trophy',t('leaderboard')]];
+function renderWorker() {
+  const mine = S.tickets.filter(t => t.assignedWorker === S.worker || t.assignedWorker === 'Unassigned');
+  $('workerPendingCount').innerText = `${mine.filter(open).length} Available`;
+  $('workerTaskList').innerHTML = mine.length ? mine.map(t => `
+    <div class="bg-sentinelCard border border-slate-800 p-3.5 rounded-2xl space-y-2">
+      <div class="flex items-center justify-between"><span class="text-[10px] font-mono font-bold text-cyan-400">${esc(t.id)}</span><span class="text-[10px] font-semibold text-amber-400">${esc(t.status)}</span></div>
+      <h4 class="text-xs font-bold text-white">${esc(t.title)}</h4><p class="text-[10px] text-slate-400">${esc(t.locationLabel)}</p>${photoLink(t.photoUrl)}
+      <div class="pt-2 flex items-center justify-between"><span class="text-[10px] text-slate-400">Assigned: <span class="text-slate-200 font-semibold">${esc(t.assignedWorker)}</span></span>
+        ${!open(t) ? '<span class="text-emerald-400 text-xs font-bold">✓ Completed</span>'
+          : `<button onclick="openResolveModal('${esc(t.id)}')" class="px-3 py-1.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs transition">Done & Upload Proof</button>`}</div></div>`).join('')
+    : '<div class="text-center py-10 text-slate-500 text-xs">No active jobs assigned to your queue currently.</div>';
 }
-function pendingCount(){return S.tickets.filter(t=>t.approval==='pending').length+S.users.filter(u=>u.status==='pending').length}
-function render(){
-  if(!S.me){$('nav').innerHTML='';$('hdr').innerHTML='';paintOrg();if($('view').dataset.t!=='guest'){$('view').innerHTML=vGuest();$('view').dataset.t='guest'}return}
-  $('hdr').innerHTML=`<div class="text-right leading-tight hidden xs:block"><div class="text-[12px] font-semibold text-white">${esc(S.me.name)}</div><div class="text-[10px] text-slate-400 capitalize">${S.me.role}${S.me.trade?' • '+esc(S.me.trade):''}</div></div><button onclick="logout()" title="Sign out" class="w-8 h-8 rounded-full bg-slate-800 border border-[#1E2B45] text-slate-300 text-xs"><i class="fa-solid fa-right-from-bracket"></i></button>`;
-  const pc=isAdmin()?pendingCount():0;
-  $('nav').innerHTML=navItems().map(([k,i,l])=>`<button onclick="go('${k}')" class="relative shrink-0 flex flex-col items-center gap-0.5 px-3.5 py-2 text-[10px] font-medium ${S.tab===k?'text-blue-400':'text-slate-500'}"><i class="fa-solid ${i} text-[15px]"></i>${l}${k==='approvals'&&pc?`<span class="absolute top-0.5 right-1 min-w-[16px] h-4 px-1 rounded-full bg-red-500 text-white text-[9px] flex items-center justify-center">${pc}</span>`:''}</button>`).join('');
-  if(['report','settings','notices'].includes(S.tab)&&$('view').dataset.t===S.tab)return; // don't wipe forms mid-typing
-  const V=isAdmin()?{home:aHome,approvals:aApprovals,tickets:aTickets,users:aUsers,notices:aNotices,logs:aLogs,settings:aSettings}
-        :isStaff()?{home:sHome,campus:vCampus}
-        :{home:stHome,report:stReport,campus:vCampus,leaderboard:vLeaderboard};
-  $('view').innerHTML=`<div class="p-5 space-y-4 pb-8">${(V[S.tab]||V.home)()}</div>`;$('view').dataset.t=S.tab;
-  if(S.tab==='report')requestAnimationFrame(renderSimilar);
-  if(S.tab==='home'&&isAdmin())requestAnimationFrame(drawCharts);
+function zoneScores() {
+  const z = {};
+  S.tickets.filter(open).forEach(t => { const n = ZONES[t.location] || t.location; z[n] = (z[n] || 0) + (t.isHazard ? 3 : 1); });
+  const sum = Object.values(z).reduce((a, b) => a + b, 0) || 1;
+  return Object.entries(z).map(([n, w]) => [n, Math.round(w / sum * 100), w]).sort((a, b) => b[1] - a[1]);
 }
-
-/* ============ TICKET CARD ============ */
-function badge(t){return t.approval==='pending'?bd('Awaiting Approval','amber'):t.approval==='rejected'?bd('Rejected','red'):t.status==='Resolved'?bd('Resolved','green'):t.status==='In Progress'?bd('In Progress','blue'):bd('Open','slate')}
-function reporterLabel(t){if(t.isAnon)return isAdmin()?esc(t.reporterName)+' (anonymous)':'Anonymous';return esc(t.reporterName)}
-function tk(t,act=''){
-  const c=CAT[t.category]||['','fa-circle'],affN=t.affectedBy?.length||0;
-  return `<div class="${CARD} ${t.hazard&&open(t)?'!border-red-500/40':''} space-y-2.5">
-  <div class="flex justify-between items-center"><div class="flex items-center gap-1.5 flex-wrap"><span class="text-[10px] font-mono font-bold text-blue-400">${code(t)}</span>${t.hazard?bd('P1 Hazard','red'):''}${slaBreached(t)?`<span class="animate-pulse">${bd('SLA Breached','red')}</span>`:''}</div><span class="text-[10px] text-slate-500">${ago(tm(t))}</span></div>
-  <div class="flex gap-3"><div class="w-9 h-9 rounded-xl bg-slate-800/70 flex items-center justify-center text-blue-400 shrink-0"><i class="fa-solid ${c[1]}"></i></div><div class="min-w-0"><h4 class="text-[13px] font-semibold text-white leading-snug">${esc(t.title)}</h4><p class="text-[11px] text-slate-400">${esc(t.dept)} • ${esc(t.floor)} • ${esc(t.landmark)}${affN?` • <span class="text-blue-400">+${affN} also affected</span>`:''}</p></div></div>
-  ${t.photoUrl||t.proofUrl?`<div class="grid ${t.photoUrl&&t.proofUrl?'grid-cols-2':'grid-cols-1'} gap-1.5">${t.photoUrl?`<div><div class="text-[9px] text-slate-500 mb-0.5">Reported</div><img src="${esc(t.photoUrl)}" loading="lazy" onclick="window.open(this.src)" class="w-full h-28 object-cover rounded-xl border border-[#1E2B45]"></div>`:''}${t.proofUrl?`<div><div class="text-[9px] text-emerald-500 mb-0.5">Fixed</div><img src="${esc(t.proofUrl)}" loading="lazy" onclick="window.open(this.src)" class="w-full h-28 object-cover rounded-xl border border-[#1E2B45]"></div>`:''}</div>`:''}
-  <div class="flex items-center justify-between"><div class="flex items-center gap-1.5 flex-wrap">${badge(t)}</div><span class="text-[10px] text-slate-500">${t.assignedName?'<i class="fa-solid fa-user-gear"></i> '+esc(t.assignedName):reporterLabel(t)}</span></div>
-  ${t.approval==='rejected'&&t.rejectReason?`<div class="text-[11px] text-red-300 bg-red-500/10 border border-red-500/20 rounded-lg p-2">Reason: ${esc(t.rejectReason)}</div>`:''}
-  ${t.status==='Resolved'&&t.approval==='approved'?`<div class="text-[11px] bg-emerald-500/10 border border-emerald-500/20 rounded-lg p-2 text-slate-300"><b class="text-emerald-400">Fix note:</b> ${esc(t.resolvedNote||'Issue fixed and verified.')}${t.resolvedBy?` — ${esc(t.resolvedBy)}`:''}${t.reopenCount?`<div class="text-amber-400 mt-1">Reopened ${t.reopenCount}x</div>`:''}</div>`:''}
-  ${act}</div>`;
+function renderHeatmap() {
+  const z = zoneScores();
+  const lvl = name => { const r = z.find(x => x[0] === name); return !r ? 'NORMAL' : r[1] >= 50 ? 'HIGH' : r[1] >= 25 ? 'MODERATE' : 'LOW'; };
+  $('hmMech').innerText = `Mech & Workshops (${lvl('Mechanical Workshops & Labs')})`;
+  $('hmCS').innerText = `CS / IT Labs (${lvl('Computer & IT Department')})`;
+  $('hmHost').innerText = `Hostels (${lvl('Hostels')})`;
+  $('zoneRiskList').innerHTML = z.slice(0, 4).map(([n, p]) => {
+    const [tc, bg] = p >= 50 ? ['text-red-400', 'bg-red-500'] : p >= 25 ? ['text-amber-400', 'bg-amber-400'] : ['text-cyan-400', 'bg-cyan-500'];
+    return `<div><div class="flex justify-between text-[11px] mb-1"><span class="text-slate-300">${esc(n)}</span><span class="${tc} font-bold">${p}% Density</span></div>
+      <div class="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden"><div class="${bg} h-1.5 rounded-full" style="width:${p}%"></div></div></div>`;
+  }).join('') || '<div class="text-[11px] text-slate-500">Sab kuch normal hai ✓</div>';
 }
-const empty=t=>`<div class="text-center text-xs text-slate-500 py-8">${t}</div>`;
-const stat=(l,v,c='text-white')=>`<div class="${CARD} text-center !p-3"><div class="text-[10px] text-slate-400 uppercase tracking-wider">${l}</div><div class="text-2xl font-extrabold ${c}">${v}</div></div>`;
-function noticeBanner(){const n=S.notices?.[0];if(!n)return'';return `<div class="${CARD} !border-blue-500/40 bg-blue-500/5"><div class="text-[10px] font-bold uppercase text-blue-400"><i class="fa-solid fa-bullhorn"></i> Notice</div><div class="text-[13px] font-semibold mt-0.5">${esc(n.title)}</div><div class="text-[11px] text-slate-400 mt-0.5">${esc(n.body)}</div></div>`}
-
-/* ============ GUEST ============ */
-function grole(r){S.grole=r;S.gsub='login';go('guest')}
-function gsub(v){S.gsub=v;go('guest')}
-const ROLE_UI={
-  student:{icon:'fa-user-graduate',color:'text-blue-400 border-blue-500 bg-blue-500/10',placeholder:'Your mobile number'},
-  staff:{icon:'fa-screwdriver-wrench',color:'text-emerald-400 border-emerald-500 bg-emerald-500/10',placeholder:'Staff mobile number (given by admin)'},
-  admin:{icon:'fa-user-shield',color:'text-amber-400 border-amber-500 bg-amber-500/10',placeholder:'Admin ID / mobile number'}
-};
-function vGuest(){
-  const role=S.grole,ui=ROLE_UI[role],L=S.gsub==='login';
-  return `<div class="hero min-h-full px-6 py-8 flex flex-col">
-  <div class="text-center pt-2"><div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/30 text-[10px] font-semibold text-blue-300 uppercase tracking-widest"><i class="fa-solid fa-graduation-cap"></i> ${esc(S.cfg.orgName||'AVCOE Sangamner')}</div>
-  <h1 class="text-[28px] font-extrabold mt-3 leading-tight">Campus <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">Sentinel</span></h1>
-  <p class="text-xs text-slate-400 mt-2 max-w-[280px] mx-auto">Report, approve and resolve campus issues with live tracking and photo proof.</p></div>
-
-  <div class="mt-6"><p class="text-[10px] font-semibold text-slate-500 uppercase tracking-widest text-center mb-2">Select your portal</p>
-  <div class="grid grid-cols-3 gap-2">
-    ${Object.entries(ROLE_UI).map(([k,v])=>`<button onclick="grole('${k}')" class="flex flex-col items-center gap-1.5 py-3 rounded-2xl border transition ${role===k?v.color:'border-[#1E2B45] bg-[#0F1A2E] text-slate-400'}"><i class="fa-solid ${v.icon} text-lg"></i><span class="text-[10px] font-bold capitalize">${k}</span></button>`).join('')}
-  </div></div>
-
-  <div class="${CARD} !p-5 mt-4 space-y-3">
-    ${role==='student'?`<div class="grid grid-cols-2 gap-1 p-1 bg-[#0A1424] rounded-xl text-xs font-semibold"><button onclick="gsub('login')" class="py-2 rounded-lg ${L?'bg-blue-600 text-white':'text-slate-400'}">Login</button><button onclick="gsub('reg')" class="py-2 rounded-lg ${L?'text-slate-400':'bg-blue-600 text-white'}">Sign Up</button></div>`
-    :`<div class="text-center text-[11px] font-semibold ${ui.color.split(' ')[0]} uppercase tracking-wider"><i class="fa-solid ${ui.icon}"></i> ${role} Portal</div>`}
-    ${L?`<input id="lm" inputmode="numeric" placeholder="${ui.placeholder}" class="${INP}"><input id="lp" type="password" placeholder="Password" class="${INP}" onkeydown="if(event.key==='Enter')login()">
-    <button onclick="login()" class="${B} ${P} w-full">Sign in</button>${role!=='student'?`<p class="text-[10px] text-slate-500 text-center">${role[0].toUpperCase()+role.slice(1)} IDs are created by the administrator.</p>`:''}`
-    :`<input id="rn" placeholder="Full name" class="${INP}"><input id="rm" inputmode="numeric" maxlength="10" placeholder="10-digit mobile number" class="${INP}"><select id="rd" class="${INP}">${opts(DEPTS)}</select><input id="rp" type="password" placeholder="Create password (min 6)" class="${INP}">
-    <button onclick="register()" class="${B} ${P} w-full">Request Access</button><p class="text-[10px] text-slate-500 text-center">Admin must approve your account before you can log in.</p>`}
-    <div id="gerr" class="hidden text-[11px] text-red-300 bg-red-500/10 border border-red-500/20 rounded-lg p-2 text-center"></div>
-  </div></div>`;
+function renderInsights() {
+  const cs = clusters();
+  $('insightsList').innerHTML = cs.map((a, i) => {
+    const hz = a.some(t => t.isHazard), t0 = a[0];
+    return `<div class="p-4 rounded-2xl ${hz ? 'bg-red-950/20 border border-red-900/60' : 'bg-sentinelCard border border-slate-800'} space-y-2">
+      <div class="flex items-center justify-between"><span class="text-[9px] font-extrabold uppercase px-2 py-0.5 rounded ${hz ? 'bg-red-900/60 text-red-300 border border-red-700' : 'bg-blue-950/60 text-cyan-300 border border-cyan-800'}">${hz ? `P1 Cluster #${88 + i + 1}` : 'Preventative Pattern'}</span><span class="text-[10px] text-slate-400">${timeAgo(t0.createdMs)}</span></div>
+      <h3 class="text-xs font-bold text-white">${esc(t0.category)} — ${esc(ZONES[t0.location] || t0.location)}</h3>
+      <p class="text-[11px] text-slate-300 leading-relaxed">AI correlated ${a.length} open report${a.length > 1 ? 's' : ''} (${a.map(t => esc(t.id)).join(', ')}) at ${esc(t0.location)}. Latest: ${esc(t0.title)}.</p>
+      <div class="pt-1 flex items-center justify-between text-[11px]"><span class="text-cyan-400 font-semibold">Recommended: ${esc(WORKER_BY_CAT[t0.category] || 'Estate Manager')}</span>
+        ${S.role === 'admin' ? `<button onclick="switchTab('home')" class="text-xs text-white font-bold ${hz ? 'bg-red-600 hover:bg-red-500' : 'bg-slate-700 hover:bg-slate-600'} px-2.5 py-1 rounded-lg">View Queue</button>` : ''}</div></div>`;
+  }).join('') || '<div class="text-center py-8 text-slate-500 text-xs">Koi cluster nahi mila — sab normal ✓</div>';
+}
+function renderMap() {
+  const g = {};
+  S.tickets.filter(open).forEach(t => { (g[t.location] ||= []).push(t); });
+  $('mapPins').innerHTML = Object.entries(g).filter(([l]) => POS[l]).map(([l, a]) => {
+    const hz = a.some(t => t.isHazard);
+    return `<div class="absolute flex flex-col items-center ${hz ? 'animate-bounce' : ''}" style="${POS[l]}">
+      <span class="w-3.5 h-3.5 rounded-full ${hz ? 'bg-red-500 shadow-red-500' : 'bg-amber-400 shadow-amber-400'} border-2 border-white shadow-lg"></span>
+      <span class="text-[8px] font-black text-white ${hz ? 'bg-red-950 border-red-700' : 'bg-amber-950 border-amber-700'} px-1 rounded border mt-0.5">${a.length > 1 ? a.length + ' open' : esc(a[0].id)}</span></div>`;
+  }).join('');
+  $('mapZoneList').innerHTML = zoneScores().slice(0, 4).map(([n, , w]) => {
+    const hz = S.tickets.some(t => open(t) && t.isHazard && (ZONES[t.location] || t.location) === n);
+    const c = S.tickets.filter(t => open(t) && (ZONES[t.location] || t.location) === n).length;
+    return `<div class="flex items-center justify-between text-xs py-1 border-b border-slate-800/60 last:border-0"><span class="text-slate-300">${esc(n)}</span><span class="${hz ? 'text-red-400' : 'text-amber-400'} font-bold">${hz ? '1+ Critical Hazard' : c + ' Open'}</span></div>`;
+  }).join('') || '<div class="text-[11px] text-slate-500 py-1">Koi active issue nahi ✓</div>';
 }
 
-/* ============ STUDENT ============ */
-function stHome(){
-  const mine=S.tickets.filter(t=>t.reporterMobile===S.me.mobile),fixed=S.tickets.filter(t=>t.approval==='approved'&&t.status==='Resolved');
-  return `${noticeBanner()}${head('Hello, '+esc(S.me.name.split(' ')[0]),esc(S.me.dept)+' • live updates')}
-  <div class="grid grid-cols-3 gap-2">${stat('My reports',mine.length)}${stat('In progress',mine.filter(t=>t.approval==='approved'&&t.status==='In Progress').length,'text-blue-400')}${stat('Campus fixed',fixed.length,'text-emerald-400')}</div>
-  <button onclick="go('report')" class="${B} ${P} w-full py-3.5"><i class="fa-solid fa-plus mr-1"></i> Report a Problem</button>
-  <div class="text-xs font-bold uppercase tracking-wider text-slate-300 pt-1">My Reports</div>${mine.map(t=>tk(t,ratingRow(t)+reopenBtn(t))).join('')||empty('You have not reported anything yet')}
-  <div class="text-xs font-bold uppercase tracking-wider text-slate-300 pt-2">Recently Fixed on Campus</div>${fixed.slice(0,10).map(t=>tk(t)).join('')||empty('No verified fixes yet')}`;
-}
-function stReport(){
-  return `${head('Report a Problem','Sent to admin for approval, then assigned to staff')}
-  <div>${lbl('Category')}<div class="grid grid-cols-4 gap-2">${Object.entries(CAT).map(([k,v])=>`<button type="button" data-c="${esc(k)}" onclick="setCat(this.dataset.c)" class="cb p-2 rounded-xl border text-[10px] font-medium flex flex-col items-center gap-1 text-center ${k===S.cat?'border-blue-500 bg-blue-500/10 text-blue-300':'border-[#1E2B45] bg-[#0A1424] text-slate-400'}"><i class="fa-solid ${v[1]} text-sm"></i>${k.split(' ')[0]}</button>`).join('')}</div></div>
-  <div>${lbl('Department / Facility')}<select id="rdept" onchange="renderSimilar()" class="${INP}">${opts(DEPTS,S.me.dept)}</select></div>
-  <div id="simbox" class="space-y-1.5"></div>
-  <div>${lbl('Floor')}<div class="grid grid-cols-5 gap-1.5">${FLOORS.map(f=>`<button type="button" onclick="setFloor('${f}')" data-f="${f}" class="fb py-2 rounded-lg border text-xs font-medium ${f===S.floor?'border-blue-500 bg-blue-500/10 text-blue-300':'border-[#1E2B45] bg-[#0A1424] text-slate-400'}">${f}</button>`).join('')}</div></div>
-  <div>${lbl('Room / Landmark')}<input id="rland" placeholder="e.g. Computer Lab 3, PC 14" class="${INP}"></div>
-  <div>${lbl('Description')}<textarea id="rdesc" rows="3" placeholder="Describe the problem..." class="${INP} resize-none"></textarea></div>
-  <div>${lbl('Photo (optional)')}<input type="file" id="rphoto" accept="image/*" capture="environment" class="hidden" onchange="pickPhoto(event)">
-  <div id="pbox" onclick="$('rphoto').click()" class="cursor-pointer border-2 border-dashed border-[#1E2B45] rounded-xl p-4 text-center text-xs text-slate-400"><i class="fa-solid fa-camera text-lg text-blue-400 block mb-1"></i><span id="ptxt">Take photo or upload</span></div></div>
-  <label class="flex items-center gap-2 text-[11px] text-slate-400"><input type="checkbox" id="ranon" class="accent-blue-600"> Submit anonymously (staff/admin still see your name for accountability)</label>
-  <button id="sbtn" onclick="submitReport()" class="${B} ${P} w-full py-3.5"><i class="fa-solid fa-paper-plane mr-1"></i> Submit Report</button>`;
-}
-function setCat(c){S.cat=c;document.querySelectorAll('.cb').forEach(b=>b.className=`cb p-2 rounded-xl border text-[10px] font-medium flex flex-col items-center gap-1 text-center ${b.dataset.c===c?'border-blue-500 bg-blue-500/10 text-blue-300':'border-[#1E2B45] bg-[#0A1424] text-slate-400'}`);renderSimilar()}
-function setFloor(f){S.floor=f;document.querySelectorAll('.fb').forEach(b=>b.className=`fb py-2 rounded-lg border text-xs font-medium ${b.dataset.f===f?'border-blue-500 bg-blue-500/10 text-blue-300':'border-[#1E2B45] bg-[#0A1424] text-slate-400'}`)}
-function pickPhoto(e){const f=e.target.files[0];if(!f)return;S.photo=f;$('ptxt').textContent='✓ '+f.name.slice(0,26)+' attached'}
-function renderSimilar(){
-  const el=$('simbox');if(!el)return;
-  const dept=$('rdept')?.value;
-  const sim=S.tickets.filter(t=>open(t)&&t.dept===dept&&t.category===S.cat&&!(t.affectedBy||[]).includes(S.me.mobile)&&t.reporterMobile!==S.me.mobile);
-  el.innerHTML=sim.length?`<div class="text-[11px] text-amber-400 flex items-center gap-1"><i class="fa-solid fa-circle-info"></i> ${sim.length} similar open report(s) — mark "me too" instead of duplicating</div>`+sim.slice(0,3).map(t=>`<div class="${CARD} !p-2.5 flex items-center justify-between gap-2"><div class="text-[11px] min-w-0"><div class="truncate">${esc(t.title)}</div><div class="text-[10px] text-slate-500">${esc(t.landmark)}</div></div><button onclick="meToo('${t.id}')" class="shrink-0 text-[10px] font-semibold bg-blue-600 px-2.5 py-1.5 rounded-lg">+1 Me too</button></div>`).join(''):'';
-}
-async function meToo(id){try{await K.doc(id).update({affectedBy:firebase.firestore.FieldValue.arrayUnion(S.me.mobile)});toast('Marked as affected too — no need to file a duplicate');go('home')}catch(e){toast(e.message)}}
-async function submitReport(){
-  const landmark=$('rland').value.trim(),desc=$('rdesc').value.trim();
-  if(!landmark||!desc)return toast('Fill room/landmark and description');
-  const btn=$('sbtn');btn.disabled=true;btn.textContent='Submitting…';
-  try{
-    if(S.photo)btn.textContent='Uploading photo…';
-    const photoUrl=await tryUpload(S.photo);btn.textContent='Saving…';
-    await K.add({title:desc.length>44?desc.slice(0,44)+'…':desc,desc,category:S.cat,dept:$('rdept').value,floor:S.floor,landmark,photoUrl,hazard:S.cat==='Safety & Hazard',approval:'pending',status:'Open',assignedTo:'',assignedName:'',affectedBy:[],isAnon:$('ranon').checked,reporterMobile:S.me.mobile,reporterName:S.me.name,createdAt:now()});
-    S.photo=null;toast('Report sent for admin approval');go('home');
-  }catch(e){if(e.message!=='cancelled')toast('Failed: '+e.message);const b=$('sbtn');if(b){b.disabled=false;b.textContent='Submit Report'}}
-}
-function ratingRow(t){
-  if(t.status!=='Resolved'||t.approval!=='approved')return '';
-  if(t.rating)return `<div class="text-[11px] text-amber-400">${'★'.repeat(t.rating)}${'☆'.repeat(5-t.rating)} <span class="text-slate-500">you rated this fix</span></div>`;
-  return `<div class="flex items-center gap-1 pt-1" id="rate-${t.id}">${[1,2,3,4,5].map(n=>`<button onclick="rateTicket('${t.id}',${n})" class="text-amber-400 text-lg leading-none">☆</button>`).join('')}<span class="text-[10px] text-slate-500 ml-1">Rate this fix</span></div>`;
-}
-async function rateTicket(id,n){try{await K.doc(id).update({rating:n});toast('Thanks for rating! ★'+n)}catch(e){toast(e.message)}}
-function reopenBtn(t){if(t.status!=='Resolved'||t.approval!=='approved'||t.reporterMobile!==S.me?.mobile)return '';return `<button onclick="reopenM('${t.id}')" class="text-[10px] text-red-400 underline">Not actually fixed? Reopen</button>`}
-function reopenM(id){modal(`<h3 class="font-bold">Reopen ticket ${code({id})}</h3>${lbl("Why isn't it fixed?")}<textarea id="rorsn" rows="3" placeholder="Explain what's still wrong" class="${INP} resize-none"></textarea><div class="flex gap-2"><button onclick="closeM()" class="${B} bg-slate-700 flex-1">Cancel</button><button onclick="doReopen('${id}')" class="${B} bg-red-600 flex-1">Reopen</button></div>`)}
-async function doReopen(id){
-  const reason=$('rorsn').value.trim();if(!reason)return toast('Explain the issue');
-  try{await K.doc(id).update({status:'Open',reopenReason:reason,reopenCount:firebase.firestore.FieldValue.increment(1),reopenedAt:now()});logAction('reopen',code({id})+': '+reason);closeM();toast('Ticket reopened')}catch(e){toast(e.message)}
-}
+Object.assign(window, { switchTab, openLoginModal, closeLoginModal, switchLoginRole, handleLoginSubmit, logout, selectCategory, selectFloor,
+  handleImageUpload, handleProofUpload, saveCloudCfg, testCloudCfg, submitNewReport, openResolveModal, closeResolveModal, submitTicketResolution, assignWorker });
 
-/* ============ LEADERBOARD ============ */
-function vLeaderboard(){
-  const m={};S.tickets.filter(t=>t.approval==='approved'&&!t.isAnon).forEach(t=>{const k=t.reporterMobile;m[k]=m[k]||{name:t.reporterName,pts:0};m[k].pts+=10+(t.status==='Resolved'?5:0)});
-  const L=Object.values(m).sort((a,b)=>b.pts-a.pts).slice(0,10);
-  return `${head(t('leaderboard'),'Top campus reporters — points for valid, resolved reports')}
-  ${L.map((u,i)=>`<div class="${CARD} flex items-center justify-between"><div class="flex items-center gap-3"><div class="w-7 h-7 rounded-full ${i<3?'bg-amber-500/20 text-amber-400':'bg-slate-700 text-slate-300'} flex items-center justify-center text-xs font-bold">${i+1}</div><div class="text-[13px] font-semibold">${esc(u.name)}</div></div><div class="text-sm font-bold text-blue-400">${u.pts} pts</div></div>`).join('')||empty('No approved reports yet')}
-  <p class="text-[10px] text-slate-500 text-center pt-1">Anonymous reports don't appear here to protect privacy, but still count toward campus fixes.</p>`;
-}
-
-/* ============ CAMPUS HEATMAP (shared) ============ */
-function heat(){
-  return `<div class="grid grid-cols-2 gap-2.5">${DEPTS.map(d=>{const n=S.tickets.filter(t=>open(t)&&t.dept===d).length,z=n>=3?['border-red-500/40','text-red-400','fa-fire']:n?['border-amber-500/30','text-amber-400','fa-triangle-exclamation']:['border-emerald-500/20','text-emerald-400','fa-circle-check'];return `<div class="${CARD} !p-3 ${z[0]}"><div class="text-[10px] font-bold uppercase ${z[1]}"><i class="fa-solid ${z[2]}"></i> ${n?n+' open':'Clear'}</div><div class="text-xs font-semibold mt-0.5">${esc(d)}</div></div>`}).join('')}</div>`;
-}
-function vCampus(){return `${head('Campus Heatmap','Live open issues by block — full GPS map needs a Google Maps key, ask admin')}${heat()}`}
-function clusters(){const m={};S.tickets.filter(open).forEach(t=>{const k=t.dept+'|'+t.category;(m[k]=m[k]||[]).push(t)});return Object.values(m).filter(a=>a.length>=3).sort((a,b)=>b.length-a.length)}
-
-/* ============ STAFF ============ */
-function dutyColor(d){return d==='available'?'bg-emerald-500/10 text-emerald-400 border-emerald-500/30':d==='busy'?'bg-amber-500/10 text-amber-400 border-amber-500/30':'bg-slate-500/10 text-slate-400 border-slate-500/30'}
-async function setDuty(d){try{await U.doc(S.me.id).update({duty:d})}catch(e){toast(e.message)}}
-function sHome(){
-  const mine=S.tickets.filter(t=>t.assignedTo===S.me.mobile&&t.approval==='approved'),act=mine.filter(t=>t.status!=='Resolved'),done=mine.filter(t=>t.status==='Resolved'),duty=S.me.duty||'available';
-  return `${noticeBanner()}${head('My Jobs',esc(S.me.trade||'Staff')+' • assigned by admin')}
-  <div class="flex gap-1.5">${['available','busy','off'].map(d=>`<button onclick="setDuty('${d}')" class="px-2.5 py-1 rounded-full text-[10px] font-semibold border ${duty===d?dutyColor(d):'border-[#1E2B45] text-slate-400'}">${d}</button>`).join('')}</div>
-  <div class="grid grid-cols-2 gap-2">${stat('Active',act.length,'text-blue-400')}${stat('Completed',done.length,'text-emerald-400')}</div>
-  ${act.map(t=>tk(t,`<div class="flex gap-2 pt-2 border-t border-[#1E2B45]">${t.status==='Open'?`<button onclick="setStatus('${t.id}','In Progress')" class="${B} bg-slate-700 hover:bg-slate-600 flex-1 text-xs">Start work</button>`:''}<button onclick="resolveM('${t.id}')" class="${B} bg-emerald-600 hover:bg-emerald-500 flex-1 text-xs">Done & Upload Proof</button></div>`)).join('')||empty('No active jobs assigned to you')}
-  ${done.length?`<div class="text-xs font-bold uppercase tracking-wider text-slate-300 pt-2">Completed</div>${done.slice(0,8).map(t=>tk(t)).join('')}`:''}`;
-}
-async function setStatus(id,s){try{await K.doc(id).update({status:s,updatedAt:now()});toast('Status: '+s)}catch(e){toast(e.message)}}
-function resolveM(id){
-  modal(`<h3 class="font-bold">Close ticket ${code({id})}</h3>${lbl('Fix note')}<textarea id="rnote" rows="3" placeholder="What was fixed?" class="${INP} resize-none"></textarea>
-  ${lbl('Proof photo (after)')}<input type="file" id="rproof" accept="image/*" capture="environment" class="${INP} !text-xs">
-  <div class="flex gap-2"><button onclick="closeM()" class="${B} bg-slate-700 flex-1">Cancel</button><button id="rbtn" onclick="doResolve('${id}')" class="${B} bg-emerald-600 flex-1">Mark Resolved</button></div>`);
-}
-async function doResolve(id){
-  const note=$('rnote').value.trim();if(!note)return toast('Add a fix note');
-  const b=$('rbtn');b.disabled=true;b.textContent='Saving…';
-  try{const proofUrl=await tryUpload($('rproof').files[0]);await K.doc(id).update({status:'Resolved',resolvedNote:note,proofUrl,resolvedBy:S.me.name,resolvedAt:now(),updatedAt:now()});logAction('resolve',code({id}));closeM();toast('Ticket resolved')}
-  catch(e){if(e.message!=='cancelled')toast(e.message);b.disabled=false;b.textContent='Mark Resolved'}
-}
-
-/* ============ ADMIN ============ */
-let CH={};
-function drawCharts(){
-  if(!window.Chart)return;
-  const days=[...Array(14)].map((_,i)=>{const d=new Date();d.setDate(d.getDate()-(13-i));return d});
-  const counts=days.map(d=>S.tickets.filter(x=>new Date(tm(x)).toDateString()===d.toDateString()).length);
-  const labels=days.map(d=>d.getDate()+'/'+(d.getMonth()+1));
-  const gridColor=document.documentElement.dataset.theme==='light'?'#E2E8F0':'#1E2B45',tickColor='#64748B';
-  const c1=$('chTrend');if(c1){if(CH.trend)CH.trend.destroy();CH.trend=new Chart(c1,{type:'line',data:{labels,datasets:[{data:counts,borderColor:'#3B82F6',backgroundColor:'rgba(59,130,246,.15)',fill:true,tension:.3,pointRadius:2}]},options:{plugins:{legend:{display:false}},scales:{x:{ticks:{color:tickColor,font:{size:9}},grid:{display:false}},y:{beginAtZero:true,ticks:{color:tickColor,font:{size:9},precision:0},grid:{color:gridColor}}}}})}
-  const cats=Object.keys(CAT),cc=cats.map(c=>S.tickets.filter(x=>x.category===c).length);
-  const c2=$('chCat');if(c2){if(CH.cat)CH.cat.destroy();CH.cat=new Chart(c2,{type:'bar',data:{labels:cats.map(c=>c.split(' ')[0]),datasets:[{data:cc,backgroundColor:'#3B82F6',borderRadius:6}]},options:{plugins:{legend:{display:false}},scales:{x:{ticks:{color:tickColor,font:{size:9}},grid:{display:false}},y:{beginAtZero:true,ticks:{color:tickColor,font:{size:9},precision:0},grid:{color:gridColor}}}}})}
-}
-function aHome(){
-  const T=S.tickets,ap=T.filter(t=>t.approval==='approved'),cl=clusters(),breach=ap.filter(slaBreached);
-  return `${noticeBanner()}${head('Admin Dashboard','Live overview of the whole campus')}
-  <div class="grid grid-cols-2 gap-2">${stat('Pending approval',pendingCount(),'text-amber-400')}${stat('Open',ap.filter(t=>t.status==='Open').length,'text-white')}${stat('In progress',ap.filter(t=>t.status==='In Progress').length,'text-blue-400')}${stat('Resolved',ap.filter(t=>t.status==='Resolved').length,'text-emerald-400')}</div>
-  <div class="${CARD}"><div class="text-xs font-bold uppercase text-slate-300 mb-2">Reports — last 14 days</div><canvas id="chTrend" height="140"></canvas></div>
-  <div class="${CARD}"><div class="text-xs font-bold uppercase text-slate-300 mb-2">By category</div><canvas id="chCat" height="140"></canvas></div>
-  ${breach.length?`<div class="text-xs font-bold uppercase tracking-wider text-red-400">SLA breaches (open ${SLA_HOURS}h+)</div>${breach.map(t=>tk(t,adminAct(t))).join('')}`:''}
-  ${cl.length?`<div class="text-xs font-bold uppercase tracking-wider text-red-400">Root-cause alerts</div>${cl.map(g=>`<div class="${CARD} !border-red-500/40 bg-red-500/5"><div class="text-sm font-semibold">${esc(g[0].category)} — ${esc(g[0].dept)}</div><div class="text-[11px] text-slate-400 mt-0.5">${g.length} open reports share this block and category. Send one technician to check the common source.</div></div>`).join('')}`:''}
-  <div class="text-xs font-bold uppercase tracking-wider text-slate-300 pt-1">Campus heatmap</div>${heat()}`;
-}
-function aApprovals(){
-  const pt=S.tickets.filter(t=>t.approval==='pending'),pu=S.users.filter(u=>u.status==='pending');
-  return `${head('Approvals','Review reports and new student accounts')}
-  <div class="flex items-center justify-between"><div class="text-xs font-bold uppercase tracking-wider text-slate-300">Reports (${pt.length})</div>${pt.length?`<button onclick="bulkApprove()" class="text-[11px] font-semibold text-blue-400">Approve selected</button>`:''}</div>
-  ${pt.map(t=>`<label class="flex gap-2 items-start"><input type="checkbox" class="bulkchk mt-4 accent-blue-600" value="${t.id}">${tk(t,approvalAct(t))}</label>`).join('')||empty('No reports waiting')}
-  <div class="text-xs font-bold uppercase tracking-wider text-slate-300 pt-2">Student sign-ups (${pu.length})</div>
-  ${pu.map(u=>`<div class="${CARD} flex items-center justify-between gap-2"><div><div class="text-[13px] font-semibold">${esc(u.name)}</div><div class="text-[11px] text-slate-400">${esc(u.mobile)} • ${esc(u.dept)}</div></div><div class="flex gap-1.5"><button onclick="userSet('${u.id}','active')" class="${B} bg-emerald-600 px-3 text-xs">Approve</button><button onclick="userSet('${u.id}','rejected')" class="${B} bg-red-600/80 px-3 text-xs">Reject</button></div></div>`).join('')||empty('No sign-ups waiting')}`;
-}
-function bulkApprove(){const ids=[...document.querySelectorAll('.bulkchk:checked')].map(c=>c.value);if(!ids.length)return toast('Select at least one');ids.forEach(id=>approve(id));toast(ids.length+' approved')}
-function approvalAct(t){return `<div class="flex gap-2 pt-2 border-t border-[#1E2B45]"><button onclick="approve('${t.id}')" class="${B} bg-emerald-600 hover:bg-emerald-500 flex-1 text-xs"><i class="fa-solid fa-check"></i> Approve</button><button onclick="rejectM('${t.id}')" class="${B} bg-red-600/80 hover:bg-red-500 flex-1 text-xs"><i class="fa-solid fa-xmark"></i> Reject</button></div>`}
-async function approve(id){try{await K.doc(id).update({approval:'approved',approvedBy:S.me.name,updatedAt:now()});logAction('approve',code({id}));toast('Approved')}catch(e){toast(e.message)}}
-function rejectM(id){modal(`<h3 class="font-bold">Reject report</h3><textarea id="rrsn" rows="3" placeholder="Reason (student will see this)" class="${INP} resize-none"></textarea><div class="flex gap-2"><button onclick="closeM()" class="${B} bg-slate-700 flex-1">Cancel</button><button onclick="doReject('${id}')" class="${B} bg-red-600 flex-1">Reject</button></div>`)}
-async function doReject(id){const reason=$('rrsn').value.trim()||'Not valid';try{await K.doc(id).update({approval:'rejected',rejectReason:reason,updatedAt:now()});logAction('reject',code({id})+': '+reason);closeM();toast('Rejected')}catch(e){toast(e.message)}}
-function adminAct(t){
-  if(t.approval!=='approved')return `<div class="flex gap-2 pt-2 border-t border-[#1E2B45]">${t.approval==='rejected'?`<button onclick="approve('${t.id}')" class="${B} bg-emerald-600 flex-1 text-xs">Approve anyway</button>`:''}<button onclick="delT('${t.id}')" class="${B} bg-slate-700 px-4 text-xs text-red-400"><i class="fa-solid fa-trash"></i></button></div>`;
-  const staff=S.users.filter(u=>u.role==='staff'&&u.status==='active');
-  return `<div class="flex gap-2 pt-2 border-t border-[#1E2B45]"><select onchange="assign('${t.id}',this.value)" class="${INP} !py-2 !text-xs flex-1"><option value="">Assign staff…</option>${staff.map(u=>`<option value="${u.mobile}" ${t.assignedTo===u.mobile?'selected':''}>${esc(u.name)} (${esc(u.trade||'')}) ${u.duty==='off'?'⚪':u.duty==='busy'?'🟡':'🟢'}</option>`).join('')}</select>
-  ${t.status!=='Resolved'?`<button onclick="resolveM('${t.id}')" class="${B} bg-emerald-600 px-3 text-xs">Close</button>`:`<button onclick="setStatus('${t.id}','Open')" class="${B} bg-slate-700 px-3 text-xs">Reopen</button>`}<button onclick="delT('${t.id}')" class="${B} bg-slate-700 px-3 text-xs text-red-400"><i class="fa-solid fa-trash"></i></button></div>`;
-}
-async function assign(id,m){const u=S.users.find(x=>x.mobile===m),t=S.tickets.find(x=>x.id===id);try{await K.doc(id).update({assignedTo:m,assignedName:u?u.name:'',status:m&&t.status==='Open'?'In Progress':t.status,updatedAt:now()});logAction('assign',code({id})+' → '+(u?u.name:'unassigned'));toast(m?'Assigned to '+u.name:'Unassigned')}catch(e){toast(e.message)}}
-async function delT(id){if(confirm('Delete this ticket permanently?'))try{await K.doc(id).delete();logAction('delete_ticket',code({id}))}catch(e){toast(e.message)}}
-function exportCSV(){
-  const rows=[['Ticket','Title','Category','Dept','Floor','Landmark','Status','Approval','Reporter','Assigned','Rating','Created']];
-  S.tickets.forEach(t=>rows.push([code(t),t.title,t.category,t.dept,t.floor,t.landmark,t.status,t.approval,t.isAnon?'Anonymous':t.reporterName,t.assignedName||'',t.rating||'',new Date(tm(t)).toLocaleString()]));
-  const csv=rows.map(r=>r.map(v=>`"${String(v??'').replace(/"/g,'""')}"`).join(',')).join('\n');
-  const blob=new Blob([csv],{type:'text/csv'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='avcoe-sentinel-tickets.csv';a.click();
-}
-function aTickets(){
-  const f=S.filter,L=S.tickets.filter(t=>f==='all'||(f==='pending'&&t.approval==='pending')||(f==='rejected'&&t.approval==='rejected')||(t.approval==='approved'&&((f==='open'&&t.status==='Open')||(f==='progress'&&t.status==='In Progress')||(f==='resolved'&&t.status==='Resolved'))));
-  const chips=[['all','All'],['pending','Pending'],['open','Open'],['progress','In Progress'],['resolved','Resolved'],['rejected','Rejected']];
-  return `<div class="flex items-center justify-between">${head('All Tickets','Assign, close, reopen or delete')}<button onclick="exportCSV()" class="${B} bg-slate-700 !py-2 px-3 text-xs shrink-0"><i class="fa-solid fa-file-csv mr-1"></i>CSV</button></div>
-  <div class="flex gap-1.5 overflow-x-auto sc pb-1">${chips.map(([k,l])=>`<button onclick="S.filter='${k}';go('tickets')" class="shrink-0 px-3 py-1.5 rounded-full text-[11px] font-semibold border ${f===k?'bg-blue-600 border-blue-600 text-white':'border-[#1E2B45] text-slate-400'}">${l}</button>`).join('')}</div>
-  ${L.map(t=>tk(t,adminAct(t))).join('')||empty('No tickets in this view')}`;
-}
-/* users */
-function aUsers(){
-  const grp=(t,r)=>{const L=S.users.filter(u=>u.role===r&&u.status!=='pending');return `<div class="text-xs font-bold uppercase tracking-wider text-slate-300 pt-2">${t} (${L.length})</div>${L.map(uc).join('')||empty('None yet')}`};
-  return `${head('User Management','Create IDs for staff and admins')}<button onclick="userM()" class="${B} ${P} w-full py-3"><i class="fa-solid fa-user-plus mr-1"></i> Create Staff / Admin ID</button>${grp('Staff','staff')}${grp('Admins','admin')}${grp('Students','student')}`;
-}
-function avgRating(mobile){const rs=S.tickets.filter(t=>t.assignedTo===mobile&&t.rating);if(!rs.length)return null;return(rs.reduce((a,b)=>a+b.rating,0)/rs.length).toFixed(1)}
-function uc(u){
-  const me=u.id===S.me.id,st={active:'green',blocked:'red',rejected:'red'}[u.status]||'slate',ar=u.role==='staff'?avgRating(u.mobile):null;
-  return `<div class="${CARD} space-y-2"><div class="flex justify-between items-start"><div><div class="text-[13px] font-semibold">${esc(u.name)} ${me?'<span class="text-[10px] text-slate-500">(you)</span>':''}</div><div class="text-[11px] text-slate-400"><i class="fa-solid fa-phone text-[9px]"></i> ${esc(u.mobile)} • ${esc(u.trade||u.dept||'')}${u.duty?' • '+esc(u.duty):''}${ar?` • ★${ar}`:''}</div></div>${bd(u.status,st)}</div>
-  ${me?'':`<div class="flex gap-2"><button onclick="userSet('${u.id}','${u.status==='active'?'blocked':'active'}')" class="${B} bg-slate-700 flex-1 text-xs">${u.status==='active'?'Block':'Unblock'}</button><button onclick="pwM('${u.id}')" class="${B} bg-slate-700 flex-1 text-xs">Reset password</button><button onclick="delU('${u.id}')" class="${B} bg-slate-700 px-3 text-xs text-red-400"><i class="fa-solid fa-trash"></i></button></div>`}</div>`;
-}
-async function userSet(id,s){try{await U.doc(id).update({status:s});logAction('user_status',id+' → '+s);toast('User '+s)}catch(e){toast(e.message)}}
-async function delU(id){if(confirm('Delete this user?'))try{await U.doc(id).delete();logAction('delete_user',id)}catch(e){toast(e.message)}}
-function userM(){
-  modal(`<h3 class="font-bold">Create ID</h3><select id="nr" onchange="$('nt').classList.toggle('hidden',this.value!=='staff')" class="${INP}"><option value="staff">Staff / Worker</option><option value="admin">Admin</option></select>
-  <input id="nn" placeholder="Full name" class="${INP}"><input id="nm" inputmode="numeric" maxlength="10" placeholder="Mobile number (login ID)" class="${INP}"><select id="nt" class="${INP}">${opts(TRADES)}</select><input id="np" placeholder="Password (min 6)" class="${INP}">
-  <div class="flex gap-2"><button onclick="closeM()" class="${B} bg-slate-700 flex-1">Cancel</button><button onclick="createUser()" class="${B} ${P} flex-1">Create</button></div>`);
-}
-async function createUser(){
-  const role=$('nr').value,name=$('nn').value.trim(),m=$('nm').value.trim(),p=$('np').value;
-  if(name.length<2||!/^\d{10}$/.test(m)||p.length<6)return toast('Need name, 10-digit mobile and 6+ char password');
-  try{
-    if((await U.doc(m).get()).exists)return toast('Mobile number already in use');
-    await U.doc(m).set({name,mobile:m,role,trade:role==='staff'?$('nt').value:'',duty:role==='staff'?'available':'',status:'active',pass:await shahash(m,p),createdBy:S.me.name,createdAt:now()});
-    logAction('create_user',role+': '+name+' ('+m+')');closeM();toast('ID created. Share: '+m+' / '+p);
-  }catch(e){toast(e.message)}
-}
-function pwM(id){modal(`<h3 class="font-bold">Reset password</h3><input id="npw" placeholder="New password (min 6)" class="${INP}"><div class="flex gap-2"><button onclick="closeM()" class="${B} bg-slate-700 flex-1">Cancel</button><button onclick="setPw('${id}')" class="${B} ${P} flex-1">Save</button></div>`)}
-async function setPw(id){const p=$('npw').value;if(p.length<6)return toast('Min 6 characters');try{await U.doc(id).update({pass:await shahash(id,p)});logAction('reset_password',id);closeM();toast('Password updated')}catch(e){toast(e.message)}}
-/* notices */
-function aNotices(){
-  return `${head('Notices','Post campus-wide announcements')}<div class="${CARD} space-y-2"><input id="ntitle" placeholder="Title" class="${INP}"><textarea id="nbody" rows="2" placeholder="Message" class="${INP} resize-none"></textarea><button onclick="postNotice()" class="${B} ${P} w-full">Post</button></div>${(S.notices||[]).map(n=>`<div class="${CARD} flex justify-between items-start gap-2"><div><div class="text-[13px] font-semibold">${esc(n.title)}</div><div class="text-[11px] text-slate-400">${esc(n.body)}</div><div class="text-[10px] text-slate-500 mt-1">${esc(n.postedBy)} • ${ago(n.ts?.toMillis?n.ts.toMillis():Date.now())}</div></div><button onclick="delNotice('${n.id}')" class="text-red-400 text-xs"><i class="fa-solid fa-trash"></i></button></div>`).join('')||empty('No notices yet')}`;
-}
-async function postNotice(){const title=$('ntitle').value.trim(),body=$('nbody').value.trim();if(!title||!body)return toast('Fill both fields');try{await N.add({title,body,postedBy:S.me.name,ts:now()});logAction('notice','Posted: '+title);toast('Notice posted');go('notices')}catch(e){toast(e.message)}}
-async function delNotice(id){try{await N.doc(id).delete()}catch(e){toast(e.message)}}
-/* logs */
-function aLogs(){
-  return `${head('Activity Log','Every approval, assignment and change')}${(S.logs||[]).map(l=>`<div class="${CARD} !p-2.5"><div class="text-[11px]"><b>${esc(l.actor)}</b> <span class="text-slate-500">(${esc(l.actorRole)})</span> — ${esc(l.action)}</div><div class="text-[10px] text-slate-500">${esc(l.detail||'')} • ${ago(l.ts?.toMillis?l.ts.toMillis():Date.now())}</div></div>`).join('')||empty('No activity yet')}`;
-}
-/* settings */
-function aSettings(){
-  return `${head('Settings')}
-  <div class="${CARD} space-y-2.5"><div class="text-sm font-semibold">Institution branding</div><p class="text-[11px] text-slate-400">Rename the app header for your campus (useful if you reuse this app for another college).</p>
-  <input id="orgn" value="${esc(S.cfg.orgName||'')}" placeholder="e.g. AVCOE Sentinel" class="${INP}"><button onclick="saveOrg()" class="${B} bg-slate-700 w-full">Save name</button></div>
-  <div class="${CARD} space-y-2.5"><div class="text-sm font-semibold">Cloudinary photo upload</div><p class="text-[11px] text-slate-400">Cloud name: <b class="text-slate-200">${CLOUD}</b>. Enter your <b>unsigned</b> upload preset name (Cloudinary → Settings → Upload → Upload presets).</p>
-  <input id="cp" value="${esc(S.cfg.cloudPreset||DEFAULT_PRESET)}" class="${INP}"><button onclick="saveCfg()" class="${B} ${P} w-full">Save preset</button></div>
-  <div class="${CARD} space-y-2.5"><div class="text-sm font-semibold">Change my password</div><input id="mp" type="password" placeholder="New password (min 6)" class="${INP}"><button onclick="myPw()" class="${B} bg-slate-700 w-full">Update password</button></div>`;
-}
-async function saveCfg(){try{await C.set({cloudPreset:$('cp').value.trim()},{merge:true});toast('Preset saved')}catch(e){toast(e.message)}}
-async function saveOrg(){try{await C.set({orgName:$('orgn').value.trim()},{merge:true});toast('Branding saved')}catch(e){toast(e.message)}}
-async function myPw(){const p=$('mp').value;if(p.length<6)return toast('Min 6 characters');try{await U.doc(S.me.id).update({pass:await shahash(S.me.id,p)});$('mp').value='';toast('Password changed')}catch(e){toast(e.message)}}
-
-/* ============ BOOT ============ */
-$('langBtn').textContent=LANG.toUpperCase();
-render();
-(async()=>{const m=localStorage.getItem('sentinelMobile');if(m)try{const d=await U.doc(m).get();if(d.exists&&d.data().status==='active')start(m)}catch(e){}})();
-setInterval(()=>{if(S.me&&!['report','settings','notices'].includes(S.tab))render()},60000);
+// ===== INIT =====
+try { Object.assign(S, JSON.parse(localStorage.getItem('sentinel_session') || '{}')); } catch {}
+lucide.createIcons();
+applySession(); renderAll(); switchTab('home');
+listenCfg();
+listen();
 </script>
 </body>
 </html>
